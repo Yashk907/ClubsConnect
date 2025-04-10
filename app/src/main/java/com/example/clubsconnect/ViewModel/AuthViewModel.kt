@@ -1,6 +1,8 @@
 package com.example.clubsconnect.ViewModel
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
+import com.example.clubsconnect.InternalFun.saveUserToPref
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -23,7 +25,12 @@ class AuthViewModel : ViewModel() {
             }
         }
     }
-    fun SignUp(email : String, password : String ,role : String,userName : String, PRNno : String, onresult : (Boolean, String?)-> Unit){
+    fun SignUp(email : String,
+               password : String ,
+               role : String,
+               userName : String,
+               PRNno : String,
+               onresult : (Boolean, String?)-> Unit){
         if(!email.endsWith("@viit.ac.in")){
             onresult(false,"UnAuthorised Email ID :  Use official VIIT Email Id")
             return

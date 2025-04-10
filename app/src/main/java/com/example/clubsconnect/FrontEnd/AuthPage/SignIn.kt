@@ -19,10 +19,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.clubsconnect.InternalFun.saveUserToPref
+import com.example.clubsconnect.Screen
 import com.example.clubsconnect.ViewModel.AuthViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.firestore
 
 @Composable
-fun LoginScreen(viewModel: AuthViewModel) {
+fun LoginScreen(viewModel: AuthViewModel,
+                onlogin : ()-> Unit,
+                navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -108,7 +116,27 @@ fun LoginScreen(viewModel: AuthViewModel) {
                     viewModel.SignIn(email,password){
                         success,error->
                         if(success){
-                            Toast.makeText(context,"LogIn successful", Toast.LENGTH_SHORT).show()
+                            val uid = FirebaseAuth.getInstance().uid
+                            Firebase.firestore.collection("users")
+                                .document(uid?: return@SignIn)
+                                .get()
+                                .addOnSuccessListener { doc ->
+                                    if(doc!=null && doc.exists()){
+                                        val name = doc.getString("username") ?: "Unknown"
+                                        val userType = doc.getString("role") ?: "Student" // if needed
+
+                                        // Save UID and name to SharedPreferences
+                                        saveUserToPref(context, uid, name, userType)
+
+                                        Toast.makeText(context, "LogIn successful", Toast.LENGTH_SHORT).show()
+
+                                    } else {
+                                        Toast.makeText(context, "User data not found", Toast.LENGTH_SHORT).show()
+                                    }
+
+                                }
+//                            Toast.makeText(context,"LogIn successful", Toast.LENGTH_SHORT).show()
+                            navController.navigate(Screen.ADDEVENT.name)
                         }else{
                             Toast.makeText(context,error, Toast.LENGTH_SHORT).show()
                         }
@@ -146,6 +174,6 @@ fun LoginScreen(viewModel: AuthViewModel) {
 @Composable
 fun LoginScreenPreview() {
     MaterialTheme {
-        LoginScreen(viewModel())
+//        LoginScreen(viewModel())
     }
 }

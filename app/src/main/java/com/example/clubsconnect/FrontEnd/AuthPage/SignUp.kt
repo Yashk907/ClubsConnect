@@ -195,7 +195,7 @@ fun SignupScreen(viewModel: AuthViewModel ) {
             // Sign Up Button
             Button(
                 onClick = {
-                    viewModel.SignUp(email,password,username,prnNo,selectedOption){
+                    viewModel.SignUp(email,password,selectedOption,username,prnNo){
                         success,error->
                         if(success){
                             Toast.makeText(context,"Sign Up success", Toast.LENGTH_SHORT).show()

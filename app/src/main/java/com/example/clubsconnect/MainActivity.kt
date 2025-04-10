@@ -1,5 +1,6 @@
 package com.example.clubsconnect
 
+import AddEventScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.Navigation
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.clubsconnect.FrontEnd.AuthPage.LoginScreen
 import com.example.clubsconnect.FrontEnd.AuthPage.SignupScreen
 import com.example.clubsconnect.ui.theme.ClubsConnectTheme
@@ -24,10 +29,25 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ClubsConnectTheme {
-                LoginScreen(viewModel())
-//                SignupScreen(viewModel())
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = Screen.LOGIN.name){
+                    composable(route = Screen.LOGIN.name){
+                        LoginScreen(viewModel(),{
+                            navController.navigate(Screen.ADDEVENT.name)
+                        },navController)
+                    }
+                    composable(route = Screen.ADDEVENT.name){
+                        AddEventScreen(viewModel())
+                    }
+
+                }
             }
         }
     }
 }
 
+enum class Screen{
+    LOGIN,
+    SIGNUP,
+    ADDEVENT
+}

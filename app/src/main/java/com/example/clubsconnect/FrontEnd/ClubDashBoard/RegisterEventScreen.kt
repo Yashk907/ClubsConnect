@@ -1,4 +1,5 @@
 import android.app.DatePickerDialog
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import android.widget.DatePicker
@@ -35,15 +36,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.clubsconnect.FrontEnd.ClubDashBoard.EventFormState
 import com.example.clubsconnect.FrontEnd.ClubDashBoard.validateForm
+import com.example.clubsconnect.InternalFun.getUserInfoFromPrefs
+import com.example.clubsconnect.Model.Event
+import com.example.clubsconnect.ViewModel.AddEventViewModel
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import kotlin.String
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddEventScreen() {
+fun AddEventScreen(viewModel: AddEventViewModel) {
 //    val context = LocalContext.current
 //    val datePickerDialog = remember {
 //        DatePickerDialog(context, { _, year, month, dayOfMonth ->
@@ -512,6 +518,30 @@ fun AddEventScreen() {
                             updatedState.endDateError
                         ).all { it == null }) {
                         // Proceed to submit form
+                        val (uid, name, type) = getUserInfoFromPrefs(context)
+                        val event= Event(
+                            name = formState.name,
+                            description = formState.description,
+                            type = formState.type,
+                            location=formState.location,
+                            startDate = formState.startDate,
+                            endDate = formState.endDate,
+                            registrationLink=formState.registrationLink,
+                            registrationFee = formState.registrationFee,
+                            clubName = name,
+                            clubUid = uid,
+                            imageUrl = "temp"
+                        )
+
+                        viewModel.uploadEvent(event){
+                            success, error->
+                            if(success){
+                                Toast.makeText(context,"event uploaded successfully",Toast.LENGTH_SHORT).show()
+                            }else{
+                                Toast.makeText(context,error,Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
                     } else {
                         // Show errors in UI
                         formState = updatedState
@@ -571,6 +601,7 @@ fun EventTagChip(
 @Composable
 fun AddEventScreenPreview() {
     MaterialTheme {
-        AddEventScreen()
+        AddEventScreen(viewModel())
     }
 }
+
