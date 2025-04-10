@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "639270081802",
+    "project_id": "clubsconnect-da00b",
+    "storage_bucket": "clubsconnect-da00b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639270081802:android:8dfd5f53f070adea4ad6f3",
+        "android_client_info": {
+          "package_name": "com.example.clubsconnect"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgJWL7OJbsfuT1dIgZsB_nAIQg38JweHo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
