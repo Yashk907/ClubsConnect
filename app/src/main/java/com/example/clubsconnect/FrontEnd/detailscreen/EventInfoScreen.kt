@@ -1,5 +1,7 @@
 package com.example.clubsconnect.FrontEnd.detailscreen
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.example.clubsconnect.InternalFun.getUserInfoFromPrefs
 import com.example.clubsconnect.Model.Event
 import com.example.clubsconnect.ViewModel.EventDetailViewModel
 import com.example.clubsconnect.ViewModel.FeedViewModel
@@ -43,6 +46,7 @@ fun EventDetailsScreen(
     onBackPressed: () -> Unit,
     onRegisterClicked: () -> Unit
 ) {
+    val context : Context = LocalContext.current
     val event = viewModel.eventState
 
     Scaffold(
@@ -221,13 +225,24 @@ fun EventDetailsScreen(
 
                 // Register Button
                 Button(
-                    onClick = onRegisterClicked,
+                    onClick = { viewModel.rsvpToEventIfNotAlready(eventId = event.id,
+                        userId = getUserInfoFromPrefs(context = context).first,
+                        name = getUserInfoFromPrefs(context = context).second,
+                        email = getUserInfoFromPrefs(context=context).third
+                    ){
+                        success,error->
+                        if(success){
+                            Toast.makeText(context,"You have successfully RSVPed", Toast.LENGTH_SHORT).show()
+                        }else{
+                            Toast.makeText(context,error,Toast.LENGTH_SHORT).show()
+                        }
+                    } },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
                     shape = RoundedCornerShape(8.dp)
                 ) {
-                    Text("Register Now", fontSize = 16.sp)
+                    Text("RSVP Now", fontSize = 16.sp)
                 }
             }else{
                 CircularProgressIndicator()

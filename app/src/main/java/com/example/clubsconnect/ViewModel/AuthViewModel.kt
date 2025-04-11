@@ -66,7 +66,6 @@ class AuthViewModel : ViewModel() {
             "role" to role,
             "username" to userName,
 
-
         )
 
         firestordb.collection("users")
@@ -74,9 +73,39 @@ class AuthViewModel : ViewModel() {
             .set(userMap)
             .addOnSuccessListener {
                 onresult(true,null)
+                saveAccordingToRole(
+                    uid = uid,
+                    email=email,
+                    role = role,
+                    userName=userName)
             }
             .addOnFailureListener {
                 onresult(false,"data of user Not stored!!")
             }
     }
+    private fun saveAccordingToRole(
+        uid : String,
+        email : String,
+        role : String,
+        userName : String,
+    ){
+        val imageUri = "https://res.cloudinary.com/dzzglagqm/image/upload/v1744380093/307ce493-b254-4b2d-8ba4-d12c080d6651_cg9rg8.jpg"
+        val userMap = hashMapOf(
+            "email" to email,
+            "imageUri" to imageUri,
+            "username" to userName
+        )
+        if(role=="Student"){
+            firestordb.collection("students")
+                .document(uid)
+                .set(userMap)
+        }else{
+            firestordb.collection("clubs")
+                .document(uid)
+                .set(userMap)
+        }
+
+    }
+
+
 }
