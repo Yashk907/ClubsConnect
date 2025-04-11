@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.Navigation
@@ -24,6 +25,8 @@ import com.example.clubsconnect.FrontEnd.ClubListStud.ClubsScreen
 import com.example.clubsconnect.FrontEnd.FeedPage.MainFeedScreen
 import com.example.clubsconnect.FrontEnd.PofileScreen.EditProfileScreen
 import com.example.clubsconnect.FrontEnd.detailscreen.EventDetailsScreen
+import com.example.clubsconnect.InternalFun.getUserInfoFromPrefs
+import com.example.clubsconnect.MembersScreen.ClubMembersScreen
 import com.example.clubsconnect.Model.Event
 import com.example.clubsconnect.ViewModel.AuthViewModel
 import com.example.clubsconnect.ViewModel.EventDetailViewModel
@@ -74,6 +77,10 @@ class MainActivity : ComponentActivity() {
                     composable(route= Screen.PROFILESCREEN.name){
                         EditProfileScreen()
                     }
+                    composable(route= Screen.CLUBMEMBERSSCREEN.name){
+                        val uid = getUserInfoFromPrefs(context = LocalContext.current).first
+                        ClubMembersScreen(clubId = uid){}
+                    }
 
 
                 }
@@ -89,5 +96,6 @@ enum class Screen{
     MAINSCREEN,
     DETAILSCREEN,
     PROFILESCREEN,
+    CLUBMEMBERSSCREEN,
     CLUBLISTSCREEN
 }

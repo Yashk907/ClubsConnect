@@ -104,7 +104,7 @@ fun EditProfileScreen() {
                     color = Color(0xFF2196F3),
                     fontSize = 14.sp,
                     modifier = Modifier.clickable {
-                        imagePickerLauncher.launch("profile_img/*")
+                        imagePickerLauncher.launch("image/*")
                     }
                 )
             }
@@ -145,15 +145,15 @@ fun EditProfileScreen() {
             onClick = {
                 if(name.value!=getUserInfoFromPrefs(context).second){
                 currentUser?.uid?.let { uid ->
-                    val updatedData = mapOf("username" to name)
+//                    val updatedData = mapOf("username" to name)
 
                     firestore.collection("users")
                         .document(uid)
-                        .update(updatedData)
+                        .update("username",name.value)
                         .addOnSuccessListener {
                             firestore.collection("students")
                                 .document(uid)
-                                .update(updatedData)
+                                .update("username",name.value)
                                 .addOnSuccessListener {
                                     Toast.makeText(context, "Profile updated", Toast.LENGTH_SHORT).show()
                                 }
@@ -171,7 +171,7 @@ fun EditProfileScreen() {
 
                           firestore.collection("students")
                               .document(uid)
-                              .update(updatedData)
+                              .update("imageUri",imagerUri)
                               .addOnSuccessListener {
                                   Toast.makeText(context,"Image is also updated", Toast.LENGTH_SHORT).show()
                               }

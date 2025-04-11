@@ -545,6 +545,18 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
                                     viewModel.uploadEvent(event) { success, error ->
                                         if (success) {
                                             Toast.makeText(context, "Event uploaded successfully", Toast.LENGTH_SHORT).show()
+                                            eventTitle = ""
+                                            eventDescription = ""
+                                            registrationLink = ""
+                                            selectedTag = ""
+                                            location = ""
+                                            RegistrationFee = ""
+                                            eventDate = ""
+                                            openDate = ""
+                                            closeDate = ""
+                                            posterUri = null
+                                            cloudinaryImageLink = ""
+                                            formState = EventFormState()
                                         } else {
                                             Toast.makeText(context, error ?: "Upload failed", Toast.LENGTH_SHORT).show()
                                         }
@@ -561,6 +573,8 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
                         formState = updatedState
                         Toast.makeText(context, "Fill all required fields", Toast.LENGTH_SHORT).show()
                     }
+
+
 
                 },
                 modifier = Modifier
