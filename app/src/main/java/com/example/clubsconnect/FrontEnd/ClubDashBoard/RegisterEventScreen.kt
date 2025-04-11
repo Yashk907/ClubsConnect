@@ -116,6 +116,8 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
     var location by remember{mutableStateOf("")}
     var RegistrationFee by remember{mutableStateOf("")}
 
+    var cloudinaryImageLink by remember { mutableStateOf("") }
+
 
     var formState by remember { mutableStateOf(EventFormState()) }
     val validatedState = validateForm(formState)
@@ -186,7 +188,7 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
                     Image(
                         painter = rememberAsyncImagePainter(posterUri),
                         contentDescription = "Event Poster",
-                        contentScale = ContentScale.Crop,
+                        contentScale = ContentScale.None,
                         modifier = Modifier.fillMaxSize()
                     )
                 } else {
@@ -503,11 +505,11 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
                         location = location,
                         startDate = openDate,
                         endDate = closeDate,
-                        registrationLink =registrationLink,
+                        registrationLink = registrationLink,
                         registrationFee = RegistrationFee,
                         posterImageUri = posterUri
-
                     )
+
                     val updatedState = validateForm(formState)
                     if (listOf(
                             updatedState.nameError,
@@ -516,38 +518,50 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
                             updatedState.locationError,
                             updatedState.startDateError,
                             updatedState.endDateError
-                        ).all { it == null }) {
-                        // Proceed to submit form
+                        ).all { it == null }
+                    ) {
                         val (uid, name, type) = getUserInfoFromPrefs(context)
-                        val event= Event(
-                            name = formState.name,
-                            description = formState.description,
-                            type = formState.type,
-                            location=formState.location,
-                            startDate = formState.startDate,
-                            endDate = formState.endDate,
-                            registrationLink=formState.registrationLink,
-                            registrationFee = formState.registrationFee,
-                            clubName = name,
-                            clubUid = uid,
-                            imageUrl = "temp"
-                        )
 
-                        viewModel.uploadEvent(event){
-                            success, error->
-                            if(success){
-                                Toast.makeText(context,"event uploaded successfully",Toast.LENGTH_SHORT).show()
-                            }else{
-                                Toast.makeText(context,error,Toast.LENGTH_SHORT).show()
+                        val file = viewModel.uriToFile(context, formState.posterImageUri!!)
+
+                        if (file != null) {
+                            viewModel.uploadToCloudinary(file, context) { cloudinaryImageUrl ->
+                                if (cloudinaryImageUrl != null) {
+                                    // Proceed after image is uploaded
+                                    val event = Event(
+                                        name = formState.name,
+                                        description = formState.description,
+                                        type = formState.type,
+                                        location = formState.location,
+                                        startDate = formState.startDate,
+                                        endDate = formState.endDate,
+                                        registrationLink = formState.registrationLink,
+                                        registrationFee = formState.registrationFee,
+                                        clubName = name,
+                                        clubUid = uid,
+                                        imageUrl = cloudinaryImageUrl
+                                    )
+
+                                    viewModel.uploadEvent(event) { success, error ->
+                                        if (success) {
+                                            Toast.makeText(context, "Event uploaded successfully", Toast.LENGTH_SHORT).show()
+                                        } else {
+                                            Toast.makeText(context, error ?: "Upload failed", Toast.LENGTH_SHORT).show()
+                                        }
+                                    }
+                                } else {
+                                    Toast.makeText(context, "Image upload failed", Toast.LENGTH_SHORT).show()
+                                }
                             }
+                        } else {
+                            Toast.makeText(context, "Invalid image file", Toast.LENGTH_SHORT).show()
                         }
-
                     } else {
-                        // Show errors in UI
+                        // Show validation errors
                         formState = updatedState
-                        Log.d("yash","$eventTitle, $eventDate ,$eventDescription , $location , $selectedTag $openDate $closeDate")
-                        Toast.makeText(context,"Fill all Required Fields ", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Fill all required fields", Toast.LENGTH_SHORT).show()
                     }
+
                 },
                 modifier = Modifier
                     .fillMaxWidth()
