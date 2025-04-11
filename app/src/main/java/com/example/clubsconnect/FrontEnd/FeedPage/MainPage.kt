@@ -29,12 +29,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.clubsconnect.Model.Event
 import com.example.clubsconnect.ViewModel.FeedViewModel
 
 @Composable
-fun MainFeedScreen(viewModel: FeedViewModel) {
+fun MainFeedScreen(viewModel: FeedViewModel,
+                   navController: NavController) {
     var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
@@ -42,7 +45,7 @@ fun MainFeedScreen(viewModel: FeedViewModel) {
         bottomBar = { BottomNavigation(selectedTab) { selectedTab = it } },
         content = { paddingValues ->
             EventsScreen(viewModel,
-                paddingValues)
+                paddingValues,navController)
         }
     )
 }
@@ -70,7 +73,8 @@ fun TopAppBar() {
 
 @Composable
 fun EventsScreen(viewModel: FeedViewModel,
-                 paddingValues: PaddingValues) {
+                 paddingValues: PaddingValues,
+                 navController: NavController) {
     val events = viewModel.events
     Column(
         modifier = Modifier
@@ -172,7 +176,7 @@ fun EventCard(
                     )
 
                     Button(
-                        onClick = { /* TODO: Navigate to detail */ },
+                        onClick = { },
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF1A237E)
@@ -254,6 +258,8 @@ fun BottomNavigation(selectedTab: Int, onTabSelected: (Int) -> Unit) {
 @Composable
 fun VIITPuneAppPreview() {
     MaterialTheme {
-        MainFeedScreen(viewModel())
+        MainFeedScreen(viewModel(),
+            rememberNavController()
+        )
     }
 }

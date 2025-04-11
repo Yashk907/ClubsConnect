@@ -26,24 +26,30 @@ import java.io.IOException
 
 class AddEventViewModel : ViewModel() {
     fun uploadEvent(event: Event, onsuccess:(Boolean, String?)-> Unit){
-        val eventMap = hashMapOf(
-            "name" to event.name,
-            "description" to event.description,
-            "type" to event.type,
-            "location" to event.location,
-            "startDate" to event.startDate,
-            "endDate" to event.endDate,
-            "registrationLink" to event.registrationLink,
-            "registrationFee" to event.registrationFee,
-            "clubName" to event.clubName,
-            "clubUid" to event.clubUid,
-            "imageUrl" to event.imageUrl,
-            "timestamp" to System.currentTimeMillis() // Optional for sorting
-        )
+
         viewModelScope.launch(Dispatchers.IO){
-            Firebase.firestore.collection("events")
+            val docref =Firebase.firestore.collection("events")
                 .document()
-                .set(eventMap)
+            event.copy(id=docref.id)
+
+            //mapping
+            val eventMap = hashMapOf(
+                "id" to event.id,
+                "name" to event.name,
+                "description" to event.description,
+                "type" to event.type,
+                "location" to event.location,
+                "startDate" to event.startDate,
+                "endDate" to event.endDate,
+                "registrationLink" to event.registrationLink,
+                "registrationFee" to event.registrationFee,
+                "clubName" to event.clubName,
+                "clubUid" to event.clubUid,
+                "imageUrl" to event.imageUrl,
+                "timestamp" to System.currentTimeMillis() // Optional for sorting
+            )
+
+            docref.set(eventMap)
                 .addOnSuccessListener { task ->
                     onsuccess(true,null)
                 }

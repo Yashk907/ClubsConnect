@@ -20,6 +20,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.clubsconnect.FrontEnd.AuthPage.LoginScreen
 import com.example.clubsconnect.FrontEnd.AuthPage.SignupScreen
 import com.example.clubsconnect.FrontEnd.FeedPage.MainFeedScreen
+import com.example.clubsconnect.FrontEnd.detailscreen.EventDetailsScreen
+import com.example.clubsconnect.Model.Event
+import com.example.clubsconnect.ViewModel.FeedViewModel
 import com.example.clubsconnect.ui.theme.ClubsConnectTheme
 import com.google.firebase.FirebaseApp
 
@@ -31,6 +34,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             ClubsConnectTheme {
                 val navController = rememberNavController()
+                val feedViewModel : FeedViewModel = viewModel()
                 NavHost(navController = navController, startDestination = Screen.MAINSCREEN.name){
                     composable(route = Screen.LOGIN.name){
                         LoginScreen(viewModel(),{
@@ -42,7 +46,11 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route= Screen.MAINSCREEN.name){
-                        MainFeedScreen(viewModel())
+                        MainFeedScreen(feedViewModel,navController)
+                    }
+
+                    composable(route = Screen.DETAILSCREEN.name,){
+                        EventDetailsScreen(feedViewModel, onBackPressed = {},) { }
                     }
 
                 }
@@ -55,5 +63,6 @@ enum class Screen{
     LOGIN,
     SIGNUP,
     ADDEVENT,
-    MAINSCREEN
+    MAINSCREEN,
+    DETAILSCREEN
 }
