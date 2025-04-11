@@ -3,6 +3,8 @@ package com.example.clubsconnect.FrontEnd.FeedPage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,17 +28,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.clubsconnect.Model.Event
+import com.example.clubsconnect.ViewModel.FeedViewModel
 
 @Composable
-fun VIITPuneApp() {
+fun MainFeedScreen(viewModel: FeedViewModel) {
     var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
         topBar = { TopAppBar() },
         bottomBar = { BottomNavigation(selectedTab) { selectedTab = it } },
         content = { paddingValues ->
-            EventsScreen(paddingValues)
+            EventsScreen(viewModel,
+                paddingValues)
         }
     )
 }
@@ -63,12 +69,14 @@ fun TopAppBar() {
 }
 
 @Composable
-fun EventsScreen(paddingValues: PaddingValues) {
+fun EventsScreen(viewModel: FeedViewModel,
+                 paddingValues: PaddingValues) {
+    val events = viewModel.events
     Column(
         modifier = Modifier
             .padding(paddingValues)
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
+
     ) {
         Row(
             modifier = Modifier
@@ -91,34 +99,21 @@ fun EventsScreen(paddingValues: PaddingValues) {
             }
         }
 
+        //scrolling column of events
+
+        LazyColumn(Modifier.fillMaxSize().padding(16.dp)) {
+           items(events){
+               event->
+               EventCard(event)
+           }
+        }
         // Nirman 3.0 Hackathon Card
-        EventCard(
-            title = "Nirman 3.0",
-            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore...",
-            tag = "#hackathon",
-        )
 
-        // Android Development Workshop Card
-        EventCard(
-            title = "Android Development workshop",
-            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore...",
-            tag = "#workshop",
-        )
-
-        // Third Event Card (partially visible in the image)
-        EventCard(
-            title = "Technical Session",
-            description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-            tag = "#technical",
-        )
     }
 }
 @Composable
 fun EventCard(
-    title: String,
-    description: String,
-    tag: String,
-    imageUrl: String? = null,
+    event: Event,
 ) {
     Card(
         modifier = Modifier
@@ -133,9 +128,9 @@ fun EventCard(
                 .background(MaterialTheme.colorScheme.surface)
         ) {
             // Show image if imageUrl is not null
-            if (!imageUrl.isNullOrEmpty()) {
+            if (!event.imageUrl.isNullOrEmpty()) {
                 AsyncImage(
-                    model = imageUrl,
+                    model = event.imageUrl,
                     contentDescription = "Event Poster",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -144,14 +139,13 @@ fun EventCard(
                         .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                 )
             }
-
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
                 Text(
-                    text = title,
+                    text = event.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
@@ -159,7 +153,7 @@ fun EventCard(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = description,
+                    text = event.description,
                     fontSize = 14.sp,
                     color = Color.Gray
                 )
@@ -172,7 +166,7 @@ fun EventCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = tag,
+                        text = event.type,
                         fontSize = 12.sp,
                         color = Color.Gray
                     )
@@ -260,6 +254,6 @@ fun BottomNavigation(selectedTab: Int, onTabSelected: (Int) -> Unit) {
 @Composable
 fun VIITPuneAppPreview() {
     MaterialTheme {
-        VIITPuneApp()
+        MainFeedScreen(viewModel())
     }
 }
