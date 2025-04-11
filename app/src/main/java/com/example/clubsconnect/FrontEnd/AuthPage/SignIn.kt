@@ -136,7 +136,7 @@ fun LoginScreen(viewModel: AuthViewModel,
 
                                 }
 //                            Toast.makeText(context,"LogIn successful", Toast.LENGTH_SHORT).show()
-                            navController.navigate(Screen.ADDEVENT.name)
+                            navController.navigate(Screen.PROFILESCREEN.name)
                         }else{
                             Toast.makeText(context,error, Toast.LENGTH_SHORT).show()
                         }

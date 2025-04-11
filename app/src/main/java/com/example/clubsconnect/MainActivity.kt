@@ -22,6 +22,7 @@ import com.example.clubsconnect.FrontEnd.AuthPage.LoginScreen
 import com.example.clubsconnect.FrontEnd.AuthPage.SignupScreen
 import com.example.clubsconnect.FrontEnd.ClubListStud.ClubsScreen
 import com.example.clubsconnect.FrontEnd.FeedPage.MainFeedScreen
+import com.example.clubsconnect.FrontEnd.PofileScreen.EditProfileScreen
 import com.example.clubsconnect.FrontEnd.detailscreen.EventDetailsScreen
 import com.example.clubsconnect.Model.Event
 import com.example.clubsconnect.ViewModel.AuthViewModel
@@ -40,10 +41,10 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val feedViewModel : FeedViewModel = viewModel()
                 val authViewModel : AuthViewModel =viewModel()
-                NavHost(navController = navController, startDestination = Screen.CLUBLISTSCREEN.name){
+                NavHost(navController = navController, startDestination = Screen.LOGIN.name){
                     composable(route = Screen.LOGIN.name){
                         LoginScreen(authViewModel,{
-                            navController.navigate(Screen.ADDEVENT.name)
+                            navController.navigate(Screen.PROFILESCREEN.name)
                         },navController)
                     }
                     composable(route= Screen.SIGNUP.name){
@@ -70,6 +71,10 @@ class MainActivity : ComponentActivity() {
                         ClubsScreen(viewModel(), onBackPressed = {}) { }
                     }
 
+                    composable(route= Screen.PROFILESCREEN.name){
+                        EditProfileScreen()
+                    }
+
 
                 }
             }
@@ -83,5 +88,6 @@ enum class Screen{
     ADDEVENT,
     MAINSCREEN,
     DETAILSCREEN,
+    PROFILESCREEN,
     CLUBLISTSCREEN
 }
