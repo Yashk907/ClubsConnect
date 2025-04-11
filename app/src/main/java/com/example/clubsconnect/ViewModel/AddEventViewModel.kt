@@ -30,11 +30,12 @@ class AddEventViewModel : ViewModel() {
         viewModelScope.launch(Dispatchers.IO){
             val docref =Firebase.firestore.collection("events")
                 .document()
-            event.copy(id=docref.id)
+            val eventWithID = event.copy(id=docref.id)
+            Log.d("id_check",docref.id)
 
             //mapping
             val eventMap = hashMapOf(
-                "id" to event.id,
+                "id" to eventWithID.id,
                 "name" to event.name,
                 "description" to event.description,
                 "type" to event.type,

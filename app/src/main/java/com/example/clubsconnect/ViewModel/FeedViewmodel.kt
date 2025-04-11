@@ -42,7 +42,7 @@ class FeedViewModel : ViewModel() {
                 onResult(event)
             }
             .addOnFailureListener{
-                doc->
+                    doc->
                 onResult(null)
             }
     }

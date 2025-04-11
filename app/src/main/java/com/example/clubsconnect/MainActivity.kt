@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,6 +23,7 @@ import com.example.clubsconnect.FrontEnd.AuthPage.SignupScreen
 import com.example.clubsconnect.FrontEnd.FeedPage.MainFeedScreen
 import com.example.clubsconnect.FrontEnd.detailscreen.EventDetailsScreen
 import com.example.clubsconnect.Model.Event
+import com.example.clubsconnect.ViewModel.EventDetailViewModel
 import com.example.clubsconnect.ViewModel.FeedViewModel
 import com.example.clubsconnect.ui.theme.ClubsConnectTheme
 import com.google.firebase.FirebaseApp
@@ -49,9 +51,16 @@ class MainActivity : ComponentActivity() {
                         MainFeedScreen(feedViewModel,navController)
                     }
 
-                    composable(route = Screen.DETAILSCREEN.name,){
-                        EventDetailsScreen(feedViewModel, onBackPressed = {},) { }
+                    composable(route = "${Screen.DETAILSCREEN.name}/{eventId}") { backStackEntry ->
+                        val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
+
+                        val viewModel = remember {
+                            EventDetailViewModel(eventId)
+                        }
+
+                        EventDetailsScreen(viewModel, onBackPressed = {}, onRegisterClicked = {})
                     }
+
 
                 }
             }

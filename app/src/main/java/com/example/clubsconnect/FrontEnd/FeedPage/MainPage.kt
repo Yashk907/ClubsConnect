@@ -33,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.clubsconnect.Model.Event
+import com.example.clubsconnect.Screen
 import com.example.clubsconnect.ViewModel.FeedViewModel
 
 @Composable
@@ -108,7 +109,7 @@ fun EventsScreen(viewModel: FeedViewModel,
         LazyColumn(Modifier.fillMaxSize().padding(16.dp)) {
            items(events){
                event->
-               EventCard(event)
+               EventCard(event,navController)
            }
         }
         // Nirman 3.0 Hackathon Card
@@ -118,6 +119,7 @@ fun EventsScreen(viewModel: FeedViewModel,
 @Composable
 fun EventCard(
     event: Event,
+    navController: NavController
 ) {
     Card(
         modifier = Modifier
@@ -176,7 +178,7 @@ fun EventCard(
                     )
 
                     Button(
-                        onClick = { },
+                        onClick = {navController.navigate("${Screen.DETAILSCREEN.name}/${event.id}")},
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF1A237E)
@@ -194,27 +196,6 @@ fun EventCard(
     }
 }
 
-@Composable
-fun TopicBubble(
-    title: String,
-    color: Color,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .padding(4.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(color)
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-    ) {
-        Text(
-            text = title,
-            color = Color.White,
-            fontSize = 10.sp,
-            fontWeight = FontWeight.Medium
-        )
-    }
-}
 
 @Composable
 fun BottomNavigation(selectedTab: Int, onTabSelected: (Int) -> Unit) {
