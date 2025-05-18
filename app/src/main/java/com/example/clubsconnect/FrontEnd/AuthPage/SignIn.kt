@@ -122,16 +122,16 @@ fun LoginScreen(viewModel: AuthViewModel,
                                 .get()
                                 .addOnSuccessListener { doc ->
                                     if(doc!=null && doc.exists()){
-                                        val name = doc.getString("username") ?: "Unknown"
-                                        val userType = doc.getString("role") ?: "Student" // if needed
-
-                                        // Save UID and name to SharedPreferences
-                                        saveUserToPref(context, uid, name, userType)
-
-                                        Toast.makeText(context, "LogIn successful", Toast.LENGTH_SHORT).show()
+//                                        val name = doc.getString("username") ?: "Unknown"
+//                                        val userType = doc.getString("role") ?: "Student" // if needed
+//
+//                                        // Save UID and name to SharedPreferences
+//                                        saveUserToPref(context, uid, name, userType)
+//
+//                                        Toast.makeText(context, "LogIn successful", Toast.LENGTH_SHORT).show()
 
                                     } else {
-                                        Toast.makeText(context, "User data not found", Toast.LENGTH_SHORT).show()
+//                                        Toast.makeText(context, "User data not found", Toast.LENGTH_SHORT).show()
                                     }
 
                                 }

@@ -19,11 +19,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.clubsconnect.InternalFun.getUserInfoFromPrefs
+import com.example.clubsconnect.InternalFun.getUserInfoFromFireStore
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
@@ -35,7 +34,7 @@ fun EditProfileScreen() {
     val context = LocalContext.current
       val currentUser = FirebaseAuth.getInstance().currentUser
    
-    var name = remember { mutableStateOf(getUserInfoFromPrefs(context).second)}
+    var name = remember { mutableStateOf(getUserInfoFromFireStore().second)}
 
     val firestore = Firebase.firestore
   
@@ -143,7 +142,7 @@ fun EditProfileScreen() {
 
         Button(
             onClick = {
-                if(name.value!=getUserInfoFromPrefs(context).second){
+                if(name.value!=getUserInfoFromFireStore(context).second){
                 currentUser?.uid?.let { uid ->
 //                    val updatedData = mapOf("username" to name)
 

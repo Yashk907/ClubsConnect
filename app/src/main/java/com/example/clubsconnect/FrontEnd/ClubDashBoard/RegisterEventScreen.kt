@@ -1,14 +1,11 @@
 import android.app.DatePickerDialog
-import android.content.Context
 import android.net.Uri
 import android.util.Log
-import android.widget.DatePicker
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -19,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.LocationOn
@@ -40,10 +36,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.clubsconnect.FrontEnd.ClubDashBoard.EventFormState
 import com.example.clubsconnect.FrontEnd.ClubDashBoard.validateForm
-import com.example.clubsconnect.InternalFun.getUserInfoFromPrefs
+import com.example.clubsconnect.InternalFun.getUserInfoFromFireStore
 import com.example.clubsconnect.Model.Event
 import com.example.clubsconnect.ViewModel.AddEventViewModel
-import kotlinx.coroutines.withContext
 import java.util.Calendar
 import kotlin.String
 
@@ -520,7 +515,16 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
                             updatedState.endDateError
                         ).all { it == null }
                     ) {
-                        val (uid, name, type) = getUserInfoFromPrefs(context)
+                        val (uid, name, type)=
+                        getUserInfoFromFireStore(
+                            onResult = {(uid,name,type)->
+                                Log.e("User ","user is fetched $name")
+                            },
+                            onError = {
+                                Toast.makeText(context,"Failed to retrieve user data",Toast.LENGTH_SHORT).show()
+                                Log.e("User ","failed to fetch user")
+                            }
+                        )
 
                         val file = viewModel.uriToFile(context, formState.posterImageUri!!)
 
@@ -537,8 +541,8 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
                                         endDate = formState.endDate,
                                         registrationLink = formState.registrationLink,
                                         registrationFee = formState.registrationFee,
-                                        clubName = name,
-                                        clubUid = uid,
+                                        clubName = name?:"Unknown",
+                                        clubUid = uid?:"Missing",
                                         imageUrl = cloudinaryImageUrl
                                     )
 

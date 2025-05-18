@@ -10,31 +10,22 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.clubsconnect.InternalFun.getUserInfoFromPrefs
-import com.example.clubsconnect.Model.Event
+import com.example.clubsconnect.InternalFun.getUserInfoFromFireStore
 import com.example.clubsconnect.ViewModel.EventDetailViewModel
-import com.example.clubsconnect.ViewModel.FeedViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -226,9 +217,19 @@ fun EventDetailsScreen(
                 // Register Button
                 Button(
                     onClick = { viewModel.rsvpToEventIfNotAlready(eventId = event.id,
-                        userId = getUserInfoFromPrefs(context = context).first,
-                        name = getUserInfoFromPrefs(context = context).second,
-                        email = getUserInfoFromPrefs(context=context).third
+                        userId = getUserInfoFromFireStore(onError = {
+                            Toast.makeText(context,"Problem in retrieving userid",Toast.LENGTH_SHORT).show()
+                        }).first?:"MISSING",
+                        name = getUserInfoFromFireStore(
+                            onError = {
+                                Toast.makeText(context,"Problem in retrieving name ",Toast.LENGTH_SHORT).show()
+                            }
+                        ).second?:"UNKNOWN",
+                        email = getUserInfoFromFireStore(
+                            onError = {
+                                Toast.makeText(context,"Problem in retrieving email",Toast.LENGTH_SHORT).show()
+                            }
+                        ).third?:"ERROR"
                     ){
                         success,error->
                         if(success){

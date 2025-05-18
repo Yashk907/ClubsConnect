@@ -5,7 +5,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.clubsconnect.InternalFun.getUserInfoFromPrefs
 import com.example.clubsconnect.Model.Event
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore

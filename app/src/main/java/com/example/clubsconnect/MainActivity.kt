@@ -2,20 +2,13 @@ package com.example.clubsconnect
 
 import AddEventScreen
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.Navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -25,9 +18,8 @@ import com.example.clubsconnect.FrontEnd.ClubListStud.ClubsScreen
 import com.example.clubsconnect.FrontEnd.FeedPage.MainFeedScreen
 import com.example.clubsconnect.FrontEnd.PofileScreen.EditProfileScreen
 import com.example.clubsconnect.FrontEnd.detailscreen.EventDetailsScreen
-import com.example.clubsconnect.InternalFun.getUserInfoFromPrefs
+import com.example.clubsconnect.InternalFun.getUserInfoFromFireStore
 import com.example.clubsconnect.MembersScreen.ClubMembersScreen
-import com.example.clubsconnect.Model.Event
 import com.example.clubsconnect.ViewModel.AuthViewModel
 import com.example.clubsconnect.ViewModel.EventDetailViewModel
 import com.example.clubsconnect.ViewModel.FeedViewModel
@@ -44,7 +36,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val feedViewModel : FeedViewModel = viewModel()
                 val authViewModel : AuthViewModel =viewModel()
-                NavHost(navController = navController, startDestination = Screen.LOGIN.name){
+                NavHost(navController = navController, startDestination = Screen.ADDEVENT.name){
                     composable(route = Screen.LOGIN.name){
                         LoginScreen(authViewModel,{
                             navController.navigate(Screen.PROFILESCREEN.name)
@@ -78,8 +70,13 @@ class MainActivity : ComponentActivity() {
                         EditProfileScreen()
                     }
                     composable(route= Screen.CLUBMEMBERSSCREEN.name){
-                        val uid = getUserInfoFromPrefs(context = LocalContext.current).first
-                        ClubMembersScreen(clubId = uid){}
+                        val context = LocalContext.current
+                        val uid = getUserInfoFromFireStore(
+                            onError = {
+                                Toast.makeText(context,"Problem in retrieving uid",Toast.LENGTH_SHORT).show()
+                            }
+                        ).first
+                        ClubMembersScreen(clubId = uid!!){}
                     }
 
 
