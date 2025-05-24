@@ -28,6 +28,7 @@ class FeedViewModel : ViewModel() {
                     val event = doc.toObject(Event::class.java)
                     _events.add(event)
                 }
+                Log.e("FeedViewModel", "Fetched ${_events.size} events")
             }
             .addOnFailureListener {
                 Log.e("FeedViewModel", "Failed to fetch events: ${it.message}")

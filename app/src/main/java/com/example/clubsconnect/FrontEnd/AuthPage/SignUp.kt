@@ -5,9 +5,12 @@ package com.example.clubsconnect.FrontEnd.AuthPage
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,13 +26,23 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import com.example.clubsconnect.Screen
 import com.example.clubsconnect.ViewModel.AuthViewModel
+import com.google.firebase.auth.FirebaseAuth
+import getUserInfoFromFireStore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignupScreen(viewModel: AuthViewModel ) {
+fun SignupScreen(viewModel: AuthViewModel ,
+                 navController : NavController,
+                 movetoSignIn : ()->Unit) {
     val context = LocalContext.current
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -37,6 +50,13 @@ fun SignupScreen(viewModel: AuthViewModel ) {
     var username by remember { mutableStateOf("") }
     var prnNo by remember { mutableStateOf("") }
     var selectedOption by remember { mutableStateOf("Student/Club") }
+    val focusManager = LocalFocusManager.current
+    val focusRequester0 = remember { FocusRequester() }
+    val focusRequester1 = remember { FocusRequester() }
+    val focusRequester2 = remember { FocusRequester() }
+    val focusRequester3 = remember { FocusRequester() }
+    val focusRequester4 = remember { FocusRequester() }
+    val focusRequesterButton = remember { FocusRequester() }
 
 
     Box(
@@ -86,7 +106,14 @@ fun SignupScreen(viewModel: AuthViewModel ) {
                 value = username,
                 onValueChange = { username = it },
                 label = { Text("Username") },
-                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusRequester1.requestFocus()
+                    }
+                ),
+                modifier = Modifier.fillMaxWidth()
+                    .focusRequester(focusRequester0),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
@@ -101,7 +128,14 @@ fun SignupScreen(viewModel: AuthViewModel ) {
                 value = prnNo,
                 onValueChange = { prnNo = it },
                 label = { Text("PRN No.") },
-                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusRequester2.requestFocus()
+                    }
+                ),
+                modifier = Modifier.fillMaxWidth()
+                    .focusRequester(focusRequester1),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.colors(
                     unfocusedContainerColor = Color.Transparent,
@@ -117,7 +151,12 @@ fun SignupScreen(viewModel: AuthViewModel ) {
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = {
+                    focusRequester3.requestFocus()
+                }),
+                modifier = Modifier.fillMaxWidth()
+                    .focusRequester(focusRequester2),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
@@ -133,7 +172,12 @@ fun SignupScreen(viewModel: AuthViewModel ) {
                 onValueChange = { password = it },
                 label = { Text("Password") },
                 visualTransformation = PasswordVisualTransformation(),
-                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = {
+                    focusRequester4.requestFocus()
+                }),
+                modifier = Modifier.fillMaxWidth()
+                    .focusRequester(focusRequester3),
                 shape = RoundedCornerShape(24.dp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
@@ -159,8 +203,13 @@ fun SignupScreen(viewModel: AuthViewModel ) {
                             contentDescription = "Dropdown Arrow"
                         )
                     },
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = {
+                        focusRequesterButton.requestFocus()
+                    }),
                     modifier = Modifier
                         .fillMaxWidth()
+                        .focusRequester(focusRequester4)
                         .menuAnchor(),
                     shape = RoundedCornerShape(24.dp),
                     colors = TextFieldDefaults.colors(
@@ -195,10 +244,32 @@ fun SignupScreen(viewModel: AuthViewModel ) {
             // Sign Up Button
             Button(
                 onClick = {
+                    focusManager.clearFocus()
                     viewModel.SignUp(email,password,selectedOption,username,prnNo){
                         success,error->
                         if(success){
                             Toast.makeText(context,"Sign Up success", Toast.LENGTH_SHORT).show()
+                            val user = FirebaseAuth.getInstance().currentUser
+                            if (user != null) {
+                                getUserInfoFromFireStore(onResult = {
+                                        (_, _, type), _ ->
+                                    when(type){
+                                        "Student" -> navController.navigate(Screen.MAINSCREEN.name){
+                                            popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
+                                        }
+                                        "Club" -> navController.navigate(Screen.CLUBMAINSCREEN.name){
+                                            popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
+                                        }
+                                        else -> navController.navigate(Screen.LOGIN.name){
+                                            popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
+                                        }
+                                    }
+                                })
+                            } else {
+                                navController.navigate(Screen.LOGIN.name) {
+                                    popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
+                                }
+                            }
                         }else{
                             Toast.makeText(context,"$error", Toast.LENGTH_SHORT).show()
                         }
@@ -206,6 +277,7 @@ fun SignupScreen(viewModel: AuthViewModel ) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .focusRequester(focusRequesterButton)
                     .height(50.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -226,7 +298,8 @@ fun SignupScreen(viewModel: AuthViewModel ) {
             // Login Text
             Text(
                 text = "Already have an account? Login",
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth()
+                    .clickable { movetoSignIn()},
                 textAlign = TextAlign.Center,
                 color = Color.DarkGray
             )
@@ -234,10 +307,10 @@ fun SignupScreen(viewModel: AuthViewModel ) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun SignupScreenPreview() {
-    MaterialTheme {
-        SignupScreen(viewModel())
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun SignupScreenPreview() {
+//    MaterialTheme {
+//        SignupScreen(viewModel())
+//    }
+//}

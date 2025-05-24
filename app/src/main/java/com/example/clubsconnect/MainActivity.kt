@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -14,17 +15,20 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.clubsconnect.FrontEnd.AuthPage.LoginScreen
 import com.example.clubsconnect.FrontEnd.AuthPage.SignupScreen
+import com.example.clubsconnect.FrontEnd.ClubDashBoard.ClubConnectMainScreen
 import com.example.clubsconnect.FrontEnd.ClubListStud.ClubsScreen
 import com.example.clubsconnect.FrontEnd.FeedPage.MainFeedScreen
 import com.example.clubsconnect.FrontEnd.PofileScreen.EditProfileScreen
+import com.example.clubsconnect.FrontEnd.SplashScreen.SplashScreen
 import com.example.clubsconnect.FrontEnd.detailscreen.EventDetailsScreen
-import com.example.clubsconnect.InternalFun.getUserInfoFromFireStore
 import com.example.clubsconnect.MembersScreen.ClubMembersScreen
 import com.example.clubsconnect.ViewModel.AuthViewModel
 import com.example.clubsconnect.ViewModel.EventDetailViewModel
 import com.example.clubsconnect.ViewModel.FeedViewModel
+import com.example.clubsconnect.ViewModel.clubMainScreenViewmodel
 import com.example.clubsconnect.ui.theme.ClubsConnectTheme
 import com.google.firebase.FirebaseApp
+import getUserInfoFromFireStore
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,23 +38,28 @@ class MainActivity : ComponentActivity() {
         setContent {
             ClubsConnectTheme {
                 val navController = rememberNavController()
-                val feedViewModel : FeedViewModel = viewModel()
                 val authViewModel : AuthViewModel =viewModel()
-                NavHost(navController = navController, startDestination = Screen.ADDEVENT.name){
+                NavHost(navController = navController, startDestination = Screen.SPLASHSCREEN.name){
+                    composable(route = Screen.SPLASHSCREEN.name) {
+                        SplashScreen(navController)
+                    }
                     composable(route = Screen.LOGIN.name){
-                        LoginScreen(authViewModel,{
-                            navController.navigate(Screen.PROFILESCREEN.name)
-                        },navController)
+                        LoginScreen(authViewModel,navController)
                     }
                     composable(route= Screen.SIGNUP.name){
-                        SignupScreen(authViewModel)
+                        SignupScreen(authViewModel,navController){
+                            navController.navigate(Screen.LOGIN.name)
+                        }
+                    }
+                    composable(route= Screen.CLUBMAINSCREEN.name){
+                        ClubConnectMainScreen(viewModel())
                     }
                     composable(route = Screen.ADDEVENT.name){
                         AddEventScreen(viewModel())
                     }
 
                     composable(route= Screen.MAINSCREEN.name){
-                        MainFeedScreen(feedViewModel,navController)
+                        MainFeedScreen(viewModel(),navController)
                     }
 
                     composable(route = "${Screen.DETAILSCREEN.name}/{eventId}") { backStackEntry ->
@@ -60,7 +69,7 @@ class MainActivity : ComponentActivity() {
                             EventDetailViewModel(eventId)
                         }
 
-                        EventDetailsScreen(viewModel, onBackPressed = {}, onRegisterClicked = {})
+                        EventDetailsScreen(viewModel, onBackPressed = {navController})
                     }
                     composable(route= Screen.CLUBLISTSCREEN.name){
                         ClubsScreen(viewModel(), onBackPressed = {}) { }
@@ -71,15 +80,23 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(route= Screen.CLUBMEMBERSSCREEN.name){
                         val context = LocalContext.current
-                        val uid = getUserInfoFromFireStore(
+                        val uid  = remember { mutableStateOf<String?>(null) }
+
+                        getUserInfoFromFireStore(
+                            onResult = {
+                                (uidd,name,type),email->
+                                uid.value=uidd
+                            },
                             onError = {
-                                Toast.makeText(context,"Problem in retrieving uid",Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context,"Problem in retriving uid",Toast.LENGTH_SHORT).show()
                             }
-                        ).first
-                        ClubMembersScreen(clubId = uid!!){}
+                        )
+
+                        if(uid.value!=null){
+                            ClubMembersScreen(uid.value!!) { }
+                        }
+
                     }
-
-
                 }
             }
         }
@@ -87,8 +104,10 @@ class MainActivity : ComponentActivity() {
 }
 
 enum class Screen{
+    SPLASHSCREEN,
     LOGIN,
     SIGNUP,
+    CLUBMAINSCREEN,
     ADDEVENT,
     MAINSCREEN,
     DETAILSCREEN,

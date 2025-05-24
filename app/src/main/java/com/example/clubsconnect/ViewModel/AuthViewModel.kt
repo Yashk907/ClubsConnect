@@ -1,8 +1,8 @@
 package com.example.clubsconnect.ViewModel
 
+import android.util.Log
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
-import com.example.clubsconnect.InternalFun.saveUserToPref
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -78,6 +78,8 @@ class AuthViewModel : ViewModel() {
                     email=email,
                     role = role,
                     userName=userName)
+                Log.d("Firestore", "Saving user to /users/$uid")
+
             }
             .addOnFailureListener {
                 onresult(false,"data of user Not stored!!")

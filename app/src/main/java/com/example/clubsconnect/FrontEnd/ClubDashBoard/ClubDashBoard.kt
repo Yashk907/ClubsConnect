@@ -27,7 +27,6 @@ import com.example.clubsconnect.R
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
 @Composable
 fun MyClubScreen() {
     Box(

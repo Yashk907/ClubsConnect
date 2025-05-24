@@ -36,7 +36,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.clubsconnect.FrontEnd.ClubDashBoard.EventFormState
 import com.example.clubsconnect.FrontEnd.ClubDashBoard.validateForm
-import com.example.clubsconnect.InternalFun.getUserInfoFromFireStore
 import com.example.clubsconnect.Model.Event
 import com.example.clubsconnect.ViewModel.AddEventViewModel
 import java.util.Calendar
@@ -55,6 +54,9 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
     var eventDate by remember { mutableStateOf("") }
     var closeDate by remember { mutableStateOf("") }
     var openDate by remember { mutableStateOf("") }
+
+    var clubname by remember { mutableStateOf("") }
+    var clubid by remember { mutableStateOf("") }
 
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -110,6 +112,7 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
     var selectedTag by remember { mutableStateOf("") }
     var location by remember{mutableStateOf("")}
     var RegistrationFee by remember{mutableStateOf("")}
+    var isLoading by remember { mutableStateOf(false) }
 
     var cloudinaryImageLink by remember { mutableStateOf("") }
 
@@ -493,6 +496,7 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
             // Add Event Button
             Button(
                 onClick =  {
+                    isLoading =true
                     formState = EventFormState(
                         name = eventTitle,
                         description = eventDescription,
@@ -515,63 +519,63 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
                             updatedState.endDateError
                         ).all { it == null }
                     ) {
-                        val (uid, name, type)=
-                        getUserInfoFromFireStore(
-                            onResult = {(uid,name,type)->
-                                Log.e("User ","user is fetched $name")
-                            },
-                            onError = {
-                                Toast.makeText(context,"Failed to retrieve user data",Toast.LENGTH_SHORT).show()
-                                Log.e("User ","failed to fetch user")
-                            }
-                        )
+                        getUserInfoFromFireStore(onResult = {
+                            (uid,name,type),email ->
+                                clubname = name?:"MISSING"
+                                clubid = uid?:"MISSING"
 
-                        val file = viewModel.uriToFile(context, formState.posterImageUri!!)
 
-                        if (file != null) {
-                            viewModel.uploadToCloudinary(file, context) { cloudinaryImageUrl ->
-                                if (cloudinaryImageUrl != null) {
-                                    // Proceed after image is uploaded
-                                    val event = Event(
-                                        name = formState.name,
-                                        description = formState.description,
-                                        type = formState.type,
-                                        location = formState.location,
-                                        startDate = formState.startDate,
-                                        endDate = formState.endDate,
-                                        registrationLink = formState.registrationLink,
-                                        registrationFee = formState.registrationFee,
-                                        clubName = name?:"Unknown",
-                                        clubUid = uid?:"Missing",
-                                        imageUrl = cloudinaryImageUrl
-                                    )
+                            val file = viewModel.uriToFile(context, formState.posterImageUri!!)
 
-                                    viewModel.uploadEvent(event) { success, error ->
-                                        if (success) {
-                                            Toast.makeText(context, "Event uploaded successfully", Toast.LENGTH_SHORT).show()
-                                            eventTitle = ""
-                                            eventDescription = ""
-                                            registrationLink = ""
-                                            selectedTag = ""
-                                            location = ""
-                                            RegistrationFee = ""
-                                            eventDate = ""
-                                            openDate = ""
-                                            closeDate = ""
-                                            posterUri = null
-                                            cloudinaryImageLink = ""
-                                            formState = EventFormState()
-                                        } else {
-                                            Toast.makeText(context, error ?: "Upload failed", Toast.LENGTH_SHORT).show()
+                            if (file != null) {
+                                viewModel.uploadToCloudinary(file, context) { cloudinaryImageUrl ->
+                                    if (cloudinaryImageUrl != null) {
+                                        // Proceed after image is uploaded
+                                        val event = Event(
+                                            name = formState.name,
+                                            description = formState.description,
+                                            type = formState.type,
+                                            location = formState.location,
+                                            startDate = formState.startDate,
+                                            endDate = formState.endDate,
+                                            registrationLink = formState.registrationLink,
+                                            registrationFee = formState.registrationFee,
+                                            clubName = clubname?:"Unknown",
+                                            clubUid = clubid?:"Missing",
+                                            imageUrl = cloudinaryImageUrl
+                                        )
+
+                                        viewModel.uploadEvent(event) { success, error ->
+                                            if (success) {
+                                                Toast.makeText(context, "Event uploaded successfully", Toast.LENGTH_SHORT).show()
+                                                eventTitle = ""
+                                                eventDescription = ""
+                                                registrationLink = ""
+                                                selectedTag = ""
+                                                location = ""
+                                                RegistrationFee = ""
+                                                eventDate = ""
+                                                openDate = ""
+                                                closeDate = ""
+                                                posterUri = null
+                                                cloudinaryImageLink = ""
+                                                formState = EventFormState()
+                                                isLoading=false
+                                            } else {
+                                                Toast.makeText(context, error ?: "Upload failed", Toast.LENGTH_SHORT).show()
+                                            }
                                         }
+                                    } else {
+                                        Toast.makeText(context, "Image upload failed", Toast.LENGTH_SHORT).show()
                                     }
-                                } else {
-                                    Toast.makeText(context, "Image upload failed", Toast.LENGTH_SHORT).show()
                                 }
+                            } else {
+                                Toast.makeText(context, "Invalid image file", Toast.LENGTH_SHORT).show()
                             }
-                        } else {
-                            Toast.makeText(context, "Invalid image file", Toast.LENGTH_SHORT).show()
-                        }
+                        },
+                            onError = {
+                                Toast.makeText(context,"Failed to get club details ", Toast.LENGTH_SHORT).show()
+                            })
                     } else {
                         // Show validation errors
                         formState = updatedState
@@ -589,11 +593,16 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
                     containerColor = Color(0xFF0A2647)
                 )
             ) {
-                Text(
-                    text = "Add Event",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
+                if(isLoading){
+                    CircularProgressIndicator()
+                }else{
+                    Text(
+                        text = "Add Event",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+
             }
 
             Spacer(modifier = Modifier.height(32.dp))

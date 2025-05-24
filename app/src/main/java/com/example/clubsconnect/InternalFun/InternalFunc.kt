@@ -1,30 +1,18 @@
-package com.example.clubsconnect.InternalFun
-
-import android.content.Context
-import androidx.compose.runtime.mutableStateOf
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-internal fun saveUserToPref(context: Context,uid: String, name: String, type: String){
-    val prefs = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-    prefs.edit().apply {
-        putString("uid", uid)
-        putString("name", name)
-        putString("type", type)
-        apply()
-    }
-}
-
-internal fun getUserInfoFromFireStore( onResult: (Triple<String?, String?, String?>) -> Unit={},
-                                       onError: (Exception) -> Unit={}) : Triple<String?,String?,String?>{
+internal fun getUserInfoFromFireStore(
+    onResult: (Triple<String?, String?, String?>,String?) -> Unit,
+    onError: (Exception) -> Unit = {}
+) {
     val currentUser = FirebaseAuth.getInstance().currentUser
     val uid = currentUser?.uid
-    val name = currentUser?.displayName
-    var type = mutableStateOf<String?>("")
 
     if (uid == null) {
-        onResult(Triple(null, null, null))
-        return Triple(null,null,null)
+        Log.e("getuserValues", "UID is null")
+        onResult(Triple(null, null, null),null)
+        return
     }
 
     FirebaseFirestore.getInstance()
@@ -32,11 +20,14 @@ internal fun getUserInfoFromFireStore( onResult: (Triple<String?, String?, Strin
         .document(uid)
         .get()
         .addOnSuccessListener { document ->
-             type.value = document.getString("type")
-            onResult(Triple(uid, name, type.value))
+            val type = document.getString("role") ?: "MISSING"
+            val name = document.getString("username") ?: "MISSING"
+            val email = document.getString("email")
+            Log.d("getuserValues", "Fetched name: $name, type: $type")
+            onResult(Triple(uid, name, type),email)
         }
         .addOnFailureListener { exception ->
+            Log.e("getuserValues", "Error getting user type: ${exception.message}")
             onError(exception)
         }
-    return Triple(uid,name,type.value)
 }

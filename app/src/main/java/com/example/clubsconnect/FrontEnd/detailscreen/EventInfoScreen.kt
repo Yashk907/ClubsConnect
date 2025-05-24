@@ -14,6 +14,10 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.example.clubsconnect.InternalFun.getUserInfoFromFireStore
 import com.example.clubsconnect.ViewModel.EventDetailViewModel
+import getUserInfoFromFireStore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,11 +38,13 @@ fun EventDetailsScreen(
 //    eventId : String,
 //    viewModel: FeedViewModel,
     viewModel: EventDetailViewModel,
-    onBackPressed: () -> Unit,
-    onRegisterClicked: () -> Unit
+    onBackPressed: () -> Unit
 ) {
     val context : Context = LocalContext.current
     val event = viewModel.eventState
+    var userId by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var username by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -216,28 +222,28 @@ fun EventDetailsScreen(
 
                 // Register Button
                 Button(
-                    onClick = { viewModel.rsvpToEventIfNotAlready(eventId = event.id,
-                        userId = getUserInfoFromFireStore(onError = {
-                            Toast.makeText(context,"Problem in retrieving userid",Toast.LENGTH_SHORT).show()
-                        }).first?:"MISSING",
-                        name = getUserInfoFromFireStore(
-                            onError = {
-                                Toast.makeText(context,"Problem in retrieving name ",Toast.LENGTH_SHORT).show()
+                    onClick = {
+                        getUserInfoFromFireStore(
+                            onResult = {
+                                    (uid,name,role),emaill->
+                                userId=uid?:"Missing"
+                                username = name?:"Missing"
+                                email = emaill?:"Missing"
+                                viewModel.rsvpToEventIfNotAlready(eventId = event.id,
+                                    userId = userId,
+                                    name = username,
+                                    email = email
+                                ){
+                                        success,error->
+                                    if(success){
+                                        Toast.makeText(context,"You have successfully RSVPed", Toast.LENGTH_SHORT).show()
+                                    }else{
+                                        Toast.makeText(context,error,Toast.LENGTH_SHORT).show()
+                                    }
+                                }
                             }
-                        ).second?:"UNKNOWN",
-                        email = getUserInfoFromFireStore(
-                            onError = {
-                                Toast.makeText(context,"Problem in retrieving email",Toast.LENGTH_SHORT).show()
-                            }
-                        ).third?:"ERROR"
-                    ){
-                        success,error->
-                        if(success){
-                            Toast.makeText(context,"You have successfully RSVPed", Toast.LENGTH_SHORT).show()
-                        }else{
-                            Toast.makeText(context,error,Toast.LENGTH_SHORT).show()
-                        }
-                    } },
+                        )
+                        },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),

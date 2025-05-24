@@ -22,10 +22,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.clubsconnect.InternalFun.getUserInfoFromFireStore
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
+import getUserInfoFromFireStore
 
 @Preview(showSystemUi = true)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +34,11 @@ fun EditProfileScreen() {
     val context = LocalContext.current
       val currentUser = FirebaseAuth.getInstance().currentUser
    
-    var name = remember { mutableStateOf(getUserInfoFromFireStore().second)}
+    var name = remember { mutableStateOf("")}
+    getUserInfoFromFireStore(onResult = {
+        (uid,usrname,type),email->
+        name.value=usrname?:"MISSING"
+    })
 
     val firestore = Firebase.firestore
   
@@ -123,7 +127,7 @@ fun EditProfileScreen() {
             )
 
             OutlinedTextField(
-                value = name.value,
+                value = name.value?:"UNKNOWN",
                 onValueChange = { name.value= it },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -142,28 +146,37 @@ fun EditProfileScreen() {
 
         Button(
             onClick = {
-                if(name.value!=getUserInfoFromFireStore(context).second){
-                currentUser?.uid?.let { uid ->
+                getUserInfoFromFireStore(
+                    onResult = {
+                            (uid,usrname,type),email->
+                        if(name.value!==usrname){
+                            currentUser?.uid?.let { uid ->
 //                    val updatedData = mapOf("username" to name)
 
-                    firestore.collection("users")
-                        .document(uid)
-                        .update("username",name.value)
-                        .addOnSuccessListener {
-                            firestore.collection("students")
-                                .document(uid)
-                                .update("username",name.value)
-                                .addOnSuccessListener {
-                                    Toast.makeText(context, "Profile updated", Toast.LENGTH_SHORT).show()
-                                }
-                                .addOnFailureListener{
-                                      Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show()
-                                }
-                        }
-                        .addOnFailureListener {
-                            Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show()
-                        }
-                } }
+                                firestore.collection("users")
+                                    .document(uid)
+                                    .update("username",name.value)
+                                    .addOnSuccessListener {
+                                        firestore.collection("students")
+                                            .document(uid)
+                                            .update("username",name.value)
+                                            .addOnSuccessListener {
+                                                Toast.makeText(context, "Profile updated", Toast.LENGTH_SHORT).show()
+                                            }
+                                            .addOnFailureListener{
+                                                Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show()
+                                            }
+                                    }
+                                    .addOnFailureListener {
+                                        Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show()
+                                    }
+                            } }
+                    },
+                    onError = {
+                        Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show()
+                    }
+                )
+
                 if(imagerUri!=null){
                       currentUser?.uid?.let { uid ->
                           val updatedData = mapOf("imageUri" to imagerUri)
