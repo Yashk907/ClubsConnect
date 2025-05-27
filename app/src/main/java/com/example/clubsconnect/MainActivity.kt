@@ -1,11 +1,13 @@
 package com.example.clubsconnect
 
 import AddEventScreen
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
@@ -13,24 +15,26 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.clubsconnect.FrontEnd.AuthPage.LoginScreen
-import com.example.clubsconnect.FrontEnd.AuthPage.SignupScreen
-import com.example.clubsconnect.FrontEnd.ClubDashBoard.ClubConnectMainScreen
-import com.example.clubsconnect.FrontEnd.ClubListStud.ClubsScreen
-import com.example.clubsconnect.FrontEnd.FeedPage.MainFeedScreen
-import com.example.clubsconnect.FrontEnd.PofileScreen.EditProfileScreen
-import com.example.clubsconnect.FrontEnd.SplashScreen.SplashScreen
-import com.example.clubsconnect.FrontEnd.detailscreen.EventDetailsScreen
+import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.LoginScreen
+import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.SignupScreen
+import com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard.ClubConnectMainScreen
+import com.example.clubsconnect.FrontEnd.clubside.eventDetailScreen.ClubSideEventDetailScreen
+import com.example.clubsconnect.FrontEnd.clubside.eventDetailScreen.EventInfoSection
+import com.example.clubsconnect.FrontEnd.userside.ClubListStud.ClubsScreen
+import com.example.clubsconnect.FrontEnd.userside.FeedPage.MainFeedScreen
+import com.example.clubsconnect.FrontEnd.userside.PofileScreen.EditProfileScreen
+import com.example.clubsconnect.FrontEnd.commonscreen.SplashScreen.SplashScreen
+import com.example.clubsconnect.FrontEnd.userside.detailscreen.EventDetailsScreen
 import com.example.clubsconnect.MembersScreen.ClubMembersScreen
 import com.example.clubsconnect.ViewModel.AuthViewModel
+import com.example.clubsconnect.ViewModel.ClubEventDetailViewModel
 import com.example.clubsconnect.ViewModel.EventDetailViewModel
-import com.example.clubsconnect.ViewModel.FeedViewModel
-import com.example.clubsconnect.ViewModel.clubMainScreenViewmodel
 import com.example.clubsconnect.ui.theme.ClubsConnectTheme
 import com.google.firebase.FirebaseApp
 import getUserInfoFromFireStore
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         FirebaseApp.initializeApp(this)
         super.onCreate(savedInstanceState)
@@ -51,8 +55,20 @@ class MainActivity : ComponentActivity() {
                             navController.navigate(Screen.LOGIN.name)
                         }
                     }
+
+                    //clubside
                     composable(route= Screen.CLUBMAINSCREEN.name){
-                        ClubConnectMainScreen(viewModel())
+                        ClubConnectMainScreen(viewModel(),navController)
+                    }
+                    composable(route ="${Screen.CLUBEVENTDETAILSCREEN.name}/{clubeventId}"){
+                        backStackEntry->
+                        val eventId = backStackEntry.arguments?.getString("clubeventId") ?: ""
+                        val viewModel = remember {
+                           ClubEventDetailViewModel(eventId)
+                        }
+                        ClubSideEventDetailScreen(viewModel){
+                            navController.navigateUp()
+                        }
                     }
                     composable(route = Screen.ADDEVENT.name){
                         AddEventScreen(viewModel())
@@ -108,6 +124,7 @@ enum class Screen{
     LOGIN,
     SIGNUP,
     CLUBMAINSCREEN,
+    CLUBEVENTDETAILSCREEN,
     ADDEVENT,
     MAINSCREEN,
     DETAILSCREEN,

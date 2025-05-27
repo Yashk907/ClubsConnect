@@ -50,6 +50,11 @@ dependencies {
     implementation(libs.adapter.rxjava2) // Optional if using RxJava
     implementation(libs.kotlinx.coroutines.android) // Required for coroutines support
 
+
+    //qr code
+    implementation ("com.google.zxing:core:3.5.1")
+    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
+
     // Coil for Jetpack Compose
     implementation(libs.coil.compose)
 

@@ -1,4 +1,4 @@
-package com.example.clubsconnect.FrontEnd.ClubDashBoard
+package com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard
 
 import android.net.Uri
 

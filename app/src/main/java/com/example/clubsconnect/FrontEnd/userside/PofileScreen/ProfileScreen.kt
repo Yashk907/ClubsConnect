@@ -1,5 +1,6 @@
-package com.example.clubsconnect.FrontEnd.PofileScreen
+package com.example.clubsconnect.FrontEnd.userside.PofileScreen
 
+import android.R
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -60,7 +61,7 @@ fun EditProfileScreen() {
             title = {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = android.R.drawable.ic_menu_close_clear_cancel),
+                        painter = painterResource(id = R.drawable.ic_menu_close_clear_cancel),
                         contentDescription = "Back",
                         modifier = Modifier.size(24.dp)
                     )
@@ -93,7 +94,7 @@ fun EditProfileScreen() {
                 ) {
                     // Profile picture placeholder or actual image
                     Image(
-                        painter = painterResource(id = android.R.drawable.ic_menu_camera),
+                        painter = painterResource(id = R.drawable.ic_menu_camera),
                         contentDescription = "Profile Picture",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()

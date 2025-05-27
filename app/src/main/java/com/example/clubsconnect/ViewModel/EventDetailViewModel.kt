@@ -48,7 +48,8 @@ class EventDetailViewModel (eventId : String): ViewModel() {
                     val data = mapOf(
                         "name" to name,
                         "email" to email,
-                        "timestamp" to System.currentTimeMillis()
+                        "timestamp" to System.currentTimeMillis(),
+                        "present" to false
                     )
                     userDocRef.set(data)
                         .addOnSuccessListener {

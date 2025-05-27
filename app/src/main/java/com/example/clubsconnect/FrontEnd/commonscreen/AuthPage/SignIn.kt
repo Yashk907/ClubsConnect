@@ -1,4 +1,4 @@
-package com.example.clubsconnect.FrontEnd.AuthPage
+package com.example.clubsconnect.FrontEnd.commonscreen.AuthPage
 
 import android.widget.Toast
 import androidx.compose.foundation.background

@@ -1,4 +1,4 @@
-package com.example.clubsconnect.FrontEnd.detailscreen
+package com.example.clubsconnect.FrontEnd.userside.detailscreen
 
 import android.content.Context
 import android.widget.Toast

@@ -1,6 +1,5 @@
 import android.app.DatePickerDialog
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -34,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.example.clubsconnect.FrontEnd.ClubDashBoard.EventFormState
-import com.example.clubsconnect.FrontEnd.ClubDashBoard.validateForm
+import com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard.EventFormState
+import com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard.validateForm
 import com.example.clubsconnect.Model.Event
 import com.example.clubsconnect.ViewModel.AddEventViewModel
 import java.util.Calendar

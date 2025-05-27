@@ -1,4 +1,4 @@
-package com.example.clubsconnect.FrontEnd.AuthPage
+package com.example.clubsconnect.FrontEnd.commonscreen.AuthPage
 
 
 

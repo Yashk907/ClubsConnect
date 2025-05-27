@@ -1,9 +1,7 @@
-package com.example.clubsconnect.FrontEnd.ClubDashBoard
+package com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard
 
-import android.icu.text.DateFormat
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,27 +21,29 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
-import com.example.clubsconnect.Model.Event
+import com.example.clubsconnect.Screen
+import com.example.clubsconnect.ViewModel.clubEvent
 import com.example.clubsconnect.ViewModel.clubMainScreenViewmodel
 import com.example.clubsconnect.ViewModel.clubState
-import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
-import java.util.*
-import kotlin.contracts.contract
+import java.nio.file.WatchEvent
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ClubConnectMainScreen(viewModel : clubMainScreenViewmodel) {
+fun ClubConnectMainScreen(viewModel : clubMainScreenViewmodel,
+                          navController: NavController) {
     var selectedTab by remember { mutableIntStateOf(0) }
     val events by viewModel.eventList
     val upcomingEvents by viewModel.upcomingEventsList
     val previousEvents by viewModel.previousEventsList
     val clubInfo by viewModel.clubInfo
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchEvents()
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -69,51 +69,59 @@ fun ClubConnectMainScreen(viewModel : clubMainScreenViewmodel) {
             )
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            // Header Section with Logo and Club Name
-            item {
-                HeaderSection(clubInfo)
-            }
-
-            // Upcoming Events Section
-            item {
-                StickyHeader(title = "Upcoming Events")
-            }
-            if (upcomingEvents.isEmpty()){
-                item{
-                    Text(text = "No Upcoming Events",
-                        modifier = Modifier.padding(horizontal = 25.dp, vertical = 4.dp))
-                }
-            }else{
-                items(upcomingEvents) { event ->
-                    EventCard(event = event, isUpcoming = true)
+        if(viewModel.state.value.isLoading){
+            CircularProgressIndicator(modifier = Modifier.fillMaxSize()
+                .padding(150.dp)
+            )
+        }else{
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                // Header Section with Logo and Club Name
+                item {
+                    HeaderSection(clubInfo)
                 }
 
-            }
-
-            // Previous Events Section
-
-            item {
-                StickyHeader(title = "Previous Events")
-            }
-            if (previousEvents.isEmpty()){
-                item{
-                    Text(text = "No Previous Events",
-                        modifier = Modifier.padding(horizontal = 25.dp, vertical = 4.dp))
+                // Upcoming Events Section
+                item {
+                    StickyHeader(title = "Upcoming Events")
                 }
-            }else{
-                items(previousEvents) { event ->
-                    EventCard(event = event, isUpcoming = false)
+                if (upcomingEvents.isEmpty()){
+                    item{
+                        Text(text = "No Upcoming Events",
+                            modifier = Modifier.padding(horizontal = 25.dp, vertical = 4.dp))
+                    }
+                }else{
+                    items(upcomingEvents) { event ->
+                        EventCard(navController,event = event, isUpcoming = true)
+                    }
+
                 }
+
+                // Previous Events Section
+
+                item {
+                    StickyHeader(title = "Previous Events")
+                }
+                if (previousEvents.isEmpty()){
+                    item{
+                        Text(text = "No Previous Events",
+                            modifier = Modifier.padding(horizontal = 25.dp, vertical = 4.dp))
+                    }
+                }else{
+                    items(previousEvents) { event ->
+                        EventCard(navController,event = event, isUpcoming = false)
+                    }
+                }
+
             }
 
         }
-    }
+        }
+
 }
 
 @Composable
@@ -181,13 +189,15 @@ fun StickyHeader(title: String) {
 }
 
 @Composable
-fun EventCard(event: Event, isUpcoming: Boolean) {
+fun EventCard(navController: NavController,event: clubEvent, isUpcoming: Boolean) {
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp)
-            .clickable { /* Handle event click */ },
+            .clickable {
+                navController.navigate("${Screen.CLUBEVENTDETAILSCREEN}/${event.id}")
+            },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = if (isUpcoming)
@@ -304,7 +314,7 @@ fun EventCard(event: Event, isUpcoming: Boolean) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "${15} attendees",
+                    text = "${event.attendes} attendees",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Medium
