@@ -34,9 +34,8 @@ import java.nio.file.WatchEvent
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClubConnectMainScreen(viewModel : clubMainScreenViewmodel,
-                          navController: NavController) {
-    var selectedTab by remember { mutableIntStateOf(0) }
-    val events by viewModel.eventList
+                          navController: NavController,
+                          modifier: Modifier) {
     val upcomingEvents by viewModel.upcomingEventsList
     val previousEvents by viewModel.previousEventsList
     val clubInfo by viewModel.clubInfo
@@ -44,40 +43,16 @@ fun ClubConnectMainScreen(viewModel : clubMainScreenViewmodel,
     LaunchedEffect(Unit) {
         viewModel.fetchEvents()
     }
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { },
-                navigationIcon = {
-                    IconButton(onClick = { /* Handle menu click */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Menu",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
-            )
-        },
-        bottomBar = {
-            BottomNavigationBar(
-                selectedTab = selectedTab,
-                onTabSelected = { selectedTab = it }
-            )
-        }
-    ) { paddingValues ->
+
         if(viewModel.state.value.isLoading){
             CircularProgressIndicator(modifier = Modifier.fillMaxSize()
                 .padding(150.dp)
             )
         }else{
             LazyColumn(
-                modifier = Modifier
+                modifier = modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    ,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 // Header Section with Logo and Club Name
@@ -120,7 +95,7 @@ fun ClubConnectMainScreen(viewModel : clubMainScreenViewmodel,
             }
 
         }
-        }
+
 
 }
 
@@ -323,53 +298,4 @@ fun EventCard(navController: NavController,event: clubEvent, isUpcoming: Boolean
         }
     }
 }
-
-@Composable
-fun BottomNavigationBar(
-    selectedTab: Int,
-    onTabSelected: (Int) -> Unit
-) {
-    val items = listOf(
-        BottomNavItem("Home", Icons.Default.Home, 0),
-        BottomNavItem("Members", Icons.Default.Group, 1),
-        BottomNavItem("Events", Icons.Default.Event, 2)
-    )
-
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.onSurface
-    ) {
-        items.forEach { item ->
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        imageVector = item.icon,
-                        contentDescription = item.title
-                    )
-                },
-                label = {
-                    Text(
-                        text = item.title,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                },
-                selected = selectedTab == item.index,
-                onClick = { onTabSelected(item.index) },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            )
-        }
-    }
-}
-
-data class BottomNavItem(
-    val title: String,
-    val icon: ImageVector,
-    val index: Int
-)
 

@@ -73,8 +73,6 @@ class clubMainScreenViewmodel : ViewModel() {
     private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     init {
         fetchClubInfo()
-
-
     }
 
     private fun fetchClubInfo(){

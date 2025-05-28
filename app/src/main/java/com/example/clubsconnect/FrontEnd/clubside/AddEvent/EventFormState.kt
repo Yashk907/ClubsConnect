@@ -1,4 +1,4 @@
-package com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard
+package com.example.clubsconnect.FrontEnd.clubside.AddEvent
 
 import android.net.Uri
 

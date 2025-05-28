@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,12 +27,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.clubsconnect.Screen
 import com.example.clubsconnect.ViewModel.ClubEventDetailViewModel
 import com.example.clubsconnect.ViewModel.RegisteredAttendes
 import com.example.clubsconnect.ViewModel.clubEvent
@@ -43,6 +48,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClubSideEventDetailScreen(
+    navController: NavController,
     viewModel: ClubEventDetailViewModel,
     onBackClick: () -> Unit = {}
 ) {
@@ -50,7 +56,7 @@ fun ClubSideEventDetailScreen(
     val registeredMembers = viewModel.registeredAttendes
     val attendanceList = viewModel.presentAttendes
     val qrcodebitmap by viewModel.QrCodeBitmap
-
+    val visibleDeleteDialog = remember { mutableStateOf(false) }
     var selectedTab by remember { mutableIntStateOf(0) }
 
     Scaffold(
@@ -82,7 +88,10 @@ fun ClubSideEventDetailScreen(
                         Icon(imageVector = Icons.Default.Edit,
                             contentDescription = "Edit")
                     }
-                    IconButton(onClick = {viewModel.deleteEvent(event.id)},
+                    IconButton(onClick = {
+                        visibleDeleteDialog.value=true
+
+                    },
                         modifier = Modifier.clickable(onClick = onBackClick)
                         ) {
                         Icon(imageVector = Icons.Default.Delete,
@@ -95,68 +104,119 @@ fun ClubSideEventDetailScreen(
             )
         }
     ) { paddingValues ->
-        if(viewModel.state.value.loading){
-            CircularProgressIndicator(modifier = Modifier.fillMaxSize()
-                .padding(150.dp))
-        }else{
-            LazyColumn(
-                modifier = Modifier
+        Box(modifier = Modifier.padding(paddingValues)) {
+            if(viewModel.state.value.loading){
+                CircularProgressIndicator(modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Event Banner/Image Section
-                item {
-                    EventBannerSection(event)
-                }
-
-                // Event Info Section
-                item {
-                    EventInfoSection(event)
-                }
-
-                // Event Details Section
-                item {
-                    EventDetailsSection(event)
-                }
-
-                // QR Code Section
-                item {
-                    if(qrcodebitmap!=null){
-                        QRCodeSection(event,viewModel,qrcodebitmap)
-                    }else{
-                        CircularProgressIndicator(modifier = Modifier.fillMaxSize()
-                            .padding(150.dp))
+                    .padding(150.dp))
+            }else{
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Event Banner/Image Section
+                    item {
+                        EventBannerSection(event)
                     }
 
-                }
+                    // Event Info Section
+                    item {
+                        EventInfoSection(event)
+                    }
 
-                // Toggle Buttons for Lists
-                item {
-                    MemberListToggle(
-                        selectedTab = selectedTab,
-                        onTabSelected = { selectedTab = it },
-                        registeredCount = registeredMembers.size,
-                        attendanceCount = attendanceList.size
-                    )
-                }
+                    // Event Details Section
+                    item {
+                        EventDetailsSection(event)
+                    }
 
-                // Member Lists
-                val currentList = if (selectedTab == 0) registeredMembers else attendanceList
-                items(currentList) { member ->
-                    MemberCard(
-                        member = member,
-                        showAttendanceStatus = selectedTab == 0
-                    )
-                }
+                    // QR Code Section
+                    item {
+                        if(qrcodebitmap!=null){
+                            QRCodeSection(event,viewModel,qrcodebitmap)
+                        }else{
+                            CircularProgressIndicator(modifier = Modifier
+                                .fillMaxSize()
+                                .padding(150.dp))
+                        }
 
-                // Bottom spacing
-                item {
-                    Spacer(modifier = Modifier.height(16.dp))
+                    }
+
+                    // Toggle Buttons for Lists
+                    item {
+                        MemberListToggle(
+                            selectedTab = selectedTab,
+                            onTabSelected = { selectedTab = it },
+                            registeredCount = registeredMembers.size,
+                            attendanceCount = attendanceList.size
+                        )
+                    }
+
+                    // Member Lists
+                    val currentList = if (selectedTab == 0) registeredMembers else attendanceList
+                    items(currentList) { member ->
+                        MemberCard(
+                            member = member,
+                            showAttendanceStatus = selectedTab == 0
+                        )
+                    }
+
+                    // Bottom spacing
+                    item {
+                        Spacer(modifier = Modifier.height(16.dp))
+                    }
                 }
             }
+
+            //deleteDialogbox
+            if (visibleDeleteDialog.value) {
+                // Optional: dim the background slightly
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.4f))
+                )
+
+                BasicAlertDialog(
+                    onDismissRequest = { visibleDeleteDialog.value = false }
+                ) {
+                    Surface(
+                        shape = MaterialTheme.shapes.large,
+                        tonalElevation = AlertDialogDefaults.TonalElevation,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .wrapContentSize()
+                    ) {
+                        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 25.dp)) {
+                            Text(text = "Are you sure you want to cancel?")
+                            Spacer(modifier = Modifier.height(15.dp))
+                            Box(modifier = Modifier.fillMaxWidth()) {
+                                TextButton(onClick = {
+                                    visibleDeleteDialog.value = false
+                                },
+                                    modifier = Modifier.align(Alignment.CenterStart)
+                                        .padding(start = 0.dp)) {
+                                    Text("Cancel")
+                                }
+                                TextButton(onClick = {
+                                    // Confirm delete logic
+                                    viewModel.deleteEvent(event.id)
+                                    navController.navigate(Screen.CLUBMAINSCREEN.name)
+                                },
+                                    modifier = Modifier.align(Alignment.CenterEnd)
+                                        .padding(end = 30.dp)) {
+                                    Text("Confirm")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         }
         }
+
 
 
 
@@ -345,7 +405,8 @@ fun QRCodeSection(event: clubEvent,
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier
+                .padding(20.dp)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -646,4 +707,5 @@ fun InfoChip(
         }
     }
 }
+
 

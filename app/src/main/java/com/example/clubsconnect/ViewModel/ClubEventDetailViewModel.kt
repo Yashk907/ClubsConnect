@@ -137,25 +137,26 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
         return file
     }
 
-    fun deleteEvent(eventId: String ){
-        db.collection("events")
-            .document(eventId)
-            .delete()
-            .addOnSuccessListener {
-                db.collection("event_registraions")
-                    .document(eventId)
-                    .delete()
-                    .addOnSuccessListener {
-                        Log.d("ClubEventDetailViewModel", "Event and associated registrations deleted successfully")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.d("ClubEventDetailViewModel", "Error deleting event registrations", e)
-                    }
-                Log.d("ClubEventDetailViewModel", "Event deleted successfully")
-            }
-            .addOnFailureListener { e ->
-                Log.d("ClubEventDetailViewModel", "Error deleting event", e)
-            }
+  fun deleteEvent(eventId: String){
+
+         db.collection("events")
+             .document(eventId)
+             .delete()
+             .addOnSuccessListener {
+                 db.collection("event_registraions")
+                     .document(eventId)
+                     .delete()
+                     .addOnSuccessListener {
+                         Log.d("ClubEventDetailViewModel", "Event and associated registrations deleted successfully")
+                     }
+                     .addOnFailureListener { e ->
+                         Log.d("ClubEventDetailViewModel", "Error deleting event registrations", e)
+                     }
+                 Log.d("ClubEventDetailViewModel", "Event deleted successfully")
+             }
+             .addOnFailureListener { e ->
+                 Log.d("ClubEventDetailViewModel", "Error deleting event", e)
+             }
 
     }
 }

@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard.EventFormState
-import com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard.validateForm
+import com.example.clubsconnect.FrontEnd.clubside.AddEvent.EventFormState
+import com.example.clubsconnect.FrontEnd.clubside.AddEvent.validateForm
 import com.example.clubsconnect.Model.Event
 import com.example.clubsconnect.ViewModel.AddEventViewModel
 import java.util.Calendar
@@ -42,7 +42,8 @@ import kotlin.String
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddEventScreen(viewModel: AddEventViewModel) {
+fun AddEventScreen(viewModel: AddEventViewModel,
+                   modifier: Modifier) {
 //    val context = LocalContext.current
 //    val datePickerDialog = remember {
 //        DatePickerDialog(context, { _, year, month, dayOfMonth ->
@@ -133,23 +134,11 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
     }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(Color(0xFFF5F7FA))
             .verticalScroll(rememberScrollState())
     ) {
-        // Top bar
-        TopAppBar(
-            title = { Text("Add Event", fontWeight = FontWeight.Medium) },
-            navigationIcon = {
-                IconButton(onClick = { /* Handle back navigation */ }) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.White
-            ),
-        )
 
         // Content
         Column(
@@ -561,24 +550,29 @@ fun AddEventScreen(viewModel: AddEventViewModel) {
                                                 formState = EventFormState()
                                                 isLoading=false
                                             } else {
+                                                isLoading=false
                                                 Toast.makeText(context, error ?: "Upload failed", Toast.LENGTH_SHORT).show()
                                             }
                                         }
                                     } else {
+                                        isLoading=false
                                         Toast.makeText(context, "Image upload failed", Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             } else {
+                                isLoading=false
                                 Toast.makeText(context, "Invalid image file", Toast.LENGTH_SHORT).show()
                             }
                         },
                             onError = {
+                                isLoading=false
                                 Toast.makeText(context,"Failed to get club details ", Toast.LENGTH_SHORT).show()
                             })
                     } else {
                         // Show validation errors
                         formState = updatedState
                         Toast.makeText(context, "Fill all required fields", Toast.LENGTH_SHORT).show()
+                        isLoading=false
                     }
 
 
@@ -636,12 +630,12 @@ fun EventTagChip(
         )
     }
 }
-
-@Preview(showBackground = true)
-@Composable
-fun AddEventScreenPreview() {
-    MaterialTheme {
-        AddEventScreen(viewModel())
-    }
-}
-
+//
+//@Preview(showBackground = true)
+//@Composable
+//fun AddEventScreenPreview() {
+//    MaterialTheme {
+//        AddEventScreen(viewModel())
+//    }
+//}
+//

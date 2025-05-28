@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.LoginScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.SignupScreen
 import com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard.ClubConnectMainScreen
+import com.example.clubsconnect.FrontEnd.clubside.clubSideScreens.ClubSideControlScreen
 import com.example.clubsconnect.FrontEnd.clubside.eventDetailScreen.ClubSideEventDetailScreen
 import com.example.clubsconnect.FrontEnd.clubside.eventDetailScreen.EventInfoSection
 import com.example.clubsconnect.FrontEnd.userside.ClubListStud.ClubsScreen
@@ -55,10 +56,8 @@ class MainActivity : ComponentActivity() {
                             navController.navigate(Screen.LOGIN.name)
                         }
                     }
-
-                    //clubside
-                    composable(route= Screen.CLUBMAINSCREEN.name){
-                        ClubConnectMainScreen(viewModel(),navController)
+                    composable(route = Screen.CLUBMAINSCREEN.name) {
+                        ClubSideControlScreen(navController)
                     }
                     composable(route ="${Screen.CLUBEVENTDETAILSCREEN.name}/{clubeventId}"){
                         backStackEntry->
@@ -66,13 +65,11 @@ class MainActivity : ComponentActivity() {
                         val viewModel = remember {
                            ClubEventDetailViewModel(eventId)
                         }
-                        ClubSideEventDetailScreen(viewModel){
+                        ClubSideEventDetailScreen(navController,viewModel){
                             navController.navigateUp()
                         }
                     }
-                    composable(route = Screen.ADDEVENT.name){
-                        AddEventScreen(viewModel())
-                    }
+
 
                     composable(route= Screen.MAINSCREEN.name){
                         MainFeedScreen(viewModel(),navController)
