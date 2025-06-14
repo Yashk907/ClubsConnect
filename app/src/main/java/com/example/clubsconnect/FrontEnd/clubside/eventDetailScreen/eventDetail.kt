@@ -84,7 +84,7 @@ fun ClubSideEventDetailScreen(
                             contentDescription = "Share"
                         )
                     }
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {navController.navigate("${Screen.CLUBEDITEVENT.name}/${event.id}")}) {
                         Icon(imageVector = Icons.Default.Edit,
                             contentDescription = "Edit")
                     }

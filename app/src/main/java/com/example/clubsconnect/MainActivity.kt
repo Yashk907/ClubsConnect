@@ -1,6 +1,7 @@
 package com.example.clubsconnect
 
 import AddEventScreen
+import EditEventScreen
 import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
@@ -12,9 +13,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.LoginScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.SignupScreen
 import com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard.ClubConnectMainScreen
@@ -75,7 +78,7 @@ class MainActivity : ComponentActivity() {
                         MainFeedScreen(viewModel(),navController)
                     }
 
-                    composable(route = "${Screen.DETAILSCREEN.name}/{eventId}") { backStackEntry ->
+                    composable(route ="${Screen.DETAILSCREEN.name}/{eventId}") { backStackEntry ->
                         val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
 
                         val viewModel = remember {
@@ -83,6 +86,12 @@ class MainActivity : ComponentActivity() {
                         }
 
                         EventDetailsScreen(viewModel, onBackPressed = {navController})
+                    }
+                    composable(route ="${Screen.CLUBEDITEVENT.name}/{eventID}",
+                        arguments = listOf(navArgument("eventID") { type = NavType.StringType })) {
+                        backstackEntry->
+                        val eventId = backstackEntry.arguments?.getString("eventID") ?: ""
+                        EditEventScreen(eventId = eventId, navController, viewModel())
                     }
                     composable(route= Screen.CLUBLISTSCREEN.name){
                         ClubsScreen(viewModel(), onBackPressed = {}) { }
@@ -122,6 +131,7 @@ enum class Screen{
     SIGNUP,
     CLUBMAINSCREEN,
     CLUBEVENTDETAILSCREEN,
+    CLUBEDITEVENT,
     ADDEVENT,
     MAINSCREEN,
     DETAILSCREEN,

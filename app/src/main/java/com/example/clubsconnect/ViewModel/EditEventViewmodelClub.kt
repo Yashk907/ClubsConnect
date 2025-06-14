@@ -12,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.Dispatcher
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -24,42 +23,37 @@ import org.json.JSONObject
 import java.io.File
 import java.io.IOException
 
-class AddEventViewModel : ViewModel() {
-    fun uploadEvent(event: Event, onsuccess:(Boolean, String?)-> Unit){
+class EditEventViewmodelClub : ViewModel() {
+    fun updateEvent(event: Event,eventId : String, onsuccess: (Boolean, String?) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val docref = Firebase.firestore.collection("events").document(eventId)
 
-        viewModelScope.launch(Dispatchers.IO){
-            val docref =Firebase.firestore.collection("events")
-                .document()
-            val eventWithID = event.copy(id=docref.id)
-            Log.d("id_check",docref.id)
-
-            //mapping
             val eventMap = hashMapOf(
-                "id" to eventWithID.id,
                 "name" to event.name,
                 "description" to event.description,
                 "type" to event.type,
                 "location" to event.location,
-                "startDate" to event.startDate,
                 "eventDate" to event.eventDate,
+                "startDate" to event.startDate,
                 "endDate" to event.endDate,
                 "registrationLink" to event.registrationLink,
                 "registrationFee" to event.registrationFee,
                 "clubName" to event.clubName,
                 "clubUid" to event.clubUid,
                 "imageUrl" to event.imageUrl,
-                "timestamp" to System.currentTimeMillis() // Optional for sorting
+                "timestamp" to System.currentTimeMillis()
             )
 
-            docref.set(eventMap)
-                .addOnSuccessListener { task ->
-                    onsuccess(true,null)
+            docref.update(eventMap as Map<String, Any>)
+                .addOnSuccessListener {
+                    onsuccess(true, null)
                 }
-                .addOnFailureListener { task ->
-                    onsuccess(false,task.message)
+                .addOnFailureListener { e ->
+                    onsuccess(false, e.message)
                 }
         }
     }
+
     fun uploadToCloudinary(file: File, context: Context, onUploaded: (String?) -> Unit) {
         val requestBody = MultipartBody.Builder()
             .setType(MultipartBody.FORM)
@@ -112,6 +106,5 @@ class AddEventViewModel : ViewModel() {
         }
         return file
     }
-
 
 }

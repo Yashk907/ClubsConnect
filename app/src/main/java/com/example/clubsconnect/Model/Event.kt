@@ -8,6 +8,7 @@ data class Event(
     val type: String = "",
     val location: String = "",
     val startDate: String = "",
+    val eventDate : String = "",
     val endDate: String = "",
     val registrationLink: String = "",
     val registrationFee: String = "",

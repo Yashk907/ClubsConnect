@@ -7,6 +7,7 @@ data class EventFormState(
     val description: String = "",
     val type: String = "",
     val location: String = "",
+    val eventDate: String = "",
     val startDate: String = "",
     val endDate: String = "",
     val registrationLink: String = "",
@@ -20,7 +21,8 @@ data class EventFormState(
     val typeError: String? = null,
     val locationError: String? = null,
     val startDateError: String? = null,
-    val endDateError: String? = null
+    val endDateError: String? = null,
+    val eventDateError : String? = null
 )
 
 internal fun validateForm(state: EventFormState): EventFormState {
@@ -30,6 +32,7 @@ internal fun validateForm(state: EventFormState): EventFormState {
         typeError = if (state.type.isBlank()) "Event type is required" else null,
         locationError = if (state.location.isBlank()) "Location is required" else null,
         startDateError = if (state.startDate.isBlank()) "Start date is required" else null,
-        endDateError = if (state.endDate.isBlank()) "End date is required" else null
+        endDateError = if (state.endDate.isBlank()) "End date is required" else null,
+        eventDateError = if (state.eventDate.isBlank()) "Event date is required" else null
     )
 }

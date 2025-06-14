@@ -491,6 +491,7 @@ fun AddEventScreen(viewModel: AddEventViewModel,
                         type = selectedTag,
                         location = location,
                         startDate = openDate,
+                        eventDate = eventDate,
                         endDate = closeDate,
                         registrationLink = registrationLink,
                         registrationFee = RegistrationFee,
@@ -524,6 +525,7 @@ fun AddEventScreen(viewModel: AddEventViewModel,
                                             description = formState.description,
                                             type = formState.type,
                                             location = formState.location,
+                                            eventDate = formState.eventDate,
                                             startDate = formState.startDate,
                                             endDate = formState.endDate,
                                             registrationLink = formState.registrationLink,
@@ -630,12 +632,3 @@ fun EventTagChip(
         )
     }
 }
-//
-//@Preview(showBackground = true)
-//@Composable
-//fun AddEventScreenPreview() {
-//    MaterialTheme {
-//        AddEventScreen(viewModel())
-//    }
-//}
-//
