@@ -1,6 +1,5 @@
 package com.example.clubsconnect
 
-import AddEventScreen
 import EditEventScreen
 import android.os.Build
 import android.os.Bundle
@@ -20,16 +19,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.LoginScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.SignupScreen
-import com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard.ClubConnectMainScreen
 import com.example.clubsconnect.FrontEnd.clubside.clubSideScreens.ClubSideControlScreen
 import com.example.clubsconnect.FrontEnd.clubside.eventDetailScreen.ClubSideEventDetailScreen
-import com.example.clubsconnect.FrontEnd.clubside.eventDetailScreen.EventInfoSection
+import com.example.clubsconnect.FrontEnd.clubside.membersScreen.AddMembersScreen
+import com.example.clubsconnect.FrontEnd.clubside.membersScreen.ManageMembersScreen
 import com.example.clubsconnect.FrontEnd.userside.ClubListStud.ClubsScreen
 import com.example.clubsconnect.FrontEnd.userside.FeedPage.MainFeedScreen
 import com.example.clubsconnect.FrontEnd.userside.PofileScreen.EditProfileScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.SplashScreen.SplashScreen
 import com.example.clubsconnect.FrontEnd.userside.detailscreen.EventDetailsScreen
-import com.example.clubsconnect.MembersScreen.ClubMembersScreen
+import com.example.clubsconnect.FrontEnd.userside.MembersScreen.ClubMembersScreenUser
 import com.example.clubsconnect.ViewModel.AuthViewModel
 import com.example.clubsconnect.ViewModel.ClubEventDetailViewModel
 import com.example.clubsconnect.ViewModel.EventDetailViewModel
@@ -48,6 +47,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val authViewModel : AuthViewModel =viewModel()
                 NavHost(navController = navController, startDestination = Screen.SPLASHSCREEN.name){
+                    //common screens
                     composable(route = Screen.SPLASHSCREEN.name) {
                         SplashScreen(navController)
                     }
@@ -59,10 +59,12 @@ class MainActivity : ComponentActivity() {
                             navController.navigate(Screen.LOGIN.name)
                         }
                     }
-                    composable(route = Screen.CLUBMAINSCREEN.name) {
+
+                    //clubs screens
+                    composable(route = Screen.CLUBMAINSCREENCLUB.name) {
                         ClubSideControlScreen(navController)
                     }
-                    composable(route ="${Screen.CLUBEVENTDETAILSCREEN.name}/{clubeventId}"){
+                    composable(route ="${Screen.CLUBEVENTDETAILSCREENCLUB.name}/{clubeventId}"){
                         backStackEntry->
                         val eventId = backStackEntry.arguments?.getString("clubeventId") ?: ""
                         val viewModel = remember {
@@ -73,12 +75,32 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
+                    composable(route ="${Screen.CLUBEDITEVENTCLUB.name}/{eventID}",
+                        arguments = listOf(navArgument("eventID") { type = NavType.StringType })) {
+                            backstackEntry->
+                        val eventId = backstackEntry.arguments?.getString("eventID") ?: ""
+                        EditEventScreen(eventId = eventId, navController, viewModel())
+                    }
 
-                    composable(route= Screen.MAINSCREEN.name){
+                    composable(route = Screen.CLUBMANAGEMEMBERS.name){
+                        ManageMembersScreen(viewModel()){
+                            navController.navigateUp()
+                        }
+                    }
+                    composable (route = Screen.CLUBADDMEMBERSCREEN.name){
+                        AddMembersScreen(viewModel()) {
+                            navController.navigateUp()
+                        }
+                    }
+
+
+
+                    //users screens
+                    composable(route= Screen.MAINSCREENUSER.name){
                         MainFeedScreen(viewModel(),navController)
                     }
 
-                    composable(route ="${Screen.DETAILSCREEN.name}/{eventId}") { backStackEntry ->
+                    composable(route ="${Screen.DETAILSCREENUSER.name}/{eventId}") { backStackEntry ->
                         val eventId = backStackEntry.arguments?.getString("eventId") ?: ""
 
                         val viewModel = remember {
@@ -87,20 +109,15 @@ class MainActivity : ComponentActivity() {
 
                         EventDetailsScreen(viewModel, onBackPressed = {navController})
                     }
-                    composable(route ="${Screen.CLUBEDITEVENT.name}/{eventID}",
-                        arguments = listOf(navArgument("eventID") { type = NavType.StringType })) {
-                        backstackEntry->
-                        val eventId = backstackEntry.arguments?.getString("eventID") ?: ""
-                        EditEventScreen(eventId = eventId, navController, viewModel())
-                    }
-                    composable(route= Screen.CLUBLISTSCREEN.name){
+
+                    composable(route= Screen.CLUBLISTSCREENUSER.name){
                         ClubsScreen(viewModel(), onBackPressed = {}) { }
                     }
 
-                    composable(route= Screen.PROFILESCREEN.name){
+                    composable(route= Screen.PROFILESCREENUSER.name){
                         EditProfileScreen()
                     }
-                    composable(route= Screen.CLUBMEMBERSSCREEN.name){
+                    composable(route= Screen.CLUBMEMBERSSCREENUSER.name){
                         val context = LocalContext.current
                         val uid  = remember { mutableStateOf<String?>(null) }
 
@@ -115,7 +132,7 @@ class MainActivity : ComponentActivity() {
                         )
 
                         if(uid.value!=null){
-                            ClubMembersScreen(uid.value!!) { }
+                            ClubMembersScreenUser(uid.value!!) { }
                         }
 
                     }
@@ -129,13 +146,17 @@ enum class Screen{
     SPLASHSCREEN,
     LOGIN,
     SIGNUP,
-    CLUBMAINSCREEN,
-    CLUBEVENTDETAILSCREEN,
-    CLUBEDITEVENT,
-    ADDEVENT,
-    MAINSCREEN,
-    DETAILSCREEN,
-    PROFILESCREEN,
-    CLUBMEMBERSSCREEN,
-    CLUBLISTSCREEN
+    //clubs
+    CLUBMAINSCREENCLUB,
+    CLUBEVENTDETAILSCREENCLUB,
+    CLUBEDITEVENTCLUB,
+    ADDEVENTCLUB,
+    CLUBMANAGEMEMBERS,
+    CLUBADDMEMBERSCREEN,
+    //user
+    MAINSCREENUSER,
+    DETAILSCREENUSER,
+    PROFILESCREENUSER,
+    CLUBMEMBERSSCREENUSER,
+    CLUBLISTSCREENUSER
 }

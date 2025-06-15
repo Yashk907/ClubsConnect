@@ -30,12 +30,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard.ClubConnectMainScreen
+import com.example.clubsconnect.FrontEnd.clubside.membersScreen.AddMembersScreen
+import com.example.clubsconnect.FrontEnd.clubside.membersScreen.ManageMembersScreenClub
 import com.example.clubsconnect.ViewModel.clubMainScreenViewmodel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -43,7 +46,7 @@ import com.example.clubsconnect.ViewModel.clubMainScreenViewmodel
 @Composable
 fun ClubSideControlScreen(navController: NavController,
                           modifier: Modifier = Modifier) {
-    var selectedTab by remember { mutableIntStateOf(0) }
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val titlelist = listOf("Home","Add Event","Members")
 
     Scaffold(
@@ -78,7 +81,8 @@ fun ClubSideControlScreen(navController: NavController,
                 navController = navController,
                 modifier = modifier.padding(paddingValues))
             1 -> AddEventScreen(viewModel(),modifier= Modifier.padding(paddingValues))
-            2 -> {}
+            2 -> ManageMembersScreenClub(navController,
+                modifier= Modifier.padding(paddingValues))
         }
 
     }

@@ -1,7 +1,8 @@
-package com.example.clubsconnect.MembersScreen
+package com.example.clubsconnect.FrontEnd.userside.MembersScreen
 
 
 
+import android.R
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -33,7 +34,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 
 @Composable
-fun ClubMembersScreen(
+fun ClubMembersScreenUser(
     clubId: String,
     onNavigateBack: () -> Unit
 ) {
@@ -86,7 +87,7 @@ fun ClubMembersScreen(
                         )
                     }else{
                         Image(
-                            painter = painterResource(id = android.R.drawable.ic_menu_gallery),
+                            painter = painterResource(id = R.drawable.ic_menu_gallery),
                             contentDescription = "Club Logo",
                             modifier = Modifier
                                 .fillMaxSize()

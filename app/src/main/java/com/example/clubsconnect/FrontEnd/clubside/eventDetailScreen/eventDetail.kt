@@ -84,7 +84,7 @@ fun ClubSideEventDetailScreen(
                             contentDescription = "Share"
                         )
                     }
-                    IconButton(onClick = {navController.navigate("${Screen.CLUBEDITEVENT.name}/${event.id}")}) {
+                    IconButton(onClick = {navController.navigate("${Screen.CLUBEDITEVENTCLUB.name}/${event.id}")}) {
                         Icon(imageVector = Icons.Default.Edit,
                             contentDescription = "Edit")
                     }
@@ -202,7 +202,7 @@ fun ClubSideEventDetailScreen(
                                 TextButton(onClick = {
                                     // Confirm delete logic
                                     viewModel.deleteEvent(event.id)
-                                    navController.navigate(Screen.CLUBMAINSCREEN.name)
+                                    navController.navigate(Screen.CLUBMAINSCREENCLUB.name)
                                 },
                                     modifier = Modifier.align(Alignment.CenterEnd)
                                         .padding(end = 30.dp)) {

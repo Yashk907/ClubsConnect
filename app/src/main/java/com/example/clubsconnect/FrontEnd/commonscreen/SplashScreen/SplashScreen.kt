@@ -38,10 +38,10 @@ fun SplashScreen(navController: NavController) {
             getUserInfoFromFireStore(onResult = {
                 (_, _, type), _ ->
                 when(type){
-                    "Student" -> navController.navigate(Screen.MAINSCREEN.name){
+                    "Student" -> navController.navigate(Screen.MAINSCREENUSER.name){
                         popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
                     }
-                    "Club" -> navController.navigate(Screen.CLUBMAINSCREEN.name){
+                    "Club" -> navController.navigate(Screen.CLUBMAINSCREENCLUB.name){
                         popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
                     }
                     else -> navController.navigate(Screen.LOGIN.name){

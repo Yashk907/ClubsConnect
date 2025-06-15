@@ -171,7 +171,7 @@ fun EventCard(navController: NavController,event: clubEvent, isUpcoming: Boolean
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 4.dp)
             .clickable {
-                navController.navigate("${Screen.CLUBEVENTDETAILSCREEN}/${event.id}")
+                navController.navigate("${Screen.CLUBEVENTDETAILSCREENCLUB}/${event.id}")
             },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(

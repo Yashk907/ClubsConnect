@@ -174,7 +174,7 @@ fun EventCard(
                     )
 
                     Button(
-                        onClick = {navController.navigate("${Screen.DETAILSCREEN.name}/${event.id}")},
+                        onClick = {navController.navigate("${Screen.DETAILSCREENUSER.name}/${event.id}")},
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF1A237E)

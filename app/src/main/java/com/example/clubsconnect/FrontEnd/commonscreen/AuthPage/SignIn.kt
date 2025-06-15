@@ -142,8 +142,8 @@ fun LoginScreen(viewModel: AuthViewModel,
                             getUserInfoFromFireStore(
                                 onResult = { (_, _, type), _ ->
                                     when (type) {
-                                        "Student" -> navController.navigate(Screen.MAINSCREEN.name)
-                                        "Club" -> navController.navigate(Screen.CLUBMAINSCREEN.name)
+                                        "Student" -> navController.navigate(Screen.MAINSCREENUSER.name)
+                                        "Club" -> navController.navigate(Screen.CLUBMAINSCREENCLUB.name)
                                         else -> Toast.makeText(context, "Unknown user role $type", Toast.LENGTH_SHORT).show()
                                     }
                                 },
