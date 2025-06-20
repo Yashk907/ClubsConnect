@@ -78,7 +78,7 @@ class AddMemberViewModel : ViewModel(){
                 isLoading.value=false
                 Log.d("AddMemberLogs","studentsfailed ${it.message}")
             }
-    }
+        }
 
     fun onInvite(studentWithStatus: studentWithStatus,
                  role: String,
@@ -99,7 +99,7 @@ class AddMemberViewModel : ViewModel(){
                     "role" to role,
                     "status" to "pending"
                 )
-                val studentRef = Firebase.firestore.collection("students")
+                Firebase.firestore.collection("students")
                     .document(studentWithStatus.student.id)
                     .collection("invitations")
                     .add(invitationMap)
@@ -124,6 +124,77 @@ class AddMemberViewModel : ViewModel(){
                 Log.d("AddMemberLogs","Unable to fetch name of club")
             }
 
+
+    }
+
+    fun onCancelInvite(studentWithStatus: studentWithStatus){
+        val student = studentWithStatus.student
+        Firebase.firestore.collection("invitations")
+            .whereEqualTo("clubId",clubId)
+            .whereEqualTo("userId",student.id)
+            .get()
+            .addOnSuccessListener {
+                it.documents.forEach {
+                    it.reference.delete()
+                }
+
+                Firebase.firestore.collection("students")
+                    .document(student.id)
+                    .collection("invitations")
+                    .whereEqualTo("clubId",clubId)
+                    .whereEqualTo("userId",student.id)
+                    .get()
+                    .addOnSuccessListener {
+                        it.documents.forEach {
+                            it.reference.delete()
+                        }
+                        _students.value = _students.value.map {
+                            if (it.student.id == student.id) it.copy(status = "none")
+                            else it
+                        }
+                    }
+                    .addOnFailureListener {
+                        Log.d("AddMemberLogs","Unable to cancel invitation student level")
+                    }
+            }
+            .addOnFailureListener {
+                Log.d("AddMemberLogs","Unable to cancel invitation invitation level")
+            }
+    }
+
+    fun onResend(studentWithStatus: studentWithStatus){
+        //change status in invitations and add in student/invitations
+        Firebase.firestore.collection("students")
+            .document(studentWithStatus.student.id)
+            .collection("invitations")
+            .whereEqualTo("clubId",clubId)
+            .whereEqualTo("userId",studentWithStatus.student.id)
+            .get()
+            .addOnSuccessListener { doc->
+                doc.documents.forEach {
+                    it.reference.update("status","pending")
+                }
+                Firebase.firestore.collection("invitations")
+                    .whereEqualTo("clubId",clubId)
+                    .whereEqualTo("userId",studentWithStatus.student.id)
+                    .get()
+                    .addOnSuccessListener {
+                        it.documents.forEach {
+                            it.reference.update("status","pending")
+                        }
+                        _students.value = _students.value.map {
+                            if (it.student.id == studentWithStatus.student.id) it.copy(status = "pending")
+                            else it
+                        }
+                    }
+                    .addOnFailureListener {
+                        Log.d("AddMemberLogs","Unable to resend invitation")
+                    }
+
+            }
+            .addOnFailureListener {
+                Log.d("AddMemberLogs","Unable to resend invitation")
+            }
 
     }
 }

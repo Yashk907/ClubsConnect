@@ -45,144 +45,159 @@ fun LoginScreen(viewModel: AuthViewModel,
     val focusRequester2 = remember { FocusRequester()}
     val focusRequesterButton = remember { FocusRequester() }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFECEFF1))
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Scaffold { padding ->
+        Box(
+            modifier = Modifier.padding(padding)
+                .fillMaxSize()
+                .background(Color(0xFFECEFF1))
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
-
-            // Logo Circle
-            Box(
+            Column(
                 modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-                    .background(Color.White),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.height(60.dp))
+
+                // Logo Circle
+                Box(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "LOGO",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(60.dp))
+
+                // Login Text
                 Text(
-                    text = "LOGO",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+                    text = "Login",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.Start)
                 )
-            }
 
-            Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-            // Login Text
-            Text(
-                text = "Login",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Start)
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Email Field
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth()
-                    .focusRequester(focusRequester1),
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusRequester2.requestFocus()
-                    }
-                ),
-                shape = RoundedCornerShape(24.dp),
+                // Email Field
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email") },
+                    modifier = Modifier.fillMaxWidth()
+                        .focusRequester(focusRequester1),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusRequester2.requestFocus()
+                        }
+                    ),
+                    shape = RoundedCornerShape(24.dp),
 //                colors = TextFieldDefaults.outlinedTextFieldColors(
 //                    containerColor = Color.White,
 //                    unfocusedBorderColor = Color.Transparent,
 //                    focusedBorderColor = Color.Transparent
 //                )
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent
+                    )
                 )
-            )
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            // Password Field
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                keyboardActions = KeyboardActions(onNext = {
-                    focusRequesterButton.requestFocus()
-                }),
-                modifier = Modifier.fillMaxWidth()
-                    .focusRequester(focusRequester2),
-                shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent
+                // Password Field
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = {
+                        focusRequesterButton.requestFocus()
+                    }),
+                    modifier = Modifier.fillMaxWidth()
+                        .focusRequester(focusRequester2),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent
+                    )
                 )
-            )
 
-            Spacer(modifier = Modifier.height(24.dp))
-            // Sign In Button
-            Button(
-                onClick = {
-                    focusManager.clearFocus()
-                    viewModel.SignIn(email,password){
-                            success,error->
-                        if(success){
-                            getUserInfoFromFireStore(
-                                onResult = { (_, _, type), _ ->
-                                    when (type) {
-                                        "Student" -> navController.navigate(Screen.MAINSCREENUSER.name)
-                                        "Club" -> navController.navigate(Screen.CLUBMAINSCREENCLUB.name)
-                                        else -> Toast.makeText(context, "Unknown user role $type", Toast.LENGTH_SHORT).show()
+                Spacer(modifier = Modifier.height(24.dp))
+                // Sign In Button
+                Button(
+                    onClick = {
+                        focusManager.clearFocus()
+                        viewModel.SignIn(email, password) { success, error ->
+                            if (success) {
+                                getUserInfoFromFireStore(
+                                    onResult = { (_, _, type), _ ->
+                                        when (type) {
+                                            "Student" -> navController.navigate(Screen.MAINSCREENUSER.name) {
+                                                popUpTo(Screen.LOGIN.name) { inclusive = true }
+                                            }
+
+                                            "Club" -> navController.navigate(Screen.CLUBMAINSCREENCLUB.name) {
+                                                popUpTo(Screen.LOGIN.name) { inclusive = true }
+                                            }
+
+                                            else -> Toast.makeText(
+                                                context,
+                                                "Unknown user role $type",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    },
+                                    onError = {
+                                        Toast.makeText(
+                                            context,
+                                            "Problem in retrieving role of user",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
-                                },
-                                onError = {
-                                    Toast.makeText(context, "Problem in retrieving role of user", Toast.LENGTH_SHORT).show()
-                                }
-                            )
+                                )
 
-                        }else{
-                            Toast.makeText(context,error, Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                            }
                         }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequesterButton)
-                    .height(50.dp),
-                shape = RoundedCornerShape(24.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF3F51B5) // Indigo color, you can change to your preferred color
-                )
-            ) {
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequesterButton)
+                        .height(50.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF3F51B5) // Indigo color, you can change to your preferred color
+                    )
+                ) {
+                    Text(
+                        text = "Sign In",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Sign Up Text
                 Text(
-                    text = "Sign In",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    text = "Don't have an account? Signup",
+                    modifier = Modifier.fillMaxWidth()
+                        .clickable { navController.navigate(Screen.SIGNUP.name) },
+                    textAlign = TextAlign.Center,
+                    color = Color.DarkGray
                 )
             }
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Sign Up Text
-            Text(
-                text = "Don't have an account? Signup",
-                modifier = Modifier.fillMaxWidth()
-                    .clickable { navController.navigate(Screen.SIGNUP.name) },
-                textAlign = TextAlign.Center,
-                color = Color.DarkGray
-            )
         }
     }
 }

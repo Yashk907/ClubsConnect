@@ -22,6 +22,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import com.example.clubsconnect.ViewModel.Clubside.AddMemberViewModel
 import com.example.clubsconnect.ViewModel.Clubside.Student
 import com.example.clubsconnect.ViewModel.Clubside.studentWithStatus
@@ -41,6 +43,7 @@ fun AddMembersScreen(
 ) {
     var searchQuery by remember { mutableStateOf("") }
     val users by viewModel.students.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.loadStudents()
@@ -52,84 +55,95 @@ fun AddMembersScreen(
                 student.email.contains(searchQuery, ignoreCase = true)
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        // Top App Bar
-        TopAppBar(
-            title = { Text("Add Members") },
-            navigationIcon = {
-                IconButton(onClick = onback) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back")
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Add Members") },
+                navigationIcon = {
+                    IconButton(onClick = onback) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back")
+                    }
                 }
-            }
-        )
-
+            )
+        }
+    ) {
+        padding->
         // Search Bar
-        OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            placeholder = { Text("Search users by name or email...") },
-            leadingIcon = {
-                Icon(Icons.Default.Search, contentDescription = "Search")
-            },
-            shape = RoundedCornerShape(12.dp)
-        )
-
-        // Users List
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(filteredUsers) { user ->
-                UserCard(
-                    user = user,
-                    onInvite = { selectedUser, role ->
-                        viewModel.onInvite(selectedUser,role) {
-                            Toast.makeText(context,it, Toast.LENGTH_SHORT).show()
-                        }
-                    },
-                    onResendInvite = { selectedUser, role ->
-                        // Handle resend invitation
-
-                    },
-                    onCancelInvite = { selectedUser ->
-                        // Cancel pending invitation
-
+        Column(modifier = Modifier.padding(padding)
+            .fillMaxSize()) {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                placeholder = { Text("Search users by name or email...") },
+                leadingIcon = {
+                    Icon(Icons.Default.Search, contentDescription = "Search")
+                },
+                shape = RoundedCornerShape(12.dp)
+            )
+            if(isLoading){
+                CircularProgressIndicator(modifier = Modifier.padding(padding)
+                    .align(alignment = Alignment.CenterHorizontally))
+            }else{
+                // Users List
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(filteredUsers) { user ->
+                        UserCard(
+                            user = user,
+                            onInvite = { selectedUser, role ->
+                                viewModel.onInvite(selectedUser,role) {
+                                    Toast.makeText(context,it, Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            onResendInvite = { selectedUser, role ->
+                                viewModel.onResend(selectedUser)
+                            },
+                            onCancelInvite = { selectedUser ->
+                                // Cancel pending invitation
+                                viewModel.onCancelInvite(selectedUser)
+                            }
+                        )
                     }
-                )
-            }
 
-            if (filteredUsers.isEmpty() && searchQuery.isNotEmpty()) {
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(32.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                Icons.Default.Search,
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
-                            )
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "No users found matching \"$searchQuery\"",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
-                            )
+                    if (filteredUsers.isEmpty() && searchQuery.isNotEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(32.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Column(
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Icon(
+                                        Icons.Default.Search,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(48.dp),
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                                    )
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = "No users found matching \"$searchQuery\"",
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
+
             }
         }
+
+
     }
 }
 
@@ -178,10 +192,15 @@ fun UserCard(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = user.student.imageUri,
-                            color = MaterialTheme.colorScheme.onTertiary,
-                            fontWeight = FontWeight.Bold
+//                        Text(
+//                            text = user.student.imageUri,
+//                            color = MaterialTheme.colorScheme.onTertiary,
+//                            fontWeight = FontWeight.Bold
+//                        )
+                        AsyncImage(
+                            model = user.student.imageUri,
+                            contentDescription = "imageuri",
+                            contentScale = ContentScale.Fit
                         )
                     }
                 }

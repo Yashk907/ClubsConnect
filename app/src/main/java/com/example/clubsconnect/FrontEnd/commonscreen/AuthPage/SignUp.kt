@@ -7,10 +7,12 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -57,160 +59,65 @@ fun SignupScreen(viewModel: AuthViewModel ,
     val focusRequester3 = remember { FocusRequester() }
     val focusRequester4 = remember { FocusRequester() }
     val focusRequesterButton = remember { FocusRequester() }
-
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .background(Color(0xFFECEFF1))
-
-    ) {
-        Column(
+    val scrollState = rememberScrollState()
+    Scaffold {
+        padding->
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .padding(padding)
+                .background(Color(0xFFECEFF1))
+
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
-
-            // Logo Circle
-            Box(
+            Column(
                 modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape)
-                    .background(Color.White),
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .verticalScroll(scrollState)
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = "LOGO",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                Spacer(modifier = Modifier.height(60.dp))
 
-            Spacer(modifier = Modifier.height(60.dp))
-
-            // Signup Text
-            Text(
-                text = "SignUp",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.align(Alignment.Start)
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Username Field
-            OutlinedTextField(
-                value = username,
-                onValueChange = { username = it },
-                label = { Text("Username") },
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusRequester1.requestFocus()
-                    }
-                ),
-                modifier = Modifier.fillMaxWidth()
-                    .focusRequester(focusRequester0),
-                shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent
-                )
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // PRN No. Field
-            OutlinedTextField(
-                value = prnNo,
-                onValueChange = { prnNo = it },
-                label = { Text("PRN No.") },
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusRequester2.requestFocus()
-                    }
-                ),
-                modifier = Modifier.fillMaxWidth()
-                    .focusRequester(focusRequester1),
-                shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent
-                )
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-
-            // Email Field
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email") },
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                keyboardActions = KeyboardActions(onNext = {
-                    focusRequester3.requestFocus()
-                }),
-                modifier = Modifier.fillMaxWidth()
-                    .focusRequester(focusRequester2),
-                shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent
-                )
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Password Field
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Password") },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                keyboardActions = KeyboardActions(onNext = {
-                    focusRequester4.requestFocus()
-                }),
-                modifier = Modifier.fillMaxWidth()
-                    .focusRequester(focusRequester3),
-                shape = RoundedCornerShape(24.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent
-                )
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Dropdown Field
-            ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = { expanded = !expanded },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                OutlinedTextField(
-                    value = selectedOption,
-                    onValueChange = {},
-                    readOnly = true,
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Filled.KeyboardArrowDown,
-                            contentDescription = "Dropdown Arrow"
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = {
-                        focusRequesterButton.requestFocus()
-                    }),
+                // Logo Circle
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester4)
-                        .menuAnchor(),
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "LOGO",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(60.dp))
+
+                // Signup Text
+                Text(
+                    text = "SignUp",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.Start)
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Username Field
+                OutlinedTextField(
+                    value = username,
+                    onValueChange = { username = it },
+                    label = { Text("Username") },
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusRequester1.requestFocus()
+                        }
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                        .focusRequester(focusRequester0),
                     shape = RoundedCornerShape(24.dp),
                     colors = TextFieldDefaults.colors(
                         unfocusedContainerColor = Color.Transparent,
@@ -218,93 +125,194 @@ fun SignupScreen(viewModel: AuthViewModel ,
                     )
                 )
 
-                ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.exposedDropdownSize()
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Student") },
-                        onClick = {
-                            selectedOption = "Student"
-                            expanded = false
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // PRN No. Field
+                OutlinedTextField(
+                    value = prnNo,
+                    onValueChange = { prnNo = it },
+                    label = { Text("PRN No.") },
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            focusRequester2.requestFocus()
                         }
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                        .focusRequester(focusRequester1),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.colors(
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedContainerColor = Color.Transparent
                     )
-                    DropdownMenuItem(
-                        text = { Text("Club") },
-                        onClick = {
-                            selectedOption = "Club"
-                            expanded = false
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+
+                // Email Field
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email") },
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = {
+                        focusRequester3.requestFocus()
+                    }),
+                    modifier = Modifier.fillMaxWidth()
+                        .focusRequester(focusRequester2),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Password Field
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Password") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = {
+                        focusRequester4.requestFocus()
+                    }),
+                    modifier = Modifier.fillMaxWidth()
+                        .focusRequester(focusRequester3),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Dropdown Field
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = selectedOption,
+                        onValueChange = {},
+                        readOnly = true,
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.KeyboardArrowDown,
+                                contentDescription = "Dropdown Arrow"
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = {
+                            focusRequesterButton.requestFocus()
+                        }),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester4)
+                            .menuAnchor(),
+                        shape = RoundedCornerShape(24.dp),
+                        colors = TextFieldDefaults.colors(
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent
+                        )
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.exposedDropdownSize()
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Student") },
+                            onClick = {
+                                selectedOption = "Student"
+                                expanded = false
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text("Club") },
+                            onClick = {
+                                selectedOption = "Club"
+                                expanded = false
+                            }
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Sign Up Button
+                Button(
+                    onClick = {
+                        focusManager.clearFocus()
+                        viewModel.SignUp(email,password,selectedOption,username,prnNo){
+                                success,error->
+                            if(success){
+                                Toast.makeText(context,"Sign Up success", Toast.LENGTH_SHORT).show()
+                                val user = FirebaseAuth.getInstance().currentUser
+                                if (user != null) {
+                                    getUserInfoFromFireStore(onResult = {
+                                            (_, _, type), _ ->
+                                        when(type){
+                                            "Student" -> navController.navigate(Screen.MAINSCREENUSER.name){
+                                                popUpTo(Screen.LOGIN.name) { inclusive = true }
+                                            }
+                                            "Club" -> navController.navigate(Screen.CLUBMAINSCREENCLUB.name){
+                                                popUpTo(Screen.LOGIN.name) { inclusive = true }
+                                            }
+                                            else -> navController.navigate(Screen.LOGIN.name){
+                                                popUpTo(Screen.LOGIN.name) { inclusive = true }
+                                            }
+                                        }
+                                    })
+                                } else {
+                                    navController.navigate(Screen.LOGIN.name) {
+                                        popUpTo(Screen.LOGIN.name) { inclusive = true }
+                                    }
+                                }
+                            }else{
+                                Toast.makeText(context,"$error", Toast.LENGTH_SHORT).show()
+                            }
                         }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequesterButton)
+                        .height(50.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF3F51B5) // Indigo color, you can change to your preferred color
+                    )
+                ) {
+                    Text(
+                        text = "Sign Up",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
                     )
                 }
-            }
-            Spacer(modifier = Modifier.height(24.dp))
 
-            // Sign Up Button
-            Button(
-                onClick = {
-                    focusManager.clearFocus()
-                    viewModel.SignUp(email,password,selectedOption,username,prnNo){
-                        success,error->
-                        if(success){
-                            Toast.makeText(context,"Sign Up success", Toast.LENGTH_SHORT).show()
-                            val user = FirebaseAuth.getInstance().currentUser
-                            if (user != null) {
-                                getUserInfoFromFireStore(onResult = {
-                                        (_, _, type), _ ->
-                                    when(type){
-                                        "Student" -> navController.navigate(Screen.MAINSCREENUSER.name){
-                                            popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
-                                        }
-                                        "Club" -> navController.navigate(Screen.CLUBMAINSCREENCLUB.name){
-                                            popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
-                                        }
-                                        else -> navController.navigate(Screen.LOGIN.name){
-                                            popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
-                                        }
-                                    }
-                                })
-                            } else {
-                                navController.navigate(Screen.LOGIN.name) {
-                                    popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
-                                }
-                            }
-                        }else{
-                            Toast.makeText(context,"$error", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequesterButton)
-                    .height(50.dp),
-                shape = RoundedCornerShape(24.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF3F51B5) // Indigo color, you can change to your preferred color
-                )
-            ) {
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // Login Text
                 Text(
-                    text = "Sign Up",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    text = "Already have an account? Login",
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(bottom = 40.dp)
+                        .clickable { movetoSignIn()},
+                    textAlign = TextAlign.Center,
+                    color = Color.DarkGray
                 )
             }
-
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Login Text
-            Text(
-                text = "Already have an account? Login",
-                modifier = Modifier.fillMaxWidth()
-                    .clickable { movetoSignIn()},
-                textAlign = TextAlign.Center,
-                color = Color.DarkGray
-            )
         }
     }
+
+
 }
 
 //@Preview(showBackground = true)

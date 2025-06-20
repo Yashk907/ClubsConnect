@@ -16,6 +16,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.clubsconnect.ViewModel.Clubside.ClubMember
 import com.example.clubsconnect.ViewModel.Clubside.ManageMembersViewmodel
 
@@ -129,10 +131,15 @@ fun MemberCard(member: ClubMember) {
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = member.avatar,
-                            color = MaterialTheme.colorScheme.onPrimary,
-                            fontWeight = FontWeight.Bold
+//                        Text(
+//                            text = user.student.imageUri,
+//                            color = MaterialTheme.colorScheme.onTertiary,
+//                            fontWeight = FontWeight.Bold
+//                        )
+                        AsyncImage(
+                            model = member.avatar,
+                            contentDescription = "imageuri",
+                            contentScale = ContentScale.Fit
                         )
                     }
                 }

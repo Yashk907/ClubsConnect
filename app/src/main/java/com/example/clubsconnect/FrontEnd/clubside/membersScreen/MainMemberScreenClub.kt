@@ -78,7 +78,6 @@ fun ManageMembersScreenClub(navController: NavController,
             title = "Manage Members",
             description = "View and edit member roles",
             icon = Icons.Default.Settings,
-            memberCount = "4"
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -102,7 +101,6 @@ fun MenuCard(
     title: String,
     description: String,
     icon: ImageVector,
-    memberCount: String? = null
 ) {
     Card(
         modifier = Modifier.fillMaxWidth()
@@ -140,22 +138,6 @@ fun MenuCard(
                     fontSize = 14.sp,
                     color = Color.White
                 )
-            }
-
-            memberCount?.let {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        Color.White.copy(alpha = 0.4f)
-                    ),
-                    shape = RoundedCornerShape(20.dp)
-                ) {
-                    Text(
-                        text = it,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        color = MaterialTheme.colorScheme.onPrimary,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
             }
         }
     }

@@ -1,7 +1,10 @@
 package com.example.clubsconnect.FrontEnd.clubside.clubSideScreens
 
 import AddEventScreen
+import android.app.Activity
 import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -29,11 +32,13 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.clubsconnect.FrontEnd.clubside.ClubDashBoard.ClubConnectMainScreen
@@ -48,6 +53,20 @@ fun ClubSideControlScreen(navController: NavController,
                           modifier: Modifier = Modifier) {
     var selectedTab by rememberSaveable { mutableIntStateOf(0) }
     val titlelist = listOf("Home","Add Event","Members")
+    val context = LocalContext.current
+    var backPressedTime by remember { mutableStateOf(0L) }
+
+    BackHandler {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - backPressedTime <= 2000) {
+            // Exit app
+            (context as? Activity)?.finish()
+        } else {
+            Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()
+            backPressedTime = currentTime
+        }
+    }
+
 
     Scaffold(
         topBar = {
