@@ -42,6 +42,18 @@ android {
 }
 
 dependencies {
+    implementation(libs.accompanist.permissions)
+
+    // CameraX
+    implementation(libs.androidx.camera.core.v130)
+    implementation(libs.androidx.camera.camera2.v130)
+    implementation(libs.androidx.camera.lifecycle.v130)
+    implementation(libs.androidx.camera.view.v130)
+    implementation(libs.androidx.camera.compose)
+
+    // ML Kit for Barcode Scanning
+    implementation(libs.barcode.scanning)
+
     //Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)

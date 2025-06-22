@@ -42,36 +42,17 @@ import com.example.clubsconnect.ViewModel.userside.FeedViewModel
 @Composable
 fun MainFeedScreen(
     viewModel: FeedViewModel,
-    navController: NavController
+    navController: NavController,
+    modifier : Modifier = Modifier
 ) {
-    var selectedTab by remember { mutableStateOf(0) }
+
     var selectedFilter by remember { mutableStateOf("Events") }
-    val context = LocalContext.current
-    var backPressedTime by remember { mutableStateOf(0L) }
 
     val events = viewModel.events
     val clubs = viewModel.clubs
 
-    BackHandler {
-        val currentTime = System.currentTimeMillis()
-        if (currentTime - backPressedTime <= 2000) {
-            (context as? Activity)?.finish()
-        } else {
-            Toast.makeText(context, "Press back again to exit", Toast.LENGTH_SHORT).show()
-            backPressedTime = currentTime
-        }
-    }
-
-    Scaffold(
-        topBar = { TopAppBar() },
-        bottomBar = {
-            BottomNavigation(selectedTab) { selectedTab = it }
-        },
-        containerColor = Color(0xFFF8F9FA)
-    ) { paddingValues ->
-        LazyColumn (
-            modifier = Modifier
-                .padding(paddingValues)
+    LazyColumn (
+            modifier = modifier
                 .fillMaxSize()
         ) {
             // Welcome Card
@@ -88,7 +69,6 @@ fun MainFeedScreen(
             }
 
             // Content based on selected filter
-
                 when (selectedFilter) {
                     "Events" -> items(events){event->
                         EventCard(event, navController,
@@ -100,59 +80,9 @@ fun MainFeedScreen(
                     }
                 }
         }
-    }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopAppBar() {
-    CenterAlignedTopAppBar(
-        title = {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "VIIT Pune",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    color = Color(0xFF1A237E)
-                )
-                Text(
-                    text = "ClubConnect",
-                    fontSize = 12.sp,
-                    color = Color(0xFF6C7B7F),
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        },
-        actions = {
-            IconButton(
-                onClick = { /* Handle notifications */ },
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFFE3F2FD),
-                                Color(0xFFBBDEFB)
-                            )
-                        ),
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Notifications,
-                    contentDescription = "Notifications",
-                    tint = Color(0xFF1A237E)
-                )
-            }
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color.White
-        ),
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-    )
-}
+
 
 @Composable
 fun WelcomeCard() {
@@ -388,10 +318,10 @@ fun EventCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .background(
-                            brush = Brush.horizontalGradient(
+                            Brush.linearGradient(
                                 colors = listOf(
-                                    Color(0xFF1A237E),
-                                    Color(0xFF3F51B5)
+                                    Color(0xFF6366F1),
+                                    Color(0xFF8B5CF6)
                                 )
                             ),
                             shape = RoundedCornerShape(12.dp)
@@ -416,94 +346,6 @@ fun EventCard(
     }
 }
 
-@Composable
-fun BottomNavigation(selectedTab: Int, onTabSelected: (Int) -> Unit) {
-    NavigationBar(
-        containerColor = Color.White,
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clip(RoundedCornerShape(24.dp)),
-        tonalElevation = 16.dp
-    ) {
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    Icons.Default.Home,
-                    contentDescription = "Home",
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            label = {
-                Text(
-                    "Home",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            },
-            selected = selectedTab == 0,
-            onClick = { onTabSelected(0) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color(0xFF1A237E),
-                selectedTextColor = Color(0xFF1A237E),
-                indicatorColor = Color(0xFFE8EAF6),
-                unselectedIconColor = Color(0xFF6C7B7F),
-                unselectedTextColor = Color(0xFF6C7B7F)
-            )
-        )
-
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    Icons.Outlined.QrCode,
-                    contentDescription = "QR Attendance",
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            label = {
-                Text(
-                    "Attendance",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            },
-            selected = selectedTab == 1,
-            onClick = { onTabSelected(1) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color(0xFF1A237E),
-                selectedTextColor = Color(0xFF1A237E),
-                indicatorColor = Color(0xFFE8EAF6),
-                unselectedIconColor = Color(0xFF6C7B7F),
-                unselectedTextColor = Color(0xFF6C7B7F)
-            )
-        )
-
-        NavigationBarItem(
-            icon = {
-                Icon(
-                    Icons.Default.Person,
-                    contentDescription = "Profile",
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            label = {
-                Text(
-                    "Profile",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            },
-            selected = selectedTab == 2,
-            onClick = { onTabSelected(2) },
-            colors = NavigationBarItemDefaults.colors(
-                selectedIconColor = Color(0xFF1A237E),
-                selectedTextColor = Color(0xFF1A237E),
-                indicatorColor = Color(0xFFE8EAF6),
-                unselectedIconColor = Color(0xFF6C7B7F),
-                unselectedTextColor = Color(0xFF6C7B7F)
-            )
-        )
-    }
-}
 
 @Preview(showBackground = true)
 @Composable

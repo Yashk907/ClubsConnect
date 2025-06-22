@@ -29,6 +29,7 @@ import com.example.clubsconnect.FrontEnd.userside.PofileScreen.EditProfileScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.SplashScreen.SplashScreen
 import com.example.clubsconnect.FrontEnd.userside.detailscreen.EventDetailsScreen
 import com.example.clubsconnect.FrontEnd.userside.MembersScreen.ClubMembersScreenUser
+import com.example.clubsconnect.FrontEnd.userside.userscreencontrol.UserScreenControl
 import com.example.clubsconnect.ViewModel.AuthViewModel
 import com.example.clubsconnect.ViewModel.ClubEventDetailViewModel
 import com.example.clubsconnect.ViewModel.EventDetailViewModel
@@ -97,7 +98,7 @@ class MainActivity : ComponentActivity() {
 
                     //users screens
                     composable(route= Screen.MAINSCREENUSER.name){
-                        MainFeedScreen(viewModel(),navController)
+                        UserScreenControl(navController)
                     }
 
                     composable(route ="${Screen.DETAILSCREENUSER.name}/{eventId}") { backStackEntry ->
@@ -107,7 +108,7 @@ class MainActivity : ComponentActivity() {
                             EventDetailViewModel(eventId)
                         }
 
-                        EventDetailsScreen(viewModel, onBackPressed = {navController})
+                        EventDetailsScreen(viewModel, onBackPressed = {navController.navigateUp()})
                     }
 
                     composable(route= Screen.CLUBLISTSCREENUSER.name){
