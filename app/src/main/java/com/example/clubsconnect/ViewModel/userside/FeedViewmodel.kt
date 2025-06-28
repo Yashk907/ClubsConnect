@@ -21,28 +21,27 @@ class FeedViewModel : ViewModel() {
     private val clubcollection = FirebaseFirestore.getInstance()
         .collection("clubs")
 
-    private val _events = mutableStateListOf<Event>()
-    val events: List<Event> = _events
+    private val _events  : MutableStateFlow<List<Event>> = MutableStateFlow(emptyList())
+    val events: MutableStateFlow<List<Event>> = _events
 
 
     private val _clubs : MutableStateFlow<List<Club>> = MutableStateFlow(emptyList())
     val clubs : MutableStateFlow<List<Club>> = _clubs
 
 
-    init {
-        fetchclubs()
-        fetchEvents()
-    }
+//    init {
+//        fetchclubs()
+//        fetchEvents()
+//    }
 
-    private fun fetchEvents() {
+    fun fetchEvents() {
         eventcollection
             .get()
             .addOnSuccessListener { result ->
-                _events.clear()
-                for (doc in result) {
-                    val event = doc.toObject(Event::class.java)
-                    _events.add(event)
+                val _events = result.documents.mapNotNull {
+                    it.toObject(Event::class.java)
                 }
+                this._events.value = _events
                 Log.e("FeedViewModel", "Fetched ${_events.size} events")
             }
             .addOnFailureListener {
@@ -50,7 +49,7 @@ class FeedViewModel : ViewModel() {
             }
     }
 
-    private fun fetchclubs(){
+     fun fetchclubs(){
         clubcollection.get()
             .addOnSuccessListener {
                 result->

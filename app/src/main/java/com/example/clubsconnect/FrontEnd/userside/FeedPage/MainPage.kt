@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -47,9 +48,18 @@ fun MainFeedScreen(
 ) {
 
     var selectedFilter by remember { mutableStateOf("Events") }
+    val context = LocalContext.current
 
-    val events = viewModel.events
-    val clubs = viewModel.clubs
+    val events = viewModel.events.collectAsStateWithLifecycle()
+    val clubs = viewModel.clubs.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.fetchEvents()
+        viewModel.fetchclubs()
+    }
+    BackHandler {
+        (context as? Activity)?.finish()
+    }
 
     LazyColumn (
             modifier = modifier
@@ -70,7 +80,7 @@ fun MainFeedScreen(
 
             // Content based on selected filter
                 when (selectedFilter) {
-                    "Events" -> items(events){event->
+                    "Events" -> items(events.value){event->
                         EventCard(event, navController,
                             modifier = Modifier.padding(20.dp))
                     }

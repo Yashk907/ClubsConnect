@@ -72,7 +72,7 @@ fun UserScreenControl(navController: NavController,
             0-> MainFeedScreen(viewModel = viewModel(),
                 navController = navController,
                 modifier= Modifier.padding(padding))
-            1->CameraPreviewScreen()
+            1->CameraPreviewScreen(modifier= Modifier.padding(padding))
             2->{}
         }
 

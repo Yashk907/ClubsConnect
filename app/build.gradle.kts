@@ -45,12 +45,20 @@ dependencies {
     implementation(libs.accompanist.permissions)
 
     // CameraX
-    implementation(libs.androidx.camera.core.v130)
-    implementation(libs.androidx.camera.camera2.v130)
-    implementation(libs.androidx.camera.lifecycle.v130)
-    implementation(libs.androidx.camera.view.v130)
-    implementation(libs.androidx.camera.compose)
+//    implementation(libs.androidx.camera.core)
+//    implementation(libs.androidx.camera.camera2)
+//    implementation(libs.androidx.camera.lifecycle)
+//    implementation(libs.androidx.camera.view)
 
+    val cameraxVersion = "1.3.0-rc01"
+
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+    implementation("androidx.camera:camera-video:$cameraxVersion")
+
+    implementation("androidx.camera:camera-view:$cameraxVersion")
+    implementation("androidx.camera:camera-extensions:$cameraxVersion")
     // ML Kit for Barcode Scanning
     implementation(libs.barcode.scanning)
 
