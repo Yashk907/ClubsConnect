@@ -188,7 +188,7 @@ fun MemberCard(member: ClubMember) {
 
                 OutlinedTextField(
                     value = member.role,
-                    onValueChange = { member.role = it},
+                    onValueChange = {},
                     readOnly = true
                 )
             }

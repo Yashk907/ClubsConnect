@@ -13,8 +13,9 @@ data class ClubMember(
     val id: Int,
     val name: String,
     val email: String,
-    var role: String,
-    val avatar: String
+    val role: String,
+    val avatar: String,
+    val joinedAt : String
 )
 
 data class UiState(

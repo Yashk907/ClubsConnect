@@ -90,7 +90,6 @@ fun ClubSideEventDetailScreen(
                     }
                     IconButton(onClick = {
                         visibleDeleteDialog.value=true
-
                     },
                         modifier = Modifier.clickable(onClick = onBackClick)
                         ) {

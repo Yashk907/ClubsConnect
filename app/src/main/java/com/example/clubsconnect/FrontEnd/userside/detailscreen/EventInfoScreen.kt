@@ -1,6 +1,7 @@
 package com.example.clubsconnect.FrontEnd.userside.detailscreen
 
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import com.example.clubsconnect.Model.Event
 import com.example.clubsconnect.ViewModel.EventDetailViewModel
@@ -96,6 +98,11 @@ fun EventDetailsScreen(
                 // Event Details Section
                 item {
                     EventDetailsSection(event)
+                }
+
+                //link button
+                item{
+
                 }
 
                 // RSVP Button
@@ -298,6 +305,7 @@ fun EventInfoSection(event: Event) {
 
 @Composable
 fun EventDetailsSection(event: Event) {
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -322,8 +330,8 @@ fun EventDetailsSection(event: Event) {
 
             if (event.startDate.isNotEmpty()) {
                 DetailRow(
-                    icon = Icons.Default.DateRange,
-                    label = "Start Date",
+                    icon = Icons.Default.Schedule,
+                    label = "Registration Start Date",
                     value = event.startDate
                 )
             }
@@ -331,8 +339,16 @@ fun EventDetailsSection(event: Event) {
             if (event.endDate.isNotEmpty()) {
                 DetailRow(
                     icon = Icons.Default.Schedule,
-                    label = "End Date",
+                    label = "Registration End Date",
                     value = event.endDate
+                )
+            }
+
+            if(event.eventDate.isNotEmpty()){
+                DetailRow(
+                    icon = Icons.Default.DateRange,
+                    label = "Event Date",
+                    value = event.eventDate
                 )
             }
 
@@ -349,9 +365,42 @@ fun EventDetailsSection(event: Event) {
                 label = "Organized by",
                 value = event.clubName
             )
+
+            if(event.registrationLink.isNotEmpty()){
+                Button(
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, "https://${event.registrationLink}".toUri())
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(intent)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 5.dp, top = 15.dp)
+                        .padding(horizontal = 0.dp)
+
+                    ,
+                    colors = ButtonDefaults.buttonColors( Color(0xFF8B5CF6),),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Link,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        "Go To Registration Link",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+            }
         }
     }
 }
+
+
 
 @Composable
 fun RSVPButtonSection(onRSVPClick: () -> Unit) {

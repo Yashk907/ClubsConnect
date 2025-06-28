@@ -25,10 +25,8 @@ import com.example.clubsconnect.FrontEnd.clubside.membersScreen.AddMembersScreen
 import com.example.clubsconnect.FrontEnd.clubside.membersScreen.ManageMembersScreen
 import com.example.clubsconnect.FrontEnd.userside.ClubListStud.ClubsScreen
 import com.example.clubsconnect.FrontEnd.userside.FeedPage.MainFeedScreen
-import com.example.clubsconnect.FrontEnd.userside.PofileScreen.EditProfileScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.SplashScreen.SplashScreen
 import com.example.clubsconnect.FrontEnd.userside.detailscreen.EventDetailsScreen
-import com.example.clubsconnect.FrontEnd.userside.MembersScreen.ClubMembersScreenUser
 import com.example.clubsconnect.FrontEnd.userside.userscreencontrol.UserScreenControl
 import com.example.clubsconnect.ViewModel.AuthViewModel
 import com.example.clubsconnect.ViewModel.ClubEventDetailViewModel
@@ -115,28 +113,6 @@ class MainActivity : ComponentActivity() {
                         ClubsScreen(viewModel(), onBackPressed = {}) { }
                     }
 
-                    composable(route= Screen.PROFILESCREENUSER.name){
-                        EditProfileScreen()
-                    }
-                    composable(route= Screen.CLUBMEMBERSSCREENUSER.name){
-                        val context = LocalContext.current
-                        val uid  = remember { mutableStateOf<String?>(null) }
-
-                        getUserInfoFromFireStore(
-                            onResult = {
-                                (uidd,name,type),email->
-                                uid.value=uidd
-                            },
-                            onError = {
-                                Toast.makeText(context,"Problem in retriving uid",Toast.LENGTH_SHORT).show()
-                            }
-                        )
-
-                        if(uid.value!=null){
-                            ClubMembersScreenUser(uid.value!!) { }
-                        }
-
-                    }
                 }
             }
         }
@@ -157,7 +133,5 @@ enum class Screen{
     //user
     MAINSCREENUSER,
     DETAILSCREENUSER,
-    PROFILESCREENUSER,
-    CLUBMEMBERSSCREENUSER,
     CLUBLISTSCREENUSER,
 }

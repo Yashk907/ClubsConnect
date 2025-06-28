@@ -22,6 +22,7 @@ data class studentWithStatus(
     val status : String
 )
 data class Invitation(
+    val invitaionId : String = "",
     val clubId : String = "",
     val clubName : String = "",
     val username: String = "",
@@ -83,13 +84,12 @@ class AddMemberViewModel : ViewModel(){
     fun onInvite(studentWithStatus: studentWithStatus,
                  role: String,
                  onSuccess : (String)-> Unit){
-        var clubName = ""
         val student = studentWithStatus.student
         Firebase.firestore.collection("clubs")
             .document(clubId)
             .get()
             .addOnSuccessListener { result->
-               clubName= result.getString("username")?:""
+              var clubName= result.getString("username")?:""
 
                 val invitationMap = hashMapOf(
                     "clubId" to clubId,

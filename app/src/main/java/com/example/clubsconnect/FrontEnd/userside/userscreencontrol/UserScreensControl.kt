@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.clubsconnect.FrontEnd.userside.FeedPage.MainFeedScreen
+import com.example.clubsconnect.FrontEnd.userside.PofileScreen.ProfileScreen
 import kotlin.compareTo
 
 @Composable
@@ -73,7 +74,8 @@ fun UserScreenControl(navController: NavController,
                 navController = navController,
                 modifier= Modifier.padding(padding))
             1->CameraPreviewScreen(modifier= Modifier.padding(padding))
-            2->{}
+            2-> ProfileScreen(viewModel(),
+                modifier= Modifier.padding(padding))
         }
 
     }

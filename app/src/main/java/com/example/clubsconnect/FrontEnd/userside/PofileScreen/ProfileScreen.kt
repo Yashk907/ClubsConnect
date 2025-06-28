@@ -1,214 +1,371 @@
 package com.example.clubsconnect.FrontEnd.userside.PofileScreen
-
-import android.R
-import android.net.Uri
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.google.firebase.Firebase
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
+import com.example.clubsconnect.ViewModel.Clubside.Invitation
+import com.example.clubsconnect.ViewModel.Clubside.Student
+import com.example.clubsconnect.ViewModel.userside.JoinedClubs
+import com.example.clubsconnect.ViewModel.userside.ProfileScreenViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.firestore
-import getUserInfoFromFireStore
 
-@Preview(showSystemUi = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfileScreen() {
+fun ProfileScreen(viewModel: ProfileScreenViewModel,
+                  modifier: Modifier= Modifier) {
+    val student = viewModel.student.collectAsStateWithLifecycle()
+    val invitations = viewModel.invitations.collectAsStateWithLifecycle()
+    val joinedClubs = viewModel.joinedClubs.collectAsStateWithLifecycle()
     val context = LocalContext.current
-      val currentUser = FirebaseAuth.getInstance().currentUser
-   
-    var name = remember { mutableStateOf("")}
-    getUserInfoFromFireStore(onResult = {
-        (uid,usrname,type),email->
-        name.value=usrname?:"MISSING"
-    })
+    val isLoading = viewModel.isLoading.collectAsStateWithLifecycle()
 
-    val firestore = Firebase.firestore
-  
-    var imagerUri by remember { mutableStateOf<Uri?>(null) }
-
-    val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        imagerUri = uri
+    LaunchedEffect(Unit) {
+        viewModel.fetchStudentInfo {
+            Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+        }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF2F4F5))
-    ) {
-        // Top Bar
-        TopAppBar(
-            title = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_menu_close_clear_cancel),
-                        contentDescription = "Back",
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        text = "Edit Profile",
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-            },
-            modifier = Modifier.background(Color.White)
-        )
-
-        // Profile Picture Section
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp)
-        ) {
+        if(isLoading.value || student.value==null){
+            Box (modifier.fillMaxSize()){
+            CircularProgressIndicator(modifier= Modifier.fillMaxSize()
+                .padding(100.dp)
+                .align(Alignment.Center))}
+        }else{
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape)
-                        .background(Color.LightGray)
-                ) {
-                    // Profile picture placeholder or actual image
-                    Image(
-                        painter = painterResource(id = R.drawable.ic_menu_camera),
-                        contentDescription = "Profile Picture",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
+                // Profile Header Section
+                ProfileHeaderSection(student = student.value!!)
 
-                Spacer(modifier = Modifier.height(8.dp))
+                // Club Invitations Section
+                ClubInvitationsSection(viewModel,
+                    invitations.value)
 
-                Text(
-                    text = "change profile picture",
-                    color = Color(0xFF2196F3),
-                    fontSize = 14.sp,
-                    modifier = Modifier.clickable {
-                        imagePickerLauncher.launch("image/*")
-                    }
-                )
+                // Joined Clubs Section
+                JoinedClubsSection(joinedClubs.value)
+
+                // Account Settings Section
+                AccountSettingsSection()
+
+                // Bottom spacing
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
 
-        // Name Field
+
+
+}
+
+@Composable
+private fun ProfileHeaderSection(student: Student) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 24.dp)
+            modifier = Modifier.padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Name",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            OutlinedTextField(
-                value = name.value?:"UNKNOWN",
-                onValueChange = { name.value= it },
+            // Profile Image Placeholder
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.LightGray,
-                    unfocusedBorderColor = Color.LightGray
+                    .size(100.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    student.imageUri,
+                    contentDescription = "Profile Picture"
                 )
-            )
-        }
+            }
 
-        // Save Button
-        Spacer(modifier = Modifier.weight(1f))
+            // User Information
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = student.username,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
 
+                Text(
+                    text = student.email,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
 
-
-        Button(
-            onClick = {
-                getUserInfoFromFireStore(
-                    onResult = {
-                            (uid,usrname,type),email->
-                        if(name.value!==usrname){
-                            currentUser?.uid?.let { uid ->
-//                    val updatedData = mapOf("username" to name)
-
-                                firestore.collection("users")
-                                    .document(uid)
-                                    .update("username",name.value)
-                                    .addOnSuccessListener {
-                                        firestore.collection("students")
-                                            .document(uid)
-                                            .update("username",name.value)
-                                            .addOnSuccessListener {
-                                                Toast.makeText(context, "Profile updated", Toast.LENGTH_SHORT).show()
-                                            }
-                                            .addOnFailureListener{
-                                                Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show()
-                                            }
-                                    }
-                                    .addOnFailureListener {
-                                        Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show()
-                                    }
-                            } }
+                // Role Chip
+                AssistChip(
+                    onClick = { },
+                    label = {
+                        Text(
+                            text = "🎓 Student",
+                            style = MaterialTheme.typography.labelMedium
+                        )
                     },
-                    onError = {
-                        Toast.makeText(context, "Failed to update", Toast.LENGTH_SHORT).show()
-                    }
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        labelColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 )
+            }
 
-                if(imagerUri!=null){
-                      currentUser?.uid?.let { uid ->
-                          val updatedData = mapOf("imageUri" to imagerUri)
+            // Edit Profile Button
+            OutlinedButton(
+                onClick = { },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Edit Profile")
+            }
+        }
+    }
+}
 
-                          firestore.collection("students")
-                              .document(uid)
-                              .update("imageUri",imagerUri)
-                              .addOnSuccessListener {
-                                  Toast.makeText(context,"Image is also updated", Toast.LENGTH_SHORT).show()
-                              }
-                              .addOnFailureListener{
-                                  Toast.makeText(context,"Image update failed", Toast.LENGTH_SHORT).show()
-                              }
-                      }
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .height(56.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF0A2540)
-            ),
-            shape = MaterialTheme.shapes.small
-        ) {
+@Composable
+private fun ClubInvitationsSection(viewModel: ProfileScreenViewModel,
+                                   invitations : List<Invitation>) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "Club Invitations",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        // Sample invitations
+        if(invitations.isEmpty()){
             Text(
-                text = "Save",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
+                text = "No Invitations",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
+        }else{
+            invitations.forEach {
+                InvitationCard(
+                    invitation = it,
+                    viewModel=viewModel,
+                    clubName = it.clubName,
+                    position = it.role)
+            }
         }
 
     }
 }
+
+@Composable
+private fun InvitationCard(
+    viewModel: ProfileScreenViewModel,
+    invitation: Invitation,
+    clubName: String,
+    position: String
+) {
+    val context = LocalContext.current
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = clubName,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = "Position: $position",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Button(
+                    onClick = {viewModel.onClubRequestAgreed(invitation = invitation){
+                        Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+                    } },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
+                ) {
+                    Text("Accept")
+                }
+
+                OutlinedButton(
+                    onClick = {viewModel.onRejectRequest(invitation) {
+                        Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+                    } },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Reject")
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun JoinedClubsSection(joinedClubs: List<JoinedClubs>) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "My Clubs",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        // Sample joined clubs
+        if (joinedClubs.isEmpty()){
+            Text(
+                text = "No Clubs Joined",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        joinedClubs.forEach {
+            JoinedClubCard(clubName = it.clubname, role = it.role)
+        }
+    }
+}
+
+@Composable
+private fun JoinedClubCard(
+    clubName: String,
+    role: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = clubName,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = role,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun AccountSettingsSection() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "Account Settings",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Change Password Button
+                OutlinedButton(
+                    onClick = {
+                              },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Change Password")
+                }
+
+                // Logout Button
+                Button(
+                    onClick = { FirebaseAuth.getInstance().signOut() },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text(
+                        text = "Logout",
+                        color = MaterialTheme.colorScheme.onError
+                    )
+                }
+            }
+        }
+    }
+}
+
