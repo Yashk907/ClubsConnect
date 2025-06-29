@@ -5,7 +5,12 @@ import android.app.Activity
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -24,6 +29,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,6 +43,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -44,10 +51,8 @@ import androidx.navigation.NavController
 import com.example.clubsconnect.FrontEnd.userside.FeedPage.MainFeedScreen
 import com.example.clubsconnect.FrontEnd.userside.PofileScreen.ProfileScreen
 import kotlin.compareTo
-
 @Composable
-fun UserScreenControl(navController: NavController,
-                      modifier: Modifier = Modifier) {
+fun UserScreenControl(navController: NavController, modifier: Modifier = Modifier) {
     var selectedTab by remember { mutableStateOf(0) }
     val context = LocalContext.current
     var backPressedTime by remember { mutableStateOf(0L) }
@@ -61,35 +66,54 @@ fun UserScreenControl(navController: NavController,
             backPressedTime = currentTime
         }
     }
-    Scaffold(topBar = {TopAppBar()},
-        bottomBar = {
-            BottomNavigation(
-                selectedTab=selectedTab,
-                onTabSelected = {selectedTab = it}
+
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            topBar = { TopAppBar() },
+            containerColor = Color.Transparent,
+        ) { padding ->
+            val contentPadding = PaddingValues(
+                start = padding.calculateStartPadding(LayoutDirection.Ltr),
+                top = padding.calculateTopPadding(),
+                end = padding.calculateEndPadding(LayoutDirection.Ltr),
+                bottom = padding.calculateBottomPadding() + 0.dp
             )
-        }) {
-        padding->
-        when(selectedTab){
-            0-> MainFeedScreen(viewModel = viewModel(),
-                navController = navController,
-                modifier= Modifier.padding(padding))
-            1->CameraPreviewScreen(modifier= Modifier.padding(padding))
-            2-> ProfileScreen(viewModel(),
-                modifier= Modifier.padding(padding))
+            when (selectedTab) {
+                0 -> MainFeedScreen(viewModel = viewModel(), navController = navController, modifier = Modifier.padding(contentPadding))
+                1 -> CameraPreviewScreen(modifier = Modifier.padding(contentPadding))
+                2 -> ProfileScreen(viewModel(), navController, modifier = Modifier.padding(contentPadding))
+            }
         }
 
+        // Floating Bottom Nav
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 10.dp), // how high above screen bottom
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            BottomNavigation(
+                selectedTab = selectedTab,
+                onTabSelected = { selectedTab = it },
+                modifier = Modifier
+                    .clip(RoundedCornerShape(32.dp))
+                    .background(Color.White)
+                    .size(width = 320.dp, height = 64.dp)
+            )
+        }
     }
 }
 
 
+
 @Composable
-fun BottomNavigation(selectedTab: Int, onTabSelected: (Int) -> Unit) {
+fun BottomNavigation(selectedTab: Int, onTabSelected: (Int) -> Unit,modifier: Modifier= Modifier) {
     NavigationBar(
         containerColor = Color.White,
         modifier = Modifier
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .clip(RoundedCornerShape(24.dp)),
-        tonalElevation = 16.dp
+        tonalElevation = 80.dp
     ) {
         NavigationBarItem(
             icon = {
@@ -174,6 +198,7 @@ fun BottomNavigation(selectedTab: Int, onTabSelected: (Int) -> Unit) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopAppBar() {
+
     CenterAlignedTopAppBar(
         title = {
             Column(
@@ -215,9 +240,6 @@ fun TopAppBar() {
                 )
             }
         },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = Color.White
-        ),
         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
     )
 }

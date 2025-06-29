@@ -89,6 +89,10 @@ fun MainFeedScreen(
                         ClubCard(club, modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp))
                     }
                 }
+
+        item{
+            Spacer(modifier = Modifier.height(90.dp))
+        }
         }
 }
 
@@ -145,14 +149,14 @@ fun FilterChipsSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.White,
-                        Color(0xFFF8F9FA)
-                    )
-                )
-            )
+//            .background(
+//                brush = Brush.verticalGradient(
+//                    colors = listOf(
+//                        Color.White,
+//                        Color(0xFFF8F9FA)
+//                    )
+//                )
+//            )
             .padding(16.dp)
     ) {
         Text(

@@ -39,19 +39,23 @@ fun SplashScreen(navController: NavController) {
                 (_, _, type), _ ->
                 when(type){
                     "Student" -> navController.navigate(Screen.MAINSCREENUSER.name){
-                        popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
                     }
                     "Club" -> navController.navigate(Screen.CLUBMAINSCREENCLUB.name){
-                        popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
                     }
                     else -> navController.navigate(Screen.LOGIN.name){
-                        popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
+                        popUpTo(0) { inclusive = true }
+                        launchSingleTop = true
                     }
                 }
             })
         } else {
             navController.navigate(Screen.LOGIN.name) {
-                popUpTo(Screen.SPLASHSCREEN.name) { inclusive = true }
+                popUpTo(0) { inclusive = true }
+                launchSingleTop = true
             }
         }
     }

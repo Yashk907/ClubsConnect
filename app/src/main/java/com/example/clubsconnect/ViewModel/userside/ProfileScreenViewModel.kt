@@ -135,6 +135,7 @@ class ProfileScreenViewModel : ViewModel() {
                         it.documents.forEach {
                             it.reference.update("status","declined")
                         }
+                        fetchStudentInfo(onError)
                     }
                     .addOnFailureListener {
                         onError("Error deleting invitation ${it.message}")
@@ -168,7 +169,7 @@ class ProfileScreenViewModel : ViewModel() {
                         querySnapshot.documents.forEach {
                             it.reference.delete()
                         }
-
+                        fetchStudentInfo(onError)
                     }
                     .addOnFailureListener {
                         onError("Error deleting invitation ${it.message}")

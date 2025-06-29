@@ -143,11 +143,13 @@ fun LoginScreen(viewModel: AuthViewModel,
                                     onResult = { (_, _, type), _ ->
                                         when (type) {
                                             "Student" -> navController.navigate(Screen.MAINSCREENUSER.name) {
-                                                popUpTo(Screen.LOGIN.name) { inclusive = true }
+                                                popUpTo(0) { inclusive = true }
+                                                launchSingleTop = true
                                             }
 
                                             "Club" -> navController.navigate(Screen.CLUBMAINSCREENCLUB.name) {
-                                                popUpTo(Screen.LOGIN.name) { inclusive = true }
+                                                popUpTo(0) { inclusive = true }
+                                                launchSingleTop = true
                                             }
 
                                             else -> Toast.makeText(
