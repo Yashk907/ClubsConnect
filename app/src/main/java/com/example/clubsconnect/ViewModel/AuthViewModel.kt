@@ -102,6 +102,9 @@ class AuthViewModel : ViewModel() {
                 .document(uid)
                 .set(userMap)
         }else{
+            userMap["clubdescription"]="Fostering innovation and technology excellence"
+            userMap["establishyear"]="2025"
+            userMap["category"]="Technology"
             firestordb.collection("clubs")
                 .document(uid)
                 .set(userMap)

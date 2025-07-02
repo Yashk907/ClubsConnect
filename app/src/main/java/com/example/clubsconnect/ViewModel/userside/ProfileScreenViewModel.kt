@@ -3,12 +3,16 @@ package com.example.clubsconnect.ViewModel.userside
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.clubsconnect.ViewModel.Clubside.Invitation
 import com.example.clubsconnect.ViewModel.Clubside.Student
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 data class JoinedClubs(
     val clubname : String ="",
@@ -71,47 +75,50 @@ class ProfileScreenViewModel : ViewModel() {
     }
     fun onClubRequestAgreed(invitation: Invitation,onError: (String) -> Unit){
         var avatar=""
-        Firebase.firestore.collection("students")
-            .document(studentID)
-            .get()
-            .addOnSuccessListener {
-                avatar = it.get("imageUri").toString()
-            }
-        val member = hashMapOf(
-            "id" to invitation.userId,
-            "name" to invitation.username,
-            "email" to email,
-            "role" to invitation.role,
-            "avatar" to avatar,
-            "joinedAt" to System.currentTimeMillis()
-        )
-        Firebase.firestore.collection("clubs")
-            .document(invitation.clubId)
-            .collection("members")
-            .document(invitation.userId)
-            .set(member)
-            .addOnSuccessListener {
-                val clubJoined = hashMapOf(
-                    "clubname" to invitation.clubName,
-                    "clubid" to invitation.clubId,
-                    "role" to invitation.role,
-                    "joinedAt" to member["joinedAt"]
-                )
-                Firebase.firestore.collection("students")
-                    .document(studentID)
-                    .collection("JoinedClubs")
-                    .document(invitation.clubId)
-                    .set(clubJoined)
-                    .addOnSuccessListener {
-                        deleteInvitation(invitation, onError)
-                    }
-            }
-                    .addOnFailureListener {
-                        onError("Error adding member ${it.message}")
-            }
-            .addOnFailureListener {
-                onError("Error adding member ${it.message}")}
+        viewModelScope.launch {
+            Firebase.firestore.collection("students")
+                .document(studentID)
+                .get()
+                .addOnSuccessListener {
+                    avatar = it.get("imageUri").toString()
+                    val member = hashMapOf(
+                        "id" to invitation.userId,
+                        "name" to invitation.username,
+                        "email" to email,
+                        "role" to invitation.role,
+                        "avatar" to avatar,
+                         "joinedAt" to System.currentTimeMillis()
+                    )
+                    Firebase.firestore.collection("clubs")
+                        .document(invitation.clubId)
+                        .collection("members")
+                        .document(invitation.userId)
+                        .set(member)
+                        .addOnSuccessListener {
+                            val clubJoined = hashMapOf(
+                                "clubname" to invitation.clubName,
+                                "clubid" to invitation.clubId,
+                                "role" to invitation.role,
+                                "joinedAt" to member["joinedAt"]
+                            )
+                            Firebase.firestore.collection("students")
+                                .document(studentID)
+                                .collection("JoinedClubs")
+                                .document(invitation.clubId)
+                                .set(clubJoined)
+                                .addOnSuccessListener {
+                                    deleteInvitation(invitation, onError)
+                                }
+                        }
+                        .addOnFailureListener {
+                            onError("Error adding member ${it.message}")
+                        }
+                        .addOnFailureListener {
+                            onError("Error adding member ${it.message}")
+                        }
 
+                }
+                }
 
     }
 

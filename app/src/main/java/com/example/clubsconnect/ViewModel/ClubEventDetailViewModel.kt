@@ -2,24 +2,20 @@ package com.example.clubsconnect.ViewModel
 
 import android.graphics.Bitmap
 import android.util.Log
-import android.view.View
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.clubsconnect.FrontEnd.clubside.eventDetailScreen.QRCodeSection
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.toObject
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
-import com.google.api.Context
+import com.example.clubsconnect.ViewModel.Clubside.clubEvent
 import java.io.File
 
 data class RegisteredAttendes(
@@ -128,7 +124,7 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
     }
 
 
-    fun saveQrCodeToFile(context : android.content.Context, event: clubEvent,bitmap: Bitmap): File{
+    fun saveQrCodeToFile(context : android.content.Context, event: clubEvent, bitmap: Bitmap): File{
         val file = File(context.cacheDir,"${event.name}_qr_code.png")
         file.outputStream().use {
             out->

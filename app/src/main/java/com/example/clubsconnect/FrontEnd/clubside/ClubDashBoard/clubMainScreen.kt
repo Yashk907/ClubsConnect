@@ -16,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -25,10 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.clubsconnect.Screen
-import com.example.clubsconnect.ViewModel.clubEvent
-import com.example.clubsconnect.ViewModel.clubMainScreenViewmodel
-import com.example.clubsconnect.ViewModel.clubState
-import java.nio.file.WatchEvent
+import com.example.clubsconnect.ViewModel.Clubside.clubEvent
+import com.example.clubsconnect.ViewModel.Clubside.clubMainScreenViewmodel
+import com.example.clubsconnect.ViewModel.Clubside.clubState
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -254,7 +252,7 @@ fun EventCard(navController: NavController,event: clubEvent, isUpcoming: Boolean
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = event.startDate,
+                        text = event.eventDate,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

@@ -1,5 +1,6 @@
 package com.example.clubsconnect.FrontEnd.clubside.membersScreen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -17,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,8 +38,13 @@ fun ManageMembersScreen(viewmodel: ManageMembersViewmodel,
                         onback : ()-> Unit) {
     val clubmembers by viewmodel.clubMembers.collectAsStateWithLifecycle()
     val uiState by viewmodel.uistate.collectAsState()
+    val context = LocalContext.current
     LaunchedEffect(Unit) {
-        viewmodel.loadMembers() {}
+        viewmodel.loadMembers{
+            if(!it){
+                Toast.makeText(context,"Failed to load member", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
     Scaffold(
         topBar = {

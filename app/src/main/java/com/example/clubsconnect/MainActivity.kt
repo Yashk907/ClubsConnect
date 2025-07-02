@@ -61,7 +61,8 @@ class MainActivity : ComponentActivity() {
 
                     //clubs screens
                     composable(route = Screen.CLUBMAINSCREENCLUB.name) {
-                        ClubSideControlScreen(navController)
+                        ClubSideControlScreen(navController,
+                            viewModel())
                     }
                     composable(route ="${Screen.CLUBEVENTDETAILSCREENCLUB.name}/{clubeventId}"){
                         backStackEntry->

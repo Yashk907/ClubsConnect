@@ -2,7 +2,6 @@ package com.example.clubsconnect.FrontEnd.clubside.eventDetailScreen
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,19 +26,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.clubsconnect.Screen
 import com.example.clubsconnect.ViewModel.ClubEventDetailViewModel
 import com.example.clubsconnect.ViewModel.RegisteredAttendes
-import com.example.clubsconnect.ViewModel.clubEvent
+import com.example.clubsconnect.ViewModel.Clubside.clubEvent
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -342,13 +338,18 @@ fun EventDetailsSection(event: clubEvent) {
 
             DetailRow(
                 icon = Icons.Default.DateRange,
-                label = "Start Date",
+                label = "Registration Start Date",
                 value = event.startDate
+            )
+            DetailRow(
+                icon = Icons.Default.DateRange,
+                label = "Event Date",
+                value = event.eventDate
             )
 
             DetailRow(
                 icon = Icons.Default.Schedule,
-                label = "End Date",
+                label = "Registration End Date",
                 value = event.endDate
             )
 

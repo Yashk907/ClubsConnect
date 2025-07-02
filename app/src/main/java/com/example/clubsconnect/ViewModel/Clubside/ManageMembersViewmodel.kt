@@ -1,5 +1,6 @@
 package com.example.clubsconnect.ViewModel.Clubside
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
@@ -10,12 +11,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 data class ClubMember(
-    val id: Int,
-    val name: String,
-    val email: String,
-    val role: String,
-    val avatar: String,
-    val joinedAt : String
+    val id: String="",
+    val name: String="",
+    val email: String="",
+    val role: String="",
+    val avatar: String="",
+    val joinedAt : Long =0
 )
 
 data class UiState(
@@ -30,10 +31,10 @@ class ManageMembersViewmodel : ViewModel(){
     private val _club_members = MutableStateFlow<List<ClubMember>>(emptyList())
     val clubMembers: StateFlow<List<ClubMember>> = _club_members
 
+    @SuppressLint("SuspiciousIndentation")
     fun loadMembers(onsuccess : (Boolean)->Unit){
         val clubid = Firebase.auth.currentUser?.uid
         _uistate.value = UiState(isLoading = true)
-        viewModelScope.launch {
             Firebase.firestore.collection("clubs")
                 .document(clubid.toString())
                 .collection("members")
@@ -49,7 +50,6 @@ class ManageMembersViewmodel : ViewModel(){
                         isLoading = false)
                     onsuccess(false)
                 }
-        }
     }
 
 
