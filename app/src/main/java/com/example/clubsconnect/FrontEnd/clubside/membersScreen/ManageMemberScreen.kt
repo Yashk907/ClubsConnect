@@ -39,6 +39,8 @@ fun ManageMembersScreen(viewmodel: ManageMembersViewmodel,
     val clubmembers by viewmodel.clubMembers.collectAsStateWithLifecycle()
     val uiState by viewmodel.uistate.collectAsState()
     val context = LocalContext.current
+    val deleteDialog = remember { mutableStateOf(false) }
+    val deleteMemberId = remember { mutableStateOf<String?>(null) }
     LaunchedEffect(Unit) {
         viewmodel.loadMembers{
             if(!it){
@@ -67,7 +69,7 @@ fun ManageMembersScreen(viewmodel: ManageMembersViewmodel,
                 Text("Error : ${uiState.errormessage}", color = Color.Red,
                     fontSize = 30.sp,
                     modifier = Modifier.padding(padding)
-                        )
+                )
             }
 
             clubmembers.isEmpty()->{
@@ -93,23 +95,68 @@ fun ManageMembersScreen(viewmodel: ManageMembersViewmodel,
 
             }
             else ->
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize()
-                        .padding(padding),
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(clubmembers) { member ->
-                        MemberCard(member = member)
+                if (deleteDialog.value && deleteMemberId.value != null) {
+                    AlertDialog(
+                        onDismissRequest = {
+                            deleteDialog.value = false
+                            deleteMemberId.value = null
+                        },
+                        title = { Text("Confirm Delete") },
+                        text = { Text("Are you sure you want to remove this member from the club?") },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                viewmodel.deleteMember(deleteMemberId.value!!)
+                                { deleted->
+                                    if(deleted){
+                                        Toast.makeText(context,"Member Deleted",Toast.LENGTH_SHORT).show()
+                                    }else{
+                                        Toast.makeText(context,"Member Deletion Failed",Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                deleteDialog.value = false
+                                deleteMemberId.value = null
+                            }) {
+                                Text("Delete", color = MaterialTheme.colorScheme.error)
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = {
+                                deleteDialog.value = false
+                                deleteMemberId.value = null
+                            }) {
+                                Text("Cancel")
+                            }
+                        }
+                    )
+                }else{
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                            .padding(padding),
+                        contentPadding = PaddingValues(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+
+                        items(clubmembers) { member ->
+                            MemberCard(
+                                member = member,
+                                onDeleteclick = {
+                                    deleteDialog.value = true
+                                    deleteMemberId.value = member.id
+                                })
+
+                        }
+
                     }
                 }
+
 
         }
     }
 }
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MemberCard(member: ClubMember) {
+fun MemberCard(member: ClubMember,
+               onDeleteclick : ()-> Unit) {
 
 
     Card(
@@ -169,7 +216,9 @@ fun MemberCard(member: ClubMember) {
                 }
 
                 // Delete Button
-                IconButton(onClick = { /* Delete member */ }) {
+                IconButton(onClick = {
+                    onDeleteclick()
+                }) {
                     Icon(
                         Icons.Outlined.Delete,
                         contentDescription = "Delete",

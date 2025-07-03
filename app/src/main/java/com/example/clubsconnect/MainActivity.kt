@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.clubconnect.ui.screens.ClubEditProfile
 import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.LoginScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.SignupScreen
 import com.example.clubsconnect.FrontEnd.clubside.clubSideScreens.ClubSideControlScreen
@@ -30,6 +31,7 @@ import com.example.clubsconnect.FrontEnd.userside.detailscreen.EventDetailsScree
 import com.example.clubsconnect.FrontEnd.userside.userscreencontrol.UserScreenControl
 import com.example.clubsconnect.ViewModel.AuthViewModel
 import com.example.clubsconnect.ViewModel.ClubEventDetailViewModel
+import com.example.clubsconnect.ViewModel.Clubside.ClubProfileViewmodel
 import com.example.clubsconnect.ViewModel.EventDetailViewModel
 import com.example.clubsconnect.ui.theme.ClubsConnectTheme
 import com.google.firebase.FirebaseApp
@@ -43,6 +45,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ClubsConnectTheme {
+                val clubProfileViewmodel : ClubProfileViewmodel  = viewModel()
                 val navController = rememberNavController()
                 val authViewModel : AuthViewModel =viewModel()
                 NavHost(navController = navController, startDestination = Screen.SPLASHSCREEN.name){
@@ -62,7 +65,7 @@ class MainActivity : ComponentActivity() {
                     //clubs screens
                     composable(route = Screen.CLUBMAINSCREENCLUB.name) {
                         ClubSideControlScreen(navController,
-                            viewModel())
+                            clubProfileViewmodel)
                     }
                     composable(route ="${Screen.CLUBEVENTDETAILSCREENCLUB.name}/{clubeventId}"){
                         backStackEntry->
@@ -92,7 +95,12 @@ class MainActivity : ComponentActivity() {
                             navController.navigateUp()
                         }
                     }
-
+                    composable(route = Screen.CLUBEDITPROFILE.name) {
+                        ClubEditProfile(viewmodel = clubProfileViewmodel,
+                            onbackclick = {
+                            navController.navigateUp()
+                        })
+                    }
 
 
                     //users screens
@@ -129,6 +137,7 @@ enum class Screen{
     CLUBEVENTDETAILSCREENCLUB,
     CLUBEDITEVENTCLUB,
     ADDEVENTCLUB,
+    CLUBEDITPROFILE,
     CLUBMANAGEMEMBERS,
     CLUBADDMEMBERSCREEN,
     //user

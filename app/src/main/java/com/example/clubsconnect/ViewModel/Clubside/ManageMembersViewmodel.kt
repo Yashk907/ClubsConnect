@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,6 +51,22 @@ class ManageMembersViewmodel : ViewModel(){
                         isLoading = false)
                     onsuccess(false)
                 }
+    }
+
+    fun deleteMember(memberid : String,onsuccess: (Boolean) -> Unit){
+        val clubid = FirebaseAuth.getInstance().currentUser!!.uid
+        Firebase.firestore.collection("clubs")
+            .document(clubid)
+            .collection("members")
+            .document(memberid)
+            .delete()
+            .addOnSuccessListener {
+                loadMembers(onsuccess)
+                onsuccess(true)
+            }
+            .addOnFailureListener {
+                onsuccess(false)
+            }
     }
 
 

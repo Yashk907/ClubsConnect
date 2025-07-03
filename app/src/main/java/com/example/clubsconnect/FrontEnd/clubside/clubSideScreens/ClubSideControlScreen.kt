@@ -82,7 +82,7 @@ fun ClubSideControlScreen(navController: NavController,
     val menuItems = listOf(
         DrawerMenuItem(Icons.Default.Edit, "Edit Profile") {
             // Handle edit profile
-            Toast.makeText(context, "Edit Profile clicked", Toast.LENGTH_SHORT).show()
+            navController.navigate(Screen.CLUBEDITPROFILE.name)
         },
         DrawerMenuItem(Icons.Default.Event, "Add Events") {
             // Handle manage events
@@ -95,10 +95,6 @@ fun ClubSideControlScreen(navController: NavController,
         DrawerMenuItem(Icons.Default.Settings, "Settings") {
             // Handle settings
             Toast.makeText(context, "Settings clicked", Toast.LENGTH_SHORT).show()
-        },
-        DrawerMenuItem(Icons.Default.Analytics, "Analytics") {
-            // Handle analytics
-            Toast.makeText(context, "Analytics clicked", Toast.LENGTH_SHORT).show()
         },
         DrawerMenuItem(Icons.Default.Help, "Help & Support") {
             // Handle help
