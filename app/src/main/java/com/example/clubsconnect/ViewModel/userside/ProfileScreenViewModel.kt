@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
+import java.util.Calendar
 
 data class JoinedClubs(
     val clubname : String ="",
@@ -29,12 +30,12 @@ data class RegisteredEvent(
     val clubName : String = "",
     val status : String = "",
     val date : String = "",
-    val registeredOn : String=""
+    val registeredOn : Long= 0
 )
 
 data class EventSmallInfo(
     val eventId : String = "",
-    val registeredOn : String = ""
+    val registeredOn : Long = 0
 )
 class ProfileScreenViewModel : ViewModel() {
     private val _student = MutableStateFlow<Student?>(null)
@@ -121,12 +122,21 @@ class ProfileScreenViewModel : ViewModel() {
                     val date = eventSnapshot.getString("eventDate") ?: continue
                     val registeredOn = event.registeredOn
 
-                    val checkDate = sdf.parse(date)
+                    val today = Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, 0)
+                        set(Calendar.MINUTE, 0)
+                        set(Calendar.SECOND, 0)
+                        set(Calendar.MILLISECOND, 0)
+                    }.time
+
+                    val eventDate = sdf.parse(date) ?: today
+
                     val status = when {
-                        checkDate.time > System.currentTimeMillis() -> "upcoming"
-                        checkDate.time == System.currentTimeMillis() -> "ongoing"
-                        else -> "completed"
+                        eventDate.after(today) -> "upcoming"
+                        eventDate.before(today) -> "completed"
+                        else -> "ongoing"
                     }
+
 
                     fetchedEvents.add(
                         RegisteredEvent(
