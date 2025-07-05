@@ -2,6 +2,8 @@ package com.example.clubsconnect.ViewModel.userside
 
 import android.util.Log
 import android.view.View
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.text.intl.Locale
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -13,12 +15,26 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.text.SimpleDateFormat
 
 data class JoinedClubs(
     val clubname : String ="",
     val clubid : String = "",
     val role : String = "",
     val joinedAt : Long = 0
+)
+
+data class RegisteredEvent(
+    val eventName : String = "",
+    val clubName : String = "",
+    val status : String = "",
+    val date : String = "",
+    val registeredOn : String=""
+)
+
+data class EventSmallInfo(
+    val eventId : String = "",
+    val registeredOn : String = ""
 )
 class ProfileScreenViewModel : ViewModel() {
     private val _student = MutableStateFlow<Student?>(null)
@@ -29,6 +45,9 @@ class ProfileScreenViewModel : ViewModel() {
 
     private val _joinedClub = MutableStateFlow<List<JoinedClubs>>(emptyList())
     val joinedClubs = _joinedClub
+
+    private val _registeredEvent = MutableStateFlow<List<RegisteredEvent>>(emptyList())
+    val registeredEvent = _registeredEvent
 
     val isLoading = MutableStateFlow(false)
     private val studentID = FirebaseAuth.getInstance().currentUser!!.uid
@@ -65,7 +84,7 @@ class ProfileScreenViewModel : ViewModel() {
             .addOnSuccessListener {
                 val joinedClubs = it.documents.mapNotNull { it.toObject(JoinedClubs::class.java) }
                 _joinedClub.value = joinedClubs
-                isLoading.value=false
+                fetchEventRegistered(onError)
             }
             .addOnFailureListener {
                 onError("Error fetching joined clubs ${it.message}")
@@ -73,6 +92,62 @@ class ProfileScreenViewModel : ViewModel() {
                 Log.d("ProfileScreenViewModel","Error fetching joined clubs ${it.message}")
             }
     }
+    fun fetchEventRegistered(onError: (String) -> Unit) {
+        viewModelScope.launch {
+            try {
+                val eventRefs = Firebase.firestore
+                    .collection("students")
+                    .document(studentID)
+                    .collection("registered_events")
+                    .get()
+                    .await()
+
+                val eventList = eventRefs.documents.mapNotNull {
+                    it.toObject(EventSmallInfo::class.java)
+                }
+
+                val sdf = SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+                val fetchedEvents = mutableListOf<RegisteredEvent>()
+
+                for (event in eventList) {
+                    val eventSnapshot = Firebase.firestore
+                        .collection("events")
+                        .document(event.eventId)
+                        .get()
+                        .await()
+
+                    val eventName = eventSnapshot.getString("name") ?: continue
+                    val clubName = eventSnapshot.getString("clubName") ?: "Unknown"
+                    val date = eventSnapshot.getString("eventDate") ?: continue
+                    val registeredOn = event.registeredOn
+
+                    val checkDate = sdf.parse(date)
+                    val status = when {
+                        checkDate.time > System.currentTimeMillis() -> "upcoming"
+                        checkDate.time == System.currentTimeMillis() -> "ongoing"
+                        else -> "completed"
+                    }
+
+                    fetchedEvents.add(
+                        RegisteredEvent(
+                            eventName = eventName,
+                            clubName = clubName,
+                            status = status,
+                            date = date,
+                            registeredOn = registeredOn
+                        )
+                    )
+                }
+                _registeredEvent.value = fetchedEvents
+                isLoading.value=false
+
+            } catch (e: Exception) {
+                isLoading.value=false
+                onError("Error fetching registered events: ${e.message}")
+            }
+        }
+    }
+
     fun onClubRequestAgreed(invitation: Invitation,onError: (String) -> Unit){
         var avatar=""
         viewModelScope.launch {

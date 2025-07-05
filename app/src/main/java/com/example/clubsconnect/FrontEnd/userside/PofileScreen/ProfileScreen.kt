@@ -1,4 +1,5 @@
 package com.example.clubsconnect.FrontEnd.userside.PofileScreen
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,6 +10,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -23,6 +25,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
@@ -38,8 +41,10 @@ import com.example.clubsconnect.ViewModel.Clubside.Invitation
 import com.example.clubsconnect.ViewModel.Clubside.Student
 import com.example.clubsconnect.ViewModel.userside.JoinedClubs
 import com.example.clubsconnect.ViewModel.userside.ProfileScreenViewModel
+import com.example.clubsconnect.ViewModel.userside.RegisteredEvent
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +54,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel,
     val student = viewModel.student.collectAsStateWithLifecycle()
     val invitations = viewModel.invitations.collectAsStateWithLifecycle()
     val joinedClubs = viewModel.joinedClubs.collectAsStateWithLifecycle()
+    val registeredEvents =viewModel.registeredEvent.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val isLoading = viewModel.isLoading.collectAsStateWithLifecycle()
 
@@ -73,7 +79,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
                 // Profile Header Section
-                ProfileHeaderSection(student = student.value!!)
+                ProfileHeaderSection(navcontroller,student = student.value!!)
 
                 // Club Invitations Section
                 ClubInvitationsSection(viewModel,
@@ -81,6 +87,9 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel,
 
                 // Joined Clubs Section
                 JoinedClubsSection(joinedClubs.value)
+
+                //registered events Section
+                RegisteredEventsSection(registeredEvents.value)
 
                 // Account Settings Section
                 AccountSettingsSection(navController = navcontroller)
@@ -95,7 +104,8 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel,
 }
 
 @Composable
-private fun ProfileHeaderSection(student: Student) {
+private fun ProfileHeaderSection(navcontroller: NavController,
+                                 student: Student) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -118,7 +128,11 @@ private fun ProfileHeaderSection(student: Student) {
             ) {
                 AsyncImage(
                     student.imageUri,
-                    contentDescription = "Profile Picture"
+                    contentDescription = "Profile Picture",
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
             }
 
@@ -158,7 +172,7 @@ private fun ProfileHeaderSection(student: Student) {
 
             // Edit Profile Button
             OutlinedButton(
-                onClick = { },
+                onClick = {navcontroller.navigate(Screen.EDITPROFILEUSERSCREEN.name)},
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Edit Profile")
@@ -498,5 +512,153 @@ private fun AccountSettingsSection(navController: NavController) {
         }
 
 
+}
+@Composable
+private fun RegisteredEventsSection(registeredEvents: List<RegisteredEvent>) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "Registered Events",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        if (registeredEvents.isEmpty()) {
+            Text(
+                text = "No Events Registered",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        } else {
+            registeredEvents.forEach { event ->
+                RegisteredEventCard(event = event)
+            }
+        }
+    }
+}
+
+@SuppressLint("SimpleDateFormat")
+@Composable
+private fun RegisteredEventCard(event: RegisteredEvent) {
+    val date = SimpleDateFormat("dd/MM/yyyy").format(event.registeredOn)
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = event.eventName,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = "by ${event.clubName}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                // Event status chip
+                AssistChip(
+                    onClick = { },
+                    label = {
+                        Text(
+                            text = event.status,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    },
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = when (event.status.lowercase()) {
+                            "upcoming" -> MaterialTheme.colorScheme.primaryContainer
+                            "ongoing" -> MaterialTheme.colorScheme.secondaryContainer
+                            "completed" -> MaterialTheme.colorScheme.tertiaryContainer
+                            else -> MaterialTheme.colorScheme.surfaceVariant
+                        },
+                        labelColor = when (event.status.lowercase()) {
+                            "upcoming" -> MaterialTheme.colorScheme.onPrimaryContainer
+                            "ongoing" -> MaterialTheme.colorScheme.onSecondaryContainer
+                            "completed" -> MaterialTheme.colorScheme.onTertiaryContainer
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
+                )
+            }
+
+            // Event details
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // Date
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.CalendarToday,
+                        contentDescription = "Date",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = event.date,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                // Time
+//                if (event.time.isNotEmpty()) {
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+//                    ) {
+//                        Icon(
+//                            imageVector = Icons.Default.Event,
+//                            contentDescription = "Time",
+//                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+//                            modifier = Modifier.size(16.dp)
+//                        )
+//                        Text(
+//                            text = event.time,
+//                            style = MaterialTheme.typography.bodySmall,
+//                            color = MaterialTheme.colorScheme.onSurfaceVariant
+//                        )
+//                    }
+//                }
+            }
+
+            // Registration date
+            Text(
+                text = "Registered on: $date",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.alpha(0.7f)
+            )
+        }
+    }
 }
 

@@ -50,7 +50,7 @@ fun SignupScreen(viewModel: AuthViewModel ,
     var password by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
     var username by remember { mutableStateOf("") }
-    var prnNo by remember { mutableStateOf("") }
+//    var prnNo by remember { mutableStateOf("") }
     var selectedOption by remember { mutableStateOf("Student/Club") }
     val focusManager = LocalFocusManager.current
     val focusRequester0 = remember { FocusRequester() }
@@ -125,27 +125,27 @@ fun SignupScreen(viewModel: AuthViewModel ,
                     )
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                // PRN No. Field
-                OutlinedTextField(
-                    value = prnNo,
-                    onValueChange = { prnNo = it },
-                    label = { Text("PRN No.") },
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(
-                        onNext = {
-                            focusRequester2.requestFocus()
-                        }
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                        .focusRequester(focusRequester1),
-                    shape = RoundedCornerShape(24.dp),
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedContainerColor = Color.Transparent
-                    )
-                )
+//                Spacer(modifier = Modifier.height(12.dp))
+//
+//                // PRN No. Field
+//                OutlinedTextField(
+//                    value = prnNo,
+//                    onValueChange = { prnNo = it },
+//                    label = { Text("PRN No.") },
+//                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
+//                    keyboardActions = KeyboardActions(
+//                        onNext = {
+//                            focusRequester2.requestFocus()
+//                        }
+//                    ),
+//                    modifier = Modifier.fillMaxWidth()
+//                        .focusRequester(focusRequester1),
+//                    shape = RoundedCornerShape(24.dp),
+//                    colors = TextFieldDefaults.colors(
+//                        unfocusedContainerColor = Color.Transparent,
+//                        focusedContainerColor = Color.Transparent
+//                    )
+//                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -249,7 +249,7 @@ fun SignupScreen(viewModel: AuthViewModel ,
                 Button(
                     onClick = {
                         focusManager.clearFocus()
-                        viewModel.SignUp(email,password,selectedOption,username,prnNo){
+                        viewModel.SignUp(email,password,selectedOption,username){
                                 success,error->
                             if(success){
                                 Toast.makeText(context,"Sign Up success", Toast.LENGTH_SHORT).show()

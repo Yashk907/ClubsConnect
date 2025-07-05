@@ -29,7 +29,7 @@ class AuthViewModel : ViewModel() {
                password : String ,
                role : String,
                userName : String,
-               PRNno : String,
+//               PRNno : String,
                onresult : (Boolean, String?)-> Unit){
         if(!email.endsWith("@viit.ac.in")){
             onresult(false,"UnAuthorised Email ID :  Use official VIIT Email Id")
@@ -39,7 +39,7 @@ class AuthViewModel : ViewModel() {
             if(task.isSuccessful){
                 onresult(true,null)
                 val uid = task.result?.user?.uid
-                saveUserToDataStore(uid,email,role,userName,PRNno,onresult)
+                saveUserToDataStore(uid,email,role,userName,onresult)
                 //here we have to add role in firestore
             }else{
                 onresult(false,task.exception?.message)
@@ -52,7 +52,7 @@ class AuthViewModel : ViewModel() {
                                     email : String,
                                     role : String,
                                     userName : String,
-                                    PRNno : String,
+//                                    PRNno : String,
                                     onresult: (Boolean, String?) -> Unit){
         val userId = uid
         if(userId==null){
@@ -62,7 +62,7 @@ class AuthViewModel : ViewModel() {
         }
         val userMap = hashMapOf(
             "email" to email,
-            "prn" to PRNno,
+//            "prn" to PRNno,
             "role" to role,
             "username" to userName,
 
@@ -98,6 +98,10 @@ class AuthViewModel : ViewModel() {
             "username" to userName
         )
         if(role=="Student"){
+            userMap["prnno"]="0"
+            userMap["department"]="Computer Science"
+            userMap["academicyear"]="4th year"
+            userMap["bio"]="Student of VIIT"
             firestordb.collection("students")
                 .document(uid)
                 .set(userMap)

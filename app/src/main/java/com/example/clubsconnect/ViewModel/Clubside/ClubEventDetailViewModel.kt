@@ -1,6 +1,8 @@
-package com.example.clubsconnect.ViewModel
+package com.example.clubsconnect.ViewModel.Clubside
 
+import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
@@ -15,7 +17,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
-import com.example.clubsconnect.ViewModel.Clubside.clubEvent
 import java.io.File
 
 data class RegisteredAttendes(
@@ -116,7 +117,7 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
                         x,
                         y
                     )
-                ) android.graphics.Color.BLACK else android.graphics.Color.WHITE
+                ) Color.BLACK else Color.WHITE
             }
         }
         Log.d("qrcode","completed")
@@ -124,7 +125,7 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
     }
 
 
-    fun saveQrCodeToFile(context : android.content.Context, event: clubEvent, bitmap: Bitmap): File{
+    fun saveQrCodeToFile(context : Context, event: clubEvent, bitmap: Bitmap): File{
         val file = File(context.cacheDir,"${event.name}_qr_code.png")
         file.outputStream().use {
             out->

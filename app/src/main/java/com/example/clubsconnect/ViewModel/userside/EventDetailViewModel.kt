@@ -1,4 +1,4 @@
-package com.example.clubsconnect.ViewModel
+package com.example.clubsconnect.ViewModel.userside
 
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import com.example.clubsconnect.Model.Event
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
-import kotlin.jvm.java
 
 class EventDetailViewModel (eventId : String): ViewModel() {
     var eventState by mutableStateOf<Event?>(null)
@@ -54,6 +53,7 @@ class EventDetailViewModel (eventId : String): ViewModel() {
                     userDocRef.set(data)
                         .addOnSuccessListener {
                             onResult(true, null)
+                            addEventToMemberRegisteredEvent(eventId,userId,onResult)
                         }
                         .addOnFailureListener {
                             onResult(false, it.message)
@@ -62,6 +62,30 @@ class EventDetailViewModel (eventId : String): ViewModel() {
             }
             .addOnFailureListener {
                 onResult(false, it.message)
+            }
+    }
+
+    //for saving event to the student->id->registered_events
+    private fun addEventToMemberRegisteredEvent(eventId: String,
+                                                userId : String,
+                                                onResult: (Boolean, String?) -> Unit){
+        Firebase.firestore.collection("events")
+            .document(eventId)
+            .get()
+            .addOnSuccessListener {
+                val eventRef= mapOf("eventId" to eventId,
+                    "registeredOn" to System.currentTimeMillis())
+                Firebase.firestore.collection("students")
+                    .document(userId)
+                    .collection("registered_events")
+                    .document(eventId)
+                    .set(eventRef)
+                    .addOnFailureListener {
+                        onResult(false,it.message)
+                    }
+            }
+            .addOnFailureListener {
+                onResult(false,it.message)
             }
     }
 

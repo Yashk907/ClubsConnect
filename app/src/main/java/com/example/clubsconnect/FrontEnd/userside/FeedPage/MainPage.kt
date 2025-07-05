@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
@@ -80,13 +82,29 @@ fun MainFeedScreen(
 
             // Content based on selected filter
                 when (selectedFilter) {
-                    "Events" -> items(events.value){event->
-                        EventCard(event, navController,
-                            modifier = Modifier.padding(20.dp))
+                    "Events" ->if(events.value.isNotEmpty()) {
+                        items(events.value) { event ->
+                            EventCard(
+                                event, navController,
+                                modifier = Modifier.padding(20.dp)
+                            )
+                        }
+                    }else{
+                        item{
+                            EmptyEventContent()
+                        }
                     }
-                    "Clubs" -> items(clubs.value){
-                        club->
-                        ClubCard(club, modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp))
+                    "Clubs" -> if(clubs.value.isNotEmpty()) {
+                        items(clubs.value) { club ->
+                            ClubCard(
+                                club,
+                                modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
+                            )
+                        }
+                    }else{
+                        item {
+                            EmptyClubsContent()
+                        }
                     }
                 }
 
@@ -200,21 +218,52 @@ fun FilterChipsSection(
 
 
 @Composable
-fun ClubsContent() {
+fun EmptyClubsContent() {
     // Placeholder for clubs content
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 40.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
+
         ) {
-            Text(
-                text = "🏛️",
-                fontSize = 48.sp
+            Icon(imageVector = Icons.Default.Groups,
+                contentDescription = "Clubs",
+                tint = Color(0xFF6C7B7F),
+                modifier = Modifier.size(100.dp)
             )
             Text(
                 text = "Clubs Coming Soon!",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = Color(0xFF6C7B7F)
+            )
+        }
+    }
+}
+
+@Composable
+fun EmptyEventContent(modifier: Modifier = Modifier) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 40.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+
+        ) {
+            Icon(imageVector = Icons.Default.Event,
+                contentDescription = "Events",
+                tint = Color(0xFF6C7B7F),
+                modifier = Modifier.size(100.dp)
+            )
+            Text(
+                text = "Events Coming Soon!",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 color = Color(0xFF6C7B7F)

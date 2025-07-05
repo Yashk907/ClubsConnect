@@ -3,14 +3,11 @@ package com.example.clubsconnect
 import EditEventScreen
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -18,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.clubconnect.ui.screens.ClubEditProfile
+import com.clubconnect.ui.screens.StudentEditProfileScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.LoginScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.SignupScreen
 import com.example.clubsconnect.FrontEnd.clubside.clubSideScreens.ClubSideControlScreen
@@ -25,17 +23,15 @@ import com.example.clubsconnect.FrontEnd.clubside.eventDetailScreen.ClubSideEven
 import com.example.clubsconnect.FrontEnd.clubside.membersScreen.AddMembersScreen
 import com.example.clubsconnect.FrontEnd.clubside.membersScreen.ManageMembersScreen
 import com.example.clubsconnect.FrontEnd.userside.ClubListStud.ClubsScreen
-import com.example.clubsconnect.FrontEnd.userside.FeedPage.MainFeedScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.SplashScreen.SplashScreen
 import com.example.clubsconnect.FrontEnd.userside.detailscreen.EventDetailsScreen
 import com.example.clubsconnect.FrontEnd.userside.userscreencontrol.UserScreenControl
 import com.example.clubsconnect.ViewModel.AuthViewModel
-import com.example.clubsconnect.ViewModel.ClubEventDetailViewModel
+import com.example.clubsconnect.ViewModel.Clubside.ClubEventDetailViewModel
 import com.example.clubsconnect.ViewModel.Clubside.ClubProfileViewmodel
-import com.example.clubsconnect.ViewModel.EventDetailViewModel
+import com.example.clubsconnect.ViewModel.userside.EventDetailViewModel
 import com.example.clubsconnect.ui.theme.ClubsConnectTheme
 import com.google.firebase.FirebaseApp
-import getUserInfoFromFireStore
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -121,6 +117,11 @@ class MainActivity : ComponentActivity() {
                     composable(route= Screen.CLUBLISTSCREENUSER.name){
                         ClubsScreen(viewModel(), onBackPressed = {}) { }
                     }
+                    composable(route= Screen.EDITPROFILEUSERSCREEN.name) {
+                        StudentEditProfileScreen(viewmodel = viewModel()){
+                            navController.navigateUp()
+                        }
+                    }
 
                 }
             }
@@ -144,4 +145,5 @@ enum class Screen{
     MAINSCREENUSER,
     DETAILSCREENUSER,
     CLUBLISTSCREENUSER,
+    EDITPROFILEUSERSCREEN
 }

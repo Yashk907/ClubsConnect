@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.runtime.*
@@ -35,8 +34,8 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.clubsconnect.Screen
-import com.example.clubsconnect.ViewModel.ClubEventDetailViewModel
-import com.example.clubsconnect.ViewModel.RegisteredAttendes
+import com.example.clubsconnect.ViewModel.Clubside.ClubEventDetailViewModel
+import com.example.clubsconnect.ViewModel.Clubside.RegisteredAttendes
 import com.example.clubsconnect.ViewModel.Clubside.clubEvent
 import java.text.SimpleDateFormat
 import java.util.Date

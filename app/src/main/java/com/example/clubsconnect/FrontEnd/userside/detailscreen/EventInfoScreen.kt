@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import com.example.clubsconnect.Model.Event
-import com.example.clubsconnect.ViewModel.EventDetailViewModel
+import com.example.clubsconnect.ViewModel.userside.EventDetailViewModel
 import getUserInfoFromFireStore
 
 @OptIn(ExperimentalMaterial3Api::class)

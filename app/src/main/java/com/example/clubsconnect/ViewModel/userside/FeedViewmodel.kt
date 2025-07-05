@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel
 import com.example.clubsconnect.Model.Event
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 data class Club(
     val username : String="",
@@ -38,18 +41,36 @@ class FeedViewModel : ViewModel() {
         eventcollection
             .get()
             .addOnSuccessListener { result ->
-                val _events = result.documents.mapNotNull {
+                val fetchedEvents = result.documents.mapNotNull {
                     it.toObject(Event::class.java)
                 }
-                this._events.value = _events
-                Log.e("FeedViewModel", "Fetched ${_events.size} events")
+
+                val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+                val now = Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }.timeInMillis
+
+                this._events.value = fetchedEvents.filter {
+                    try {
+                        val eventDate = sdf.parse(it.eventDate)?.time ?: 0L
+                        eventDate >= now
+                    } catch (e: Exception) {
+                        false
+                    }
+                }
+
+                Log.e("FeedViewModel", "Fetched ${_events.value.size} events (filtered from ${fetchedEvents.size})")
             }
             .addOnFailureListener {
                 Log.e("FeedViewModel", "Failed to fetch events: ${it.message}")
             }
     }
 
-     fun fetchclubs(){
+    fun fetchclubs(){
         clubcollection.get()
             .addOnSuccessListener {
                 result->
