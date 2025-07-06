@@ -93,6 +93,7 @@ Each user type has a tailored experience and UI in the app.
 - Firebase/network issues are handled gracefully
 
 ---
+> 📽️ **[Watch Demo Video]([https://your-demo-video-link.com](https://drive.google.com/file/d/16D0SvbvClgmlsLFgfrjOTJKPtoqfKyxA/view?usp=drive_link))**
 
 ## 🖼️ Screenshots & Demo
 
@@ -106,7 +107,6 @@ Each user type has a tailored experience and UI in the app.
 | QR Attendance club | ![QR Attendance](assets/18.jpeg) |
 
 
-> 📽️ **[Watch Demo Video](https://your-demo-video-link.com)**
 
 ---
 
