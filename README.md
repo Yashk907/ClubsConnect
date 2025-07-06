@@ -112,11 +112,17 @@ Each user type has a tailored experience and UI in the app.
 
 ## 📦 Download APK
 
-📲 [Download Latest APK](https://your-apk-download-link.com)
+📲 [Download Latest APK](https://drive.google.com/file/d/1_NPw3V9SAO-uLAHun6BW0Oxl0QOBu-ec/view?usp=drive_link)
 
 ---
 
 ## 🧪 Test Credentials
 
 ### 👨‍🎓 Student Login
+email : yash@viit.ac.in
+password : yash123
+
+### 👨‍🎓 club Login
+email : gdg@viit.ac.in
+password : yash123
 
