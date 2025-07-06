@@ -98,12 +98,13 @@ Each user type has a tailored experience and UI in the app.
 
 | Screen | Preview |
 |--------|---------|
-| Splash & Login | ![Splash](assets/splash_login.png) |
-| Club Home | ![Club Home](assets/club_home.png) |
-| Student Feed | ![Student Feed](assets/student_feed.png) |
-| Event Creation | ![Create Event](assets/create_event.png) |
-| QR Attendance | ![QR Attendance](assets/qr_attendance.png) |
-| Announcement | ![Announcement](assets/announcement.png) |
+|  Login | ![Splash](assets/11.jpeg) |
+| Club Home | ![Club Home](assets/20.jpeg) |
+| Student Feed | ![Student Feed](assets/) |
+| Event Creation | ![Create Event](assets/10.jpeg) |
+| QR Attendance | ![QR Attendance](assets/4.jpeg) |
+| QR Attendance club | ![QR Attendance](assets/18.jpeg) |
+
 
 > 📽️ **[Watch Demo Video](https://your-demo-video-link.com)**
 
