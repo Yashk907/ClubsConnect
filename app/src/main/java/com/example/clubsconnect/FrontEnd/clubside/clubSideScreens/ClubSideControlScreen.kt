@@ -1,8 +1,10 @@
 package com.example.clubsconnect.FrontEnd.clubside.clubSideScreens
 
 import AddEventScreen
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.annotation.RequiresApi
@@ -55,6 +57,7 @@ data class DrawerMenuItem(
     val onClick: () -> Unit
 )
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,11 +75,17 @@ fun ClubSideControlScreen(navController: NavController,
     val clubProfile = viewmodel.clubProfile.collectAsStateWithLifecycle()
     val isLoading = viewmodel.isLoading.value
 
-    LaunchedEffect(Unit) {
-        viewmodel.fetchClubInfo {
-            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+    LaunchedEffect(viewmodel.clubid.value) {
+        if (viewmodel.clubid.value!="") {
+            viewmodel.fetchClubInfo {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                Log.d("checkViewmodelClubId",it)
+            }
+        } else {
+            viewmodel.loadId()
         }
     }
+
     LaunchedEffect(Unit) {
         snapshotFlow { drawerState.isOpen }
             .collect { isOpen ->

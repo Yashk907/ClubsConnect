@@ -37,6 +37,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.clubsconnect.Screen
 import com.example.clubsconnect.ViewModel.AuthViewModel
+import com.example.clubsconnect.ViewModel.Clubside.ClubProfileViewmodel
 import com.google.firebase.auth.FirebaseAuth
 import getUserInfoFromFireStore
 

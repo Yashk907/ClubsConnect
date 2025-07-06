@@ -48,6 +48,7 @@ class MainActivity : ComponentActivity() {
                 val authViewModel : AuthViewModel =viewModel()
                 val clubProfileViewmodel : ClubProfileViewmodel  = viewModel()
 
+
                 NavHost(navController = navController, startDestination = Screen.SPLASHSCREEN.name){
                     //common screens
                     composable(route = Screen.SPLASHSCREEN.name) {

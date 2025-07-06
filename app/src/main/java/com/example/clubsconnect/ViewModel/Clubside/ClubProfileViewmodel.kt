@@ -45,21 +45,18 @@ class ClubProfileViewmodel : ViewModel() {
 //
     val isLoading = mutableStateOf(false)
 
-    private val clubid = FirebaseAuth.getInstance().currentUser!!.uid
+     val clubid = MutableStateFlow(FirebaseAuth.getInstance().currentUser?.uid?:"")
 
-    init {
-        viewModelScope.launch {
-            fetchClubInfo(){
-                Log.e("ClubProfileViewmodel", it)
-            }
-        }
-
+    fun loadId(){
+        clubid.value= FirebaseAuth.getInstance().currentUser?.uid?:""
     }
+
     suspend fun fetchClubInfo(onError: (String) -> Unit) {
         try {
             isLoading.value = true
 
-            val clubDoc = Firebase.firestore.collection("clubs").document(clubid).get().await()
+            val clubDoc = Firebase.firestore.collection("clubs")
+                .document(clubid.value).get().await()
 
             if (!clubDoc.exists()) {
                 onError("Club document not found")
@@ -81,7 +78,7 @@ class ClubProfileViewmodel : ViewModel() {
             )
 
             val membersSnapshot = Firebase.firestore.collection("clubs")
-                .document(clubid)
+                .document(clubid.value)
                 .collection("members")
                 .get()
                 .await()
@@ -91,7 +88,7 @@ class ClubProfileViewmodel : ViewModel() {
             )
 
             val eventSnapshot = Firebase.firestore.collection("events")
-                .whereEqualTo("clubUid", clubid)
+                .whereEqualTo("clubUid", clubid.value)
                 .get()
                 .await()
 
@@ -164,7 +161,7 @@ class ClubProfileViewmodel : ViewModel() {
     fun SaveChanges(clubProfile: ClubProfile,onSuccess : (String)-> Unit){
         isLoading.value = true
         Firebase.firestore.collection("clubs")
-            .document(clubid)
+            .document(clubid.value)
             .update(mapOf(
                 "username" to clubProfile.clubName,
                 "clubdescription" to clubProfile.clubDescription,
