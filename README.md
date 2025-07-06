@@ -1,43 +1,3 @@
-# 📱 ClubConnect
-
-**ClubConnect** is a modern Android application built with **Jetpack Compose**, **Firebase**, and **MVVM architecture**, designed to streamline communication and event management between university clubs and students.
-
----
-
-## ✨ Overview
-
-ClubConnect serves as a digital bridge between **college clubs** and **students**, allowing seamless **event creation**, **announcements**, **club management**, and **real-time updates**. It's tailored for students to stay updated and engaged with campus life while giving clubs a powerful tool to organize and promote their activities.
-
----
-
-## 🚀 Tech Stack
-
-- 🛠️ **Jetpack Compose** – For modern declarative UI
-- 🔥 **Firebase** – Auth, Firestore, and Storage for backend
-- 🧠 **MVVM Architecture** – Clean separation of concerns
-- 💉 **Hilt** – Dependency Injection
-- 🌐 **Kotlin** – Primary language
-- ☁️ **Cloudinary (or alternative)** – For image uploads
-
----
-
-## 👥 User Types
-
-- 🎓 **Student**
-- 🏛️ **Club**
-
-Each user type has a tailored experience within the app.
-
----
-
-## 🔐 Authentication
-
-- Firebase Authentication with email/password
-- User type selection during sign-up (Student or Club)
-- Persistent login state
-
----
-
 ## 🗂️ Key Features
 
 ### 🎉 Events
@@ -58,66 +18,41 @@ Each user type has a tailored experience within the app.
 
 ### 📋 Club Profile
 
-- Club can:
-  - Add logo, name, description
-  - See member list and events
-  - Edit profile info
+- Add club logo, name, and description
+- Manage member list and events
+- Edit club profile
 
 ### 👨‍🎓 Student Profile
 
 - View & edit name, profile photo
 - See joined/attending events (optional)
-- Logout option
+- Logout securely
 
-### 📅 Calendar Integration (optional/future)
+### 📅 QR Code Attendance Tracking ✅
 
-- Sync events with local calendar
+- Each event generates a **unique QR code**
+- Students can **scan the QR code** during events to mark attendance
+- Attendance is saved and viewable by the club admin
+- Optional manual attendance mode for fallback
 
 ### 💬 Notifications
 
-- Real-time updates when:
+- Real-time push updates when:
   - New events are added
   - Announcements are posted
-  - Event details are updated
+  - Event details are changed
 
 ### 📂 Tagging & Filtering
 
-- Events can be tagged (e.g., Tech, Sports, Cultural)
+- Events are categorized with tags (e.g., Tech, Cultural, Workshop)
 - Students can filter events based on interest
-
-### 🧪 Error Handling
-
-- Graceful handling of Firebase/network errors
-- Toasts or dialogs for important issues
 
 ### 📥 Image Upload
 
-- Events & profile images uploaded to Firebase Storage (or Cloudinary)
-- Optimized size and format for mobile display
+- Upload event and profile images to Firebase Storage (or Cloudinary)
+- Images are compressed and optimized for faster loading
 
----
+### 🧪 Error Handling
 
-## 🖼️ Screenshots & Demo
-
-| Screen | Preview |
-|--------|---------|
-| Splash & Login | ![Splash](screenshots/splash_login.png) |
-| Club Home | ![Club Home](screenshots/club_home.png) |
-| Student Feed | ![Student Feed](screenshots/student_feed.png) |
-| Event Creation | ![Event Creation](screenshots/create_event.png) |
-| Announcement | ![Announcement](screenshots/announcement.png) |
-
-> 📽️ **[Watch Demo Video](https://your-demo-video-link.com)**
-
----
-
-## 📦 Download APK
-
-🔗 [Download Latest APK](https://your-apk-download-link.com)
-
----
-
-## 🧪 Test Credentials
-
-### 👨‍🎓 Student Login
-
+- Graceful handling of Firebase/network issues
+- Feedback to users using Toasts or Dialogs
