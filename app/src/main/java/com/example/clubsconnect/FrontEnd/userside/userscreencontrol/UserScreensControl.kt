@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -69,7 +70,7 @@ fun UserScreenControl(navController: NavController, modifier: Modifier = Modifie
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
-            topBar = { TopAppBar() },
+            topBar = { TopAppBar1() },
             containerColor = Color.Transparent,
         ) { padding ->
             val contentPadding = PaddingValues(
@@ -197,13 +198,11 @@ fun BottomNavigation(selectedTab: Int, onTabSelected: (Int) -> Unit,modifier: Mo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBar() {
+fun TopAppBar1() {
 
     CenterAlignedTopAppBar(
         title = {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+            Column {
                 Text(
                     text = "VIIT Pune",
                     fontWeight = FontWeight.Bold,
@@ -217,29 +216,32 @@ fun TopAppBar() {
                     fontWeight = FontWeight.Medium
                 )
             }
-        },
-        actions = {
-            IconButton(
-                onClick = { /* Handle notifications */ },
-                modifier = Modifier
-                    .size(40.dp)
-                    .background(
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                Color(0xFFE3F2FD),
-                                Color(0xFFBBDEFB)
-                            )
-                        ),
-                        shape = CircleShape
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Notifications,
-                    contentDescription = "Notifications",
-                    tint = Color(0xFF1A237E)
-                )
-            }
-        },
-        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+
+        }
     )
+
+//    CenterAlignedTopAppBar(
+//        title = {
+//            Column(
+//                horizontalAlignment = Alignment.CenterHorizontally
+//
+//            ) {
+//                Text(
+//                    text = "VIIT Pune",
+//                    fontWeight = FontWeight.Bold,
+//                    fontSize = 20.sp,
+//                    color = Color(0xFF1A237E)
+//                )
+//                Text(
+//                    text = "ClubConnect",
+//                    fontSize = 12.sp,
+//                    color = Color(0xFF6C7B7F),
+//                    fontWeight = FontWeight.Medium
+//                )
+//            }
+//
+//        },
+//        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+//
+//    )
 }

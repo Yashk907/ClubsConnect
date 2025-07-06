@@ -65,6 +65,7 @@ fun MainFeedScreen(
 
     LazyColumn (
             modifier = modifier
+
                 .fillMaxSize()
         ) {
             // Welcome Card
@@ -97,6 +98,7 @@ fun MainFeedScreen(
                     "Clubs" -> if(clubs.value.isNotEmpty()) {
                         items(clubs.value) { club ->
                             ClubCard(
+                                navController,
                                 club,
                                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp)
                             )
@@ -425,7 +427,9 @@ fun VIITPuneAppPreview() {
 
 
 @Composable
-fun ClubCard(club: Club,modifier: Modifier= Modifier) {
+fun ClubCard(navController: NavController,
+             club: Club,
+             modifier: Modifier= Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -480,15 +484,17 @@ fun ClubCard(club: Club,modifier: Modifier= Modifier) {
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Join Button
+                // View button
                 Surface(
-                    onClick = { /* Handle join club */ },
+                    onClick = {
+                        navController.navigate("${Screen.USERSIDECLUBPROFILE.name}/${club.uid}")
+                    },
                     shape = RoundedCornerShape(20.dp),
                     color = Color(0xFF1A237E),
                     modifier= Modifier.align(Alignment.CenterEnd)
                 ) {
                     Text(
-                        text = "Join",
+                        text = "View Club",
                         color = Color.White,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium,

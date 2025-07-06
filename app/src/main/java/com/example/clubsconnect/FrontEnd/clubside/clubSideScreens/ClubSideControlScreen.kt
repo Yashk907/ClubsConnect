@@ -77,6 +77,16 @@ fun ClubSideControlScreen(navController: NavController,
             Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
         }
     }
+    LaunchedEffect(Unit) {
+        snapshotFlow { drawerState.isOpen }
+            .collect { isOpen ->
+                if (isOpen) {
+                    viewmodel.fetchClubInfo { errorMsg ->
+                        Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+    }
 
     // Menu items for the drawer
     val menuItems = listOf(
@@ -94,11 +104,9 @@ fun ClubSideControlScreen(navController: NavController,
         },
         DrawerMenuItem(Icons.Default.Settings, "Settings") {
             // Handle settings
-            Toast.makeText(context, "Settings clicked", Toast.LENGTH_SHORT).show()
         },
         DrawerMenuItem(Icons.Default.Help, "Help & Support") {
             // Handle help
-            Toast.makeText(context, "Help & Support clicked", Toast.LENGTH_SHORT).show()
         },
         DrawerMenuItem(Icons.AutoMirrored.Filled.ExitToApp, "Logout") {
             FirebaseAuth.getInstance().signOut()
@@ -108,7 +116,6 @@ fun ClubSideControlScreen(navController: NavController,
                 launchSingleTop=true
             }
             // Handle logout
-            Toast.makeText(context, "Logout clicked", Toast.LENGTH_SHORT).show()
             // You can add actual logout logic here
         }
     )
@@ -155,9 +162,6 @@ fun ClubSideControlScreen(navController: NavController,
                         IconButton(
                             onClick = {
                                 scope.launch {
-                                    viewmodel.fetchClubInfo {
-                                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                                    }
                                     drawerState.open()
                                 }
                             }

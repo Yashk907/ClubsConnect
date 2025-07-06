@@ -1,12 +1,14 @@
 package com.example.clubsconnect
 
 import EditEventScreen
+import ManageClubScreen
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -36,14 +38,16 @@ import com.google.firebase.FirebaseApp
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
+
         FirebaseApp.initializeApp(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             ClubsConnectTheme {
-                val clubProfileViewmodel : ClubProfileViewmodel  = viewModel()
                 val navController = rememberNavController()
                 val authViewModel : AuthViewModel =viewModel()
+                val clubProfileViewmodel : ClubProfileViewmodel  = viewModel()
+
                 NavHost(navController = navController, startDestination = Screen.SPLASHSCREEN.name){
                     //common screens
                     composable(route = Screen.SPLASHSCREEN.name) {
@@ -122,6 +126,13 @@ class MainActivity : ComponentActivity() {
                             navController.navigateUp()
                         }
                     }
+                    composable(route = "${Screen.USERSIDECLUBPROFILE.name}/{clubId}") {
+                        backStackEntry ->
+                        val clubId = backStackEntry.arguments?.getString("clubId")?:""
+                        ManageClubScreen(onbackclick = {
+                            navController.navigateUp()
+                        },
+                            clubId = clubId)}
 
                 }
             }
@@ -145,5 +156,6 @@ enum class Screen{
     MAINSCREENUSER,
     DETAILSCREENUSER,
     CLUBLISTSCREENUSER,
-    EDITPROFILEUSERSCREEN
+    EDITPROFILEUSERSCREEN,
+    USERSIDECLUBPROFILE
 }

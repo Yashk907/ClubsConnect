@@ -1,6 +1,11 @@
 package com.example.clubsconnect.FrontEnd.userside.PofileScreen
 import android.annotation.SuppressLint
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.FiniteAnimationSpec
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,6 +16,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -80,6 +87,7 @@ fun ProfileScreen(viewModel: ProfileScreenViewModel,
             ) {
                 // Profile Header Section
                 ProfileHeaderSection(navcontroller,student = student.value!!)
+
 
                 // Club Invitations Section
                 ClubInvitationsSection(viewModel,
@@ -184,34 +192,42 @@ private fun ProfileHeaderSection(navcontroller: NavController,
 @Composable
 private fun ClubInvitationsSection(viewModel: ProfileScreenViewModel,
                                    invitations : List<Invitation>) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text(
-            text = "Club Invitations",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        // Sample invitations
-        if(invitations.isEmpty()){
+    Card(  modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(10.dp)
+        ) {
             Text(
-                text = "No Invitations",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = "Club Invitations",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
-        }else{
-            invitations.forEach {
-                InvitationCard(
-                    invitation = it,
-                    viewModel=viewModel,
-                    clubName = it.clubName,
-                    position = it.role)
-            }
-        }
 
+            // Sample invitations
+            if(invitations.isEmpty()){
+                Text(
+                    text = "No Invitations",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }else{
+                invitations.forEach {
+                    InvitationCard(
+                        invitation = it,
+                        viewModel=viewModel,
+                        clubName = it.clubName,
+                        position = it.role)
+                }
+            }
+
+        }
     }
+
 }
 
 @Composable
@@ -280,26 +296,33 @@ private fun InvitationCard(
 
 @Composable
 private fun JoinedClubsSection(joinedClubs: List<JoinedClubs>) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text(
-            text = "My Clubs",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        // Sample joined clubs
-        if (joinedClubs.isEmpty()){
+    Card(  modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(10.dp)
+        ) {
             Text(
-                text = "No Clubs Joined",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                text = "My Clubs",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
-        }
-        joinedClubs.forEach {
-            JoinedClubCard(clubName = it.clubname, role = it.role)
+
+            // Sample joined clubs
+            if (joinedClubs.isEmpty()) {
+                Text(
+                    text = "No Clubs Joined",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            joinedClubs.forEach {
+                JoinedClubCard(clubName = it.clubname, role = it.role)
+            }
         }
     }
 }
@@ -355,8 +378,14 @@ private fun AccountSettingsSection(navController: NavController) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val focusRequester1 = remember { FocusRequester() }
+    Card(  modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(10.dp)
         ) {
             Text(
                 text = "Account Settings",
@@ -377,7 +406,7 @@ private fun AccountSettingsSection(navController: NavController) {
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     // Change Password Button
-                    if(ChangingPassword.value){
+                    if (ChangingPassword.value) {
                         Column(modifier = Modifier.align(Alignment.CenterHorizontally)) {
                             Text(
                                 text = "Change Password",
@@ -385,21 +414,27 @@ private fun AccountSettingsSection(navController: NavController) {
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.onBackground
                             )
-                            OutlinedTextField(value = currentPassword.value,
+                            OutlinedTextField(
+                                value = currentPassword.value,
                                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                                 keyboardActions = KeyboardActions(
                                     onNext = {
                                         focusRequester1.requestFocus()
                                     }
                                 ),
-                                onValueChange = {currentPassword.value=it},
-                                label = {Text("Enter current password",
-                                    modifier = Modifier.padding(horizontal = 5.dp))},
+                                onValueChange = { currentPassword.value = it },
+                                label = {
+                                    Text(
+                                        "Enter current password",
+                                        modifier = Modifier.padding(horizontal = 5.dp)
+                                    )
+                                },
                                 shape = RoundedCornerShape(30.dp),
 
-                            )
-                            OutlinedTextField(value = newPassword.value,
-                                onValueChange = {newPassword.value=it},
+                                )
+                            OutlinedTextField(
+                                value = newPassword.value,
+                                onValueChange = { newPassword.value = it },
                                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                                 keyboardActions = KeyboardActions(
                                     onNext = {
@@ -407,78 +442,99 @@ private fun AccountSettingsSection(navController: NavController) {
 
                                     }
                                 ),
-                                label = {Text("Enter new password",
-                                    modifier = Modifier.padding(horizontal = 5.dp))},
+                                label = {
+                                    Text(
+                                        "Enter new password",
+                                        modifier = Modifier.padding(horizontal = 5.dp)
+                                    )
+                                },
                                 shape = RoundedCornerShape(30.dp),
                                 modifier = Modifier.focusRequester(focusRequester1)
                             )
-                            Box(modifier = Modifier.fillMaxWidth()
-                                .padding(top = 15.dp, end = 15.dp)) {
-                                OutlinedButton(onClick = {
-                                    ChangingPassword.value=false
-                                    currentPassword.value=""
-                                    newPassword.value=""
-                                },
+                            Box(
+                                modifier = Modifier.fillMaxWidth()
+                                    .padding(top = 15.dp, end = 15.dp)
+                            ) {
+                                OutlinedButton(
+                                    onClick = {
+                                        ChangingPassword.value = false
+                                        currentPassword.value = ""
+                                        newPassword.value = ""
+                                    },
 //                                    colors = ButtonDefaults.buttonColors(
 //                                        MaterialTheme.colorScheme.error
 //                                    ),
                                     modifier = Modifier.align(Alignment.CenterStart)
 
-                                   ) {
-                                    Text("Cancel",
+                                ) {
+                                    Text(
+                                        "Cancel",
                                         color = MaterialTheme.colorScheme.error,
-                                        modifier = Modifier.padding(horizontal = 10.dp))
+                                        modifier = Modifier.padding(horizontal = 10.dp)
+                                    )
                                 }
-                                OutlinedButton(onClick = {
-                                    val user = FirebaseAuth.getInstance().currentUser
-                                    val email = user?.email?:return@OutlinedButton
-                                    val credential = EmailAuthProvider.getCredential(email,currentPassword.value)
-                                    user.reauthenticate(credential)
-                                        .addOnSuccessListener {
-                                            user.updatePassword(newPassword.value)
-                                                .addOnSuccessListener {
-                                                    currentPassword.value=""
-                                                    newPassword.value=""
-                                                    Toast.makeText(context,
-                                                        "Password Updated",
-                                                        Toast.LENGTH_SHORT).show()
-                                                    ChangingPassword.value=false
-                                                }
-                                                .addOnFailureListener {
-                                                    currentPassword.value=""
-                                                    newPassword.value=""
-                                                    Toast.makeText(context,
-                                                        "Password Update Failed",
-                                                        Toast.LENGTH_SHORT).show()
-                                                }
-                                        }
-                                        .addOnFailureListener {
-                                            currentPassword.value=""
-                                            newPassword.value=""
-                                            Toast.makeText(context,
-                                                "Incorrect Password",
-                                                Toast.LENGTH_SHORT).show()
-                                        }
+                                OutlinedButton(
+                                    onClick = {
+                                        val user = FirebaseAuth.getInstance().currentUser
+                                        val email = user?.email ?: return@OutlinedButton
+                                        val credential = EmailAuthProvider.getCredential(
+                                            email,
+                                            currentPassword.value
+                                        )
+                                        user.reauthenticate(credential)
+                                            .addOnSuccessListener {
+                                                user.updatePassword(newPassword.value)
+                                                    .addOnSuccessListener {
+                                                        currentPassword.value = ""
+                                                        newPassword.value = ""
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Password Updated",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                        ChangingPassword.value = false
+                                                    }
+                                                    .addOnFailureListener {
+                                                        currentPassword.value = ""
+                                                        newPassword.value = ""
+                                                        Toast.makeText(
+                                                            context,
+                                                            "Password Update Failed",
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                            }
+                                            .addOnFailureListener {
+                                                currentPassword.value = ""
+                                                newPassword.value = ""
+                                                Toast.makeText(
+                                                    context,
+                                                    "Incorrect Password",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
 
-                                },
+                                    },
 //                                    colors = ButtonDefaults.buttonColors(
 //                                        Color(0xFF6366F1)
 //                                    ),
                                     modifier = Modifier.align(alignment = Alignment.CenterEnd)
 
-                                        ) {
-                                    Text("Update",
+                                ) {
+                                    Text(
+                                        "Update",
                                         color = Color(0xFF6366F1),
-                                        modifier = Modifier.padding(horizontal = 10.dp))
+                                        modifier = Modifier.padding(horizontal = 10.dp)
+                                    )
                                 }
 
                             }
                         }
 
-                    }else{
+                    } else {
                         OutlinedButton(
                             onClick = {
-                                ChangingPassword.value=true
+                                ChangingPassword.value = true
                             },
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -489,10 +545,11 @@ private fun AccountSettingsSection(navController: NavController) {
 
                     // Logout Button
                     Button(
-                        onClick = { FirebaseAuth.getInstance().signOut()
-                            navController.navigate(Screen.LOGIN.name){
-                                popUpTo(0){
-                                    inclusive=true
+                        onClick = {
+                            FirebaseAuth.getInstance().signOut()
+                            navController.navigate(Screen.LOGIN.name) {
+                                popUpTo(0) {
+                                    inclusive = true
                                 }
                                 launchSingleTop = true
                             }
@@ -510,20 +567,37 @@ private fun AccountSettingsSection(navController: NavController) {
                 }
             }
         }
-
+    }
 
 }
 @Composable
 private fun RegisteredEventsSection(registeredEvents: List<RegisteredEvent>) {
+    val isExpanded = rememberSaveable { mutableStateOf(false) }
+    Card(  modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        )){
     Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+
+        modifier = Modifier.padding(10.dp)
+            .animateContentSize(animationSpec = spring(stiffness = Spring.StiffnessMediumLow))
     ) {
-        Text(
-            text = "Registered Events",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Text(
+                text = "Registered Events",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.align(Alignment.CenterStart)
+            )
+            IconButton(onClick = {isExpanded.value=!isExpanded.value},
+                modifier = Modifier.align(Alignment.CenterEnd)) {
+                Icon(imageVector = if(isExpanded.value)Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Icon to expand")
+            }
+        }
 
         if (registeredEvents.isEmpty()) {
             Text(
@@ -532,10 +606,19 @@ private fun RegisteredEventsSection(registeredEvents: List<RegisteredEvent>) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         } else {
-            registeredEvents.forEach { event ->
-                RegisteredEventCard(event = event)
-            }
+
+                if(!isExpanded.value){
+                    RegisteredEventCard(event = registeredEvents[0])
+                }else{
+                    registeredEvents.forEach { event ->
+                        RegisteredEventCard(event = event)
+                    }
+                }
+
+
+
         }
+    }
     }
 }
 
@@ -544,7 +627,8 @@ private fun RegisteredEventsSection(registeredEvents: List<RegisteredEvent>) {
 private fun RegisteredEventCard(event: RegisteredEvent) {
     val date = SimpleDateFormat("dd/MM/yyyy").format(event.registeredOn)
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .padding(5.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface

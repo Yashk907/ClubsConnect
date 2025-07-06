@@ -95,7 +95,8 @@ class AuthViewModel : ViewModel() {
         val userMap = hashMapOf(
             "email" to email,
             "imageUri" to imageUri,
-            "username" to userName
+            "username" to userName,
+            "uid" to uid,
         )
         if(role=="Student"){
             userMap["prnno"]="0"

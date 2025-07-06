@@ -13,8 +13,10 @@ import java.util.Locale
 data class Club(
     val username : String="",
     val imageUri : String="",
-    val email : String=""
+    val email : String="",
+    val uid : String = ""
 )
+
 
 class FeedViewModel : ViewModel() {
 

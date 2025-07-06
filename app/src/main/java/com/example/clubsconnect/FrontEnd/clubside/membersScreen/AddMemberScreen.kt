@@ -44,15 +44,23 @@ fun AddMembersScreen(
     var searchQuery by remember { mutableStateOf("") }
     val users by viewModel.students.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
+    val alreadyMember = viewModel.alreadyMember.collectAsStateWithLifecycle()
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.loadStudents()
+        viewModel.loadMembers(){
+        }
     }
 
     val filteredUsers = users.filter {(student,_)->
 
         student.username.contains(searchQuery, ignoreCase = true) ||
-                student.email.contains(searchQuery, ignoreCase = true)
+                student.email.contains(searchQuery, ignoreCase = true )
+    }.filterNot {
+        studentWithStatus->
+        alreadyMember.value.any{
+            it.id==studentWithStatus.student.id
+        }
     }
 
     Scaffold(

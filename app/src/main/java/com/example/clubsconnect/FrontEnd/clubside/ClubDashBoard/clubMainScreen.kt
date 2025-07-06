@@ -39,6 +39,7 @@ fun ClubConnectMainScreen(viewModel : clubMainScreenViewmodel,
     val clubInfo by viewModel.clubInfo
 
     LaunchedEffect(Unit) {
+        viewModel.fetchClubInfo()
         viewModel.fetchEvents()
     }
 

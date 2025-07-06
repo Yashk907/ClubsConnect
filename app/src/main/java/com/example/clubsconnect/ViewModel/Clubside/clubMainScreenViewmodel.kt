@@ -66,11 +66,9 @@ class clubMainScreenViewmodel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private val dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    init {
-        fetchClubInfo()
-    }
 
-    private fun fetchClubInfo(){
+
+    fun fetchClubInfo(){
         db.collection("clubs")
             .document(clubid!!)
             .get()

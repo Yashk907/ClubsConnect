@@ -38,8 +38,25 @@ class AddMemberViewModel : ViewModel(){
     val isLoading : MutableStateFlow<Boolean> = MutableStateFlow(false)
     private  val clubId = Firebase.auth.currentUser!!.uid
 
-    fun loadStudents(){
+    private val _alreadyMember : MutableStateFlow<List<Student>> = MutableStateFlow(emptyList())
+    val alreadyMember = _alreadyMember
 
+    fun loadMembers(onError : (String)-> Unit){
+        Firebase.firestore.collection("clubs")
+            .document(clubId)
+            .collection("members")
+            .get()
+            .addOnSuccessListener {
+               _alreadyMember.value= it.documents.mapNotNull {
+                    it.toObject(Student::class.java)
+                }
+            }
+            .addOnFailureListener {
+                onError("error at fetching members : ${it.message}")
+            }
+    }
+
+    fun loadStudents(){
         val studentRef = Firebase.firestore.collection("students")
         val invitationref = Firebase.firestore.collection("invitations")
         isLoading.value=true

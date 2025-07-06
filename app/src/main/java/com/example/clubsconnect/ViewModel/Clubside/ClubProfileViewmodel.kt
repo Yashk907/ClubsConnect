@@ -29,11 +29,11 @@ import java.net.URI
 
 data class ClubProfile(
     val clubName: String = "",//firebae
-    val clubDescription: String = "Fostering innovation and technology excellence",//manual
+    val clubDescription: String = "",//manual
     val memberCount: Int = 0,//firebase
     val eventCount: Int = 0,//firebase
-    val establishedYear: String = "2025",//manual
-    val category: String = "Technology",//manual
+    val establishedYear: String = "",//manual
+    val category: String = "",//manual
     val clubImage: String = ""//firebase
 
 )
@@ -42,57 +42,69 @@ data class ClubProfile(
 class ClubProfileViewmodel : ViewModel() {
     private val _clubProfile = MutableStateFlow(ClubProfile())
     val clubProfile = _clubProfile
-
-
+//
     val isLoading = mutableStateOf(false)
 
     private val clubid = FirebaseAuth.getInstance().currentUser!!.uid
 
-    suspend fun fetchClubInfo(onError : (String)-> Unit){
-        isLoading.value = true
-        Firebase.firestore.collection("clubs")
-            .document(clubid)
-            .addSnapshotListener {
-                snapshot,error->
-                if(error!=null || snapshot==null || !snapshot.exists()) {
-                    onError(error?.message.toString())
-                    return@addSnapshotListener
-                }
-                val clubname = snapshot.getString("username")?:return@addSnapshotListener
-                val clubdescription = snapshot.getString("clubdescription")?:return@addSnapshotListener
-                val establishedyear = snapshot.getString("establishyear")?:return@addSnapshotListener
-                val category = snapshot.getString("category")?:return@addSnapshotListener
-                val clubimage = snapshot.getString("imageUri")?:return@addSnapshotListener
-                _clubProfile.value = _clubProfile.value.copy(
-                    clubName = clubname,
-                    clubDescription = clubdescription,
-                    establishedYear = establishedyear,
-                    category = category,
-                    clubImage = clubimage)
-
+    init {
+        viewModelScope.launch {
+            fetchClubInfo(){
+                Log.e("ClubProfileViewmodel", it)
             }
-
-        val memberssnapshot = Firebase.firestore.collection("clubs")
-            .document(clubid)
-            .collection("members")
-            .get()
-            .await()
-
-        _clubProfile.value=_clubProfile.value.copy(
-            memberCount = memberssnapshot.documents.size
-        )
-
-        val eventSnapshot = Firebase.firestore.collection("events")
-            .whereEqualTo("clubUid",clubid)
-            .get()
-            .await()
-
-        _clubProfile.value=_clubProfile.value.copy(
-            eventCount = eventSnapshot.documents.size
-        )
-        isLoading.value = false
+        }
 
     }
+    suspend fun fetchClubInfo(onError: (String) -> Unit) {
+        try {
+            isLoading.value = true
+
+            val clubDoc = Firebase.firestore.collection("clubs").document(clubid).get().await()
+
+            if (!clubDoc.exists()) {
+                onError("Club document not found")
+                return
+            }
+
+            val clubname = clubDoc.getString("username") ?: ""
+            val clubdescription = clubDoc.getString("clubdescription") ?: ""
+            val establishedyear = clubDoc.getString("establishyear") ?: ""
+            val category = clubDoc.getString("category") ?: ""
+            val clubimage = clubDoc.getString("imageUri") ?: ""
+
+            _clubProfile.value = _clubProfile.value.copy(
+                clubName = clubname,
+                clubDescription = clubdescription,
+                establishedYear = establishedyear,
+                category = category,
+                clubImage = clubimage
+            )
+
+            val membersSnapshot = Firebase.firestore.collection("clubs")
+                .document(clubid)
+                .collection("members")
+                .get()
+                .await()
+
+            _clubProfile.value = _clubProfile.value.copy(
+                memberCount = membersSnapshot.documents.size
+            )
+
+            val eventSnapshot = Firebase.firestore.collection("events")
+                .whereEqualTo("clubUid", clubid)
+                .get()
+                .await()
+
+            _clubProfile.value = _clubProfile.value.copy(
+                eventCount = eventSnapshot.documents.size
+            )
+        } catch (e: Exception) {
+            onError(e.message ?: "Failed to fetch club info")
+        } finally {
+            isLoading.value = false
+        }
+    }
+
 
     fun saveImageToCloudinary(file : File,onUploaded : (String?)-> Unit){
         isLoading.value=true
