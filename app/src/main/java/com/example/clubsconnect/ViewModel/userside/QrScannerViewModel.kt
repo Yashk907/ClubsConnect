@@ -10,6 +10,20 @@ class QrScannerViewModel : ViewModel() {
     private val user = FirebaseAuth.getInstance()
     private val registrationUsersCollection = Firebase.firestore.collection("event_registrations")
 
+    fun qrcodeActivationCheck(qrCodeId: String, onResult: (String) -> Unit){
+        Firebase.firestore.collection("qr_codes")
+            .document(qrCodeId)
+            .get()
+            .addOnSuccessListener {
+                val valid = it.getBoolean("valid")
+                val eventId = it.getString("eventid")
+                if(valid==true){
+                    setAttendance(eventId?:"",onResult)
+                }else{
+                    onResult("QR code is not active")
+                }
+            }
+    }
     fun setAttendance(eventId: String, onResult: (String) -> Unit) {
         val userId = user.currentUser?.uid
         if (userId == null) {

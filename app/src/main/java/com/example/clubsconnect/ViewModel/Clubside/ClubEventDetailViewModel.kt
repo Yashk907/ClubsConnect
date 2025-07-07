@@ -43,6 +43,10 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
     private val _presentAttendes = mutableStateListOf<RegisteredAttendes>()
     val presentAttendes : List<RegisteredAttendes> = _presentAttendes
 
+    private val _activateQrcode = mutableStateOf(false)
+    val activateQrcode: Boolean
+        get() = _activateQrcode.value
+
     private val db = Firebase.firestore
 
     val QrCodeBitmap = mutableStateOf<Bitmap?>(null)
@@ -50,7 +54,7 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
     init {
         viewModelScope.launch {
             fetchInfo(eventId)
-            QrCodeBitmap.value = createQRCode(eventId)
+            QrCodeBitmap.value = createQRCode(event.value.qrcodeid)
         }
     }
 
@@ -83,6 +87,7 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
             val attendes = fetchattendes(eventId)
             _event.value=_event.value.copy(attendes = attendes)
             _state.value = state.value.copy(loading = false)
+            fetchActivateQrState(event.value.qrcodeid)
     }
         catch (e : Exception){
             Log.d("ClubEventDetailViewModel", "Error fetching event details", e)
@@ -99,6 +104,8 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
                 .get()
                 .await()
             result.size()
+
+
         }catch (e : Exception){
             Log.d("fetchattendes", "Error fetching attendes: ${e.message}")
             0
@@ -106,9 +113,18 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
 
     }
 
-    fun createQRCode(eventId : String) : Bitmap{
+    suspend fun fetchActivateQrState(id : String){
+        val result = db.collection("qr_codes")
+            .document(id)
+            .get()
+            .await()
+        _activateQrcode.value = result.getBoolean("valid") ?: false
+    }
+
+    fun createQRCode(qrcodeId : String) : Bitmap{
+
         val size = 512
-        val bits = QRCodeWriter().encode(eventId, BarcodeFormat.QR_CODE,size,size )
+        val bits = QRCodeWriter().encode(qrcodeId, BarcodeFormat.QR_CODE,size,size )
         val bmp = createBitmap(size, size, Bitmap.Config.RGB_565)
 
         for(x in 0 until size){
@@ -124,6 +140,12 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
         return bmp
     }
 
+    fun activateDeactivateQr(activate : Boolean,qrCodeId : String){
+        Firebase.firestore.collection("qr_codes")
+            .document(qrCodeId)
+            .update("valid", activate)
+
+    }
 
     fun saveQrCodeToFile(context : Context, event: clubEvent, bitmap: Bitmap): File{
         val file = File(context.cacheDir,"${event.name}_qr_code.png")

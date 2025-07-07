@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -191,7 +192,8 @@ fun ClubSideEventDetailScreen(
                                 TextButton(onClick = {
                                     visibleDeleteDialog.value = false
                                 },
-                                    modifier = Modifier.align(Alignment.CenterStart)
+                                    modifier = Modifier
+                                        .align(Alignment.CenterStart)
                                         .padding(start = 0.dp)) {
                                     Text("Cancel")
                                 }
@@ -200,7 +202,8 @@ fun ClubSideEventDetailScreen(
                                     viewModel.deleteEvent(event.id)
                                     navController.navigate(Screen.CLUBMAINSCREENCLUB.name)
                                 },
-                                    modifier = Modifier.align(Alignment.CenterEnd)
+                                    modifier = Modifier
+                                        .align(Alignment.CenterEnd)
                                         .padding(end = 30.dp)) {
                                     Text("Confirm")
                                 }
@@ -395,6 +398,7 @@ fun QRCodeSection(event: clubEvent,
                   viewModel: ClubEventDetailViewModel,
                   qrcodebitmap : Bitmap?) {
     val context = LocalContext.current
+    var activate = rememberSaveable { mutableStateOf(viewModel.activateQrcode) }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -421,6 +425,7 @@ fun QRCodeSection(event: clubEvent,
             Spacer(modifier = Modifier.height(16.dp))
 
             // QR Code Placeholder
+
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -445,43 +450,61 @@ fun QRCodeSection(event: clubEvent,
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            Text(
-                text = "Scan this QR code for event attendance",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(12.dp))
+//            if (activate.value){
+                Text(
+                    text = "Scan this QR code for event attendance",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(12.dp))
 
-            Button(
-                onClick = {
-                    if(qrcodebitmap!=null){
-                        val file = viewModel.saveQrCodeToFile(context,event, qrcodebitmap)
-                        val uri = FileProvider.getUriForFile(context,"${context.packageName}.fileprovider",
-                            file)
-                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                            type =  "image/png"
-                            putExtra(Intent.EXTRA_STREAM,uri)
-                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                Button(
+                    onClick = {
+                        if (qrcodebitmap != null) {
+                            val file = viewModel.saveQrCodeToFile(context, event, qrcodebitmap)
+                            val uri = FileProvider.getUriForFile(
+                                context, "${context.packageName}.fileprovider",
+                                file
+                            )
+                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                type = "image/png"
+                                putExtra(Intent.EXTRA_STREAM, uri)
+                                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                            }
+
+                            context.startActivity(
+                                Intent.createChooser(
+                                    shareIntent,
+                                    "Share QR Code"
+                                )
+                            )
+                        } else {
+                            Toast.makeText(context, "qrcode is empty", Toast.LENGTH_SHORT).show()
                         }
 
-                        context.startActivity(Intent.createChooser(shareIntent,"Share QR Code"))
-                    }else{
-                        Toast.makeText(context,"qrcode is empty", Toast.LENGTH_SHORT).show()
-                    }
-
-                },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Share,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Share this QR")
-            }
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Share this QR")
+                }
+//            }else{
+                Button(onClick = { activate.value = !activate.value
+                    viewModel.activateDeactivateQr(activate.value,event.qrcodeid)
+                }) {
+                    Icon(imageVector = Icons.Default.Start,
+                        contentDescription = "start")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = if(!activate.value)"Activate this QR" else "Deactivate this QR")
+                }
+//            }
 
         }
     }

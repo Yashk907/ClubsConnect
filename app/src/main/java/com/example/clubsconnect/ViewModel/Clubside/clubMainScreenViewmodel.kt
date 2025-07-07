@@ -38,6 +38,7 @@ data class clubEvent(
     val clubUid: String = "",
 
     val imageUrl: String = "" ,     // placeholder for poster image URL
+    val qrcodeid : String = ""
 
 )
 

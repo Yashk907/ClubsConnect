@@ -3,6 +3,7 @@ package com.example.clubsconnect.ViewModel
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clubsconnect.Model.Event
@@ -23,10 +24,13 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
+import java.util.UUID
 
 class AddEventViewModel : ViewModel() {
-    fun uploadEvent(event: Event, onsuccess:(Boolean, String?)-> Unit){
 
+
+    fun uploadEvent(event: Event, onsuccess:(Boolean, String?)-> Unit){
+        val qrCodeId = UUID.randomUUID().toString()
         viewModelScope.launch(Dispatchers.IO){
             val docref =Firebase.firestore.collection("events")
                 .document()
@@ -48,12 +52,25 @@ class AddEventViewModel : ViewModel() {
                 "clubName" to event.clubName,
                 "clubUid" to event.clubUid,
                 "imageUrl" to event.imageUrl,
+                "qrcodeid" to qrCodeId,
                 "timestamp" to System.currentTimeMillis() // Optional for sorting
             )
 
             docref.set(eventMap)
                 .addOnSuccessListener { task ->
-                    onsuccess(true,null)
+                    Firebase.firestore.collection("qr_codes")
+                        .document(qrCodeId)
+                        .set(mapOf(
+                            "eventid" to eventWithID.id,
+                            "valid" to false
+                        ))
+                        .addOnSuccessListener {
+                            onsuccess(true,null)
+                        }
+                        .addOnFailureListener {
+                            onsuccess(false,it.message)
+                        }
+
                 }
                 .addOnFailureListener { task ->
                     onsuccess(false,task.message)
