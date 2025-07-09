@@ -1,9 +1,8 @@
-package com.example.clubsconnect.ViewModel
+package com.example.clubsconnect.ViewModel.Clubside
 
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.clubsconnect.Model.Event
@@ -13,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
-import okhttp3.Dispatcher
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -32,7 +30,7 @@ class AddEventViewModel : ViewModel() {
     fun uploadEvent(event: Event, onsuccess:(Boolean, String?)-> Unit){
         val qrCodeId = UUID.randomUUID().toString()
         viewModelScope.launch(Dispatchers.IO){
-            val docref =Firebase.firestore.collection("events")
+            val docref = Firebase.firestore.collection("events")
                 .document()
             val eventWithID = event.copy(id=docref.id)
             Log.d("id_check",docref.id)
@@ -79,7 +77,7 @@ class AddEventViewModel : ViewModel() {
     }
     fun uploadToCloudinary(file: File, context: Context, onUploaded: (String?) -> Unit) {
         val requestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
+            .setType(MultipartBody.Companion.FORM)
             .addFormDataPart("file", file.name, file.asRequestBody("image/*".toMediaTypeOrNull()))
             .addFormDataPart("upload_preset", "clubevents_image")
             .build()

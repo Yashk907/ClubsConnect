@@ -19,11 +19,11 @@ import androidx.navigation.navArgument
 import com.clubconnect.ui.screens.ClubEditProfile
 import com.clubconnect.ui.screens.StudentEditProfileScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.LoginScreen
-import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.SignupScreen
 import com.example.clubsconnect.FrontEnd.clubside.clubSideScreens.ClubSideControlScreen
 import com.example.clubsconnect.FrontEnd.clubside.eventDetailScreen.ClubSideEventDetailScreen
 import com.example.clubsconnect.FrontEnd.clubside.membersScreen.AddMembersScreen
 import com.example.clubsconnect.FrontEnd.clubside.membersScreen.ManageMembersScreen
+import com.example.clubsconnect.FrontEnd.commonscreen.AuthPage.SignupScreen
 import com.example.clubsconnect.FrontEnd.userside.ClubListStud.ClubsScreen
 import com.example.clubsconnect.FrontEnd.commonscreen.SplashScreen.SplashScreen
 import com.example.clubsconnect.FrontEnd.userside.detailscreen.EventDetailsScreen

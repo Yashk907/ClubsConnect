@@ -458,7 +458,7 @@ fun BottomNavigationBar(
 ) {
     val items = listOf(
         BottomNavItem("Home", Icons.Outlined.Home, Icons.Filled.Home, 0),
-        BottomNavItem("AddEvent", Icons.Outlined.AddCircle, Icons.Outlined.AddCircle,1),
+        BottomNavItem("Add Event", Icons.Outlined.AddCircle, Icons.Outlined.AddCircle,1),
         BottomNavItem("Members", Icons.Outlined.Groups, Icons.Filled.Groups, 2)
     )
 

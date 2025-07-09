@@ -1,6 +1,7 @@
 package com.example.clubsconnect.FrontEnd.commonscreen.AuthPage
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.clubsconnect.R
 import com.example.clubsconnect.Screen
 import com.example.clubsconnect.ViewModel.AuthViewModel
 import com.google.firebase.Firebase
@@ -62,16 +65,14 @@ fun LoginScreen(viewModel: AuthViewModel,
                 // Logo Circle
                 Box(
                     modifier = Modifier
-                        .size(80.dp)
+                        .size(100.dp)
                         .clip(CircleShape)
                         .background(Color.White),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "LOGO",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Image(painter = painterResource(R.drawable.applogo,
+                        ),
+                        contentDescription = "Logo")
                 }
 
                 Spacer(modifier = Modifier.height(60.dp))

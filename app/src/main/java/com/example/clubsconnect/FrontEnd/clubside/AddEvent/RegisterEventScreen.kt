@@ -36,7 +36,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.clubsconnect.FrontEnd.clubside.AddEvent.EventFormState
 import com.example.clubsconnect.FrontEnd.clubside.AddEvent.validateForm
 import com.example.clubsconnect.Model.Event
-import com.example.clubsconnect.ViewModel.AddEventViewModel
+import com.example.clubsconnect.ViewModel.Clubside.AddEventViewModel
 import java.util.Calendar
 import kotlin.String
 

@@ -1,4 +1,4 @@
-package com.example.clubsconnect.ViewModel
+package com.example.clubsconnect.ViewModel.Clubside
 
 import android.content.Context
 import android.net.Uri
@@ -24,7 +24,7 @@ import java.io.File
 import java.io.IOException
 
 class EditEventViewmodelClub : ViewModel() {
-    fun updateEvent(event: Event,eventId : String, onsuccess: (Boolean, String?) -> Unit) {
+    fun updateEvent(event: Event, eventId : String, onsuccess: (Boolean, String?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val docref = Firebase.firestore.collection("events").document(eventId)
 
@@ -56,7 +56,7 @@ class EditEventViewmodelClub : ViewModel() {
 
     fun uploadToCloudinary(file: File, context: Context, onUploaded: (String?) -> Unit) {
         val requestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
+            .setType(MultipartBody.Companion.FORM)
             .addFormDataPart("file", file.name, file.asRequestBody("image/*".toMediaTypeOrNull()))
             .addFormDataPart("upload_preset", "clubevents_image")
             .build()

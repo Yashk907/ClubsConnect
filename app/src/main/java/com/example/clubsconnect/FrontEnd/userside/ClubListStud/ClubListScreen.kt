@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.clubsconnect.Model.Club
-import com.example.clubsconnect.ViewModel.ClubListViewModelStud
+import com.example.clubsconnect.ViewModel.userside.ClubListViewModelStud
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

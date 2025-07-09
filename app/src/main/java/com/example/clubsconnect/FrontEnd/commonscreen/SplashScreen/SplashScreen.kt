@@ -68,13 +68,13 @@ fun SplashScreen(navController: NavController) {
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                painter = painterResource(id = R.drawable.applogo),
                 contentDescription = "Logo",
                 tint = Color.White,
-                modifier = Modifier.size(100.dp)
+                modifier = Modifier.size(200.dp)
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("My App", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+//            Spacer(modifier = Modifier.height(16.dp))
+//            Text("My App", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         }
     }
 }

@@ -62,7 +62,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.clubsconnect.FrontEnd.clubside.AddEvent.EventFormState
 import com.example.clubsconnect.FrontEnd.clubside.AddEvent.validateForm
 import com.example.clubsconnect.Model.Event
-import com.example.clubsconnect.ViewModel.EditEventViewmodelClub
+import com.example.clubsconnect.ViewModel.Clubside.EditEventViewmodelClub
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import io.reactivex.plugins.RxJavaPlugins.onError
