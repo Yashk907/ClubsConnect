@@ -115,7 +115,7 @@ Each user type has a tailored experience and UI in the app.
 
 | Edit Profile | Event Details | |
 |--------------|----------------|--|
-| <img src="assets/clubprofile.jpeg" width="200"/> | <img src="assets/eventdetailclub.jpeg" width="200"/> | |
+| <img src="assets/clubprofile.jpeg" width="200"/> | <img src="assets/eventdetailclub1.jpeg" width="200"/> | |
 
 ---
 
