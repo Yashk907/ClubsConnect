@@ -97,35 +97,64 @@ Each user type has a tailored experience and UI in the app.
 
 ### 🧑‍💻 Common Screens
 
-| Screen          | Preview |
-|-----------------|---------|
-| Splash Screen   | <img src="assets/splashscreen.jpeg" width="250"/> |
-| Login           | <img src="assets/signin.jpeg" width="250"/> |
-| SignUp          | <img src="assets/signup.jpeg" width="250"/> |
+**Splash Screen**  
+<img src="assets/splashscreen.jpeg" width="250"/>
+
+**Login**  
+<img src="assets/signin.jpeg" width="250"/>
+
+**SignUp**  
+<img src="assets/signup.jpeg" width="250"/>
+
+---
 
 ### 🏛️ Club Screens
 
-| Screen              | Preview |
-|---------------------|---------|
-| Club Home           | <img src="assets/clubmainpage.jpeg" width="250"/> |
-| Event Creation      | <img src="assets/addevent.jpeg" width="250"/> |
-| Member Screen       | <img src="assets/membersscreen.jpeg" width="250"/> |
-| Manage Members      | <img src="assets/managemembers.jpeg" width="250"/> |
-| Add Members         | <img src="assets/addmembers.jpeg" width="250"/> |
-| Modal Drawer        | <img src="assets/modaldrawer.jpeg" width="250"/> |
-| Edit Profile        | <img src="assets/clubprofile.jpeg" width="250"/> |
-| Event Details       | <img src="assets/eventdetailclub.jpeg" width="250"/> |
+**Club Home**  
+<img src="assets/clubmainpage.jpeg" width="250"/>
+
+**Event Creation Screen**  
+<img src="assets/addevent.jpeg" width="250"/>
+
+**Member Screen**  
+<img src="assets/membersscreen.jpeg" width="250"/>
+
+**Manage Members**  
+<img src="assets/managemembers.jpeg" width="250"/>
+
+**Add Members**  
+<img src="assets/addmembers.jpeg" width="250"/>
+
+**Modal Drawer**  
+<img src="assets/modaldrawer.jpeg" width="250"/>
+
+**Edit Profile**  
+<img src="assets/clubprofile.jpeg" width="250"/>
+
+**Event Detail Screen**  
+<img src="assets/eventdetailclub.jpeg" width="250"/>
+
+---
 
 ### 👨‍🎓 Student Screens
 
-| Screen              | Preview |
-|---------------------|---------|
-| Feed Page (Events)  | <img src="assets/studentfeed(events).jpeg" width="250"/> |
-| Feed Page (Clubs)   | <img src="assets/studentfeed(clubs).jpeg" width="250"/> |
-| Event Details       | <img src="assets/eventdetailstudent.jpeg" width="250"/> |
-| QR Attendance       | <img src="assets/qrcodescan.jpeg" width="250"/> |
-| Student Profile     | <img src="assets/studentprofile.jpeg" width="250"/> |
-| Edit Student Profile| <img src="assets/studenteditprofile.jpeg" width="250"/> |
+**Feed Page (Events)**  
+<img src="assets/studentfeed(events).jpeg" width="250"/>
+
+**Feed Page (Clubs)**  
+<img src="assets/studentfeed(clubs).jpeg" width="250"/>
+
+**Event Detail Screen**  
+<img src="assets/eventdetailstudent.jpeg" width="250"/>
+
+**QR Attendance**  
+<img src="assets/qrcodescan.jpeg" width="250"/>
+
+**Student Profile**  
+<img src="assets/studentprofile.jpeg" width="250"/>
+
+**Edit Student Profile**  
+<img src="assets/studenteditprofile.jpeg" width="250"/>
 
 ---
 
