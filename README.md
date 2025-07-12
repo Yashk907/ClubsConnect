@@ -60,8 +60,10 @@ Each user type has a tailored experience and UI in the app.
 
 - Each event generates a **unique QR code**
 - Students scan the QR code at the event to mark attendance
-- Attendance records are saved and viewable by the club
-- Optional manual attendance as backup
+- Prevents proxy attendance by verifying user’s live location
+- Uses GPS coordinates to ensure user is at or near the event location
+- Club sets geofence (e.g., 50 meters radius) while generating QR code
+- Attendance only gets recorded if user is within allowed range
 
 ### 📋 Club Profile
 
@@ -138,7 +140,7 @@ Each user type has a tailored experience and UI in the app.
 
 ## 📦 Download APK
 
-📲 **[Download Latest APK](https://drive.google.com/file/d/1_NPw3V9SAO-uLAHun6BW0Oxl0QOBu-ec/view?usp=drive_link)**
+📲 **[Download Latest APK](https://drive.google.com/file/d/1VdaYGGk8JCKwbnWum_BO3WNv3HBYyZuY/view?usp=sharing)**
 
 ---
 
