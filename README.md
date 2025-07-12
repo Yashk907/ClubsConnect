@@ -130,6 +130,7 @@ Each user type has a tailored experience and UI in the app.
 | <img src="assets/qrcodescan.jpeg" width="200"/> | <img src="assets/studentprofile.jpeg" width="200"/> | <img src="assets/studenteditprofile.jpeg" width="200"/> |
 
 ---
+## 📽️ Demo Video
 
 > 📽️ **[Watch Demo Video](https://drive.google.com/file/d/16D0SvbvClgmlsLFgfrjOTJKPtoqfKyxA/view?usp=drive_link)**
 
