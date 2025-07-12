@@ -97,7 +97,10 @@ Each user type has a tailored experience and UI in the app.
 
 | Screen               | Preview                         |
 |----------------------|----------------------------------|
-| Login                | ![Login](assets/11.jpeg)         |
+| Splash Screen        | ![splash](assets/splashscreen.jpeg)|
+| Login                | ![Login](assets/signin.jpeg)     |
+| signUp               | ![Login](assets/signup.jpeg)    |
+|ClubSide Screens                                         |
 | Club Home            | ![Club Home](assets/20.jpeg)     |
 | Student Feed         | ![Student Feed](assets/feed.jpg) |
 | Event Creation       | ![Create Event](assets/10.jpeg)  |
