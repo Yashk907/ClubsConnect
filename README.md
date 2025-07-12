@@ -95,17 +95,33 @@ Each user type has a tailored experience and UI in the app.
 
 ## 🖼️ Screenshots & Demo
 
-| Screen               | Preview                         |
+| Common Screens               | Preview                         |
 |----------------------|----------------------------------|
 | Splash Screen        | ![splash](assets/splashscreen.jpeg)|
 | Login                | ![Login](assets/signin.jpeg)     |
-| signUp               | ![Login](assets/signup.jpeg)    |
-|ClubSide Screens                                         |
-| Club Home            | ![Club Home](assets/20.jpeg)     |
-| Student Feed         | ![Student Feed](assets/feed.jpg) |
-| Event Creation       | ![Create Event](assets/10.jpeg)  |
-| QR Attendance (Student) | ![QR Attendance](assets/4.jpeg) |
-| QR Attendance (Club) | ![QR Club](assets/18.jpeg)       |
+| SignUp               | ![Login](assets/signup.jpeg)    |
+
+| Club Screens         | Preview                         |
+|----------------------|----------------------------------|
+| Club Home            | ![Club Home](assets/clubmainpage.jpeg)     |
+| Event Creation Screen| ![Add Event](assets/addevent.jpeg) |
+| Memberscreen     | ![Create Event](assets/membersscreen.jpeg)  |
+| Manage Members        | ![Member Screen](assets/managemembers.jpeg)     |
+| Add Members           | ![Add Members](assets/addmembers.jpeg)     |
+| modal Drawer          | ![Modal Drawer](assets/modaldrawer.jpeg)     |
+| Edit Profile          | ![edit Profile](assets/clubprofile.jpeg)     |
+| event detail screen   | ![event details](assets/eventdetailclub.jpeg)     |
+
+| Student Screens         | Preview                         |
+|----------------------|----------------------------------|
+| Feed Page(events)   | ![Feed Page](assets/studentfeed(events).jpeg)|
+| Feed Page(clubs)   | ![Feed Page](assets/studentfeed(clubs).jpeg)|
+| Event DetailScreen   | ![Event Detail Page](assets/eventdetailstudent.jpeg)|
+| QR Attendance        | ![QR Attendance](assets/qrcodescan.jpeg)  |
+| student profile   | ![student profile](assets/studentprofile.jpeg)|
+| Edit student profile   | ![Edit student profile](assets/studenteditprofile.jpeg)|
+
+
 
 > 📽️ **[Watch Demo Video](https://drive.google.com/file/d/16D0SvbvClgmlsLFgfrjOTJKPtoqfKyxA/view?usp=drive_link)**
 
