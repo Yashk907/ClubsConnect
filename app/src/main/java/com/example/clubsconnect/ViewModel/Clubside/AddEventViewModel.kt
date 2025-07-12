@@ -60,7 +60,10 @@ class AddEventViewModel : ViewModel() {
                         .document(qrCodeId)
                         .set(mapOf(
                             "eventid" to eventWithID.id,
-                            "valid" to false
+                            "valid" to false,
+                            "latitude" to  0.0,
+                            "longitude" to 0.0,
+                            "range" to "30.0"
                         ))
                         .addOnSuccessListener {
                             onsuccess(true,null)

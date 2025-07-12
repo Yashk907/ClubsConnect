@@ -36,7 +36,6 @@ data class clubEvent(
     val attendes : Int = 0,
     val clubName: String = "",     // fetched from SharedPrefs
     val clubUid: String = "",
-
     val imageUrl: String = "" ,     // placeholder for poster image URL
     val qrcodeid : String = ""
 

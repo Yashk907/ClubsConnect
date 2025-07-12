@@ -76,7 +76,7 @@ fun QrCodeScreen(
         cameraController.setImageAnalysisAnalyzer(ContextCompat.getMainExecutor(context),
             QrCodeAnalyzer{
                 result->
-                viewModel.qrcodeActivationCheck(result) {
+                viewModel.qrcodeActivationCheck(context,result) {
                     Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                 }
 

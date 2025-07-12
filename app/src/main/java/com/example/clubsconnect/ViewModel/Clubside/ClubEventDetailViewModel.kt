@@ -1,9 +1,12 @@
 package com.example.clubsconnect.ViewModel.Clubside
 
+import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.location.Location
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.set
+import com.google.android.gms.location.LocationServices
 import java.io.File
 
 data class RegisteredAttendes(
@@ -46,6 +50,10 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
     private val _activateQrcode = mutableStateOf(false)
     val activateQrcode: Boolean
         get() = _activateQrcode.value
+
+    private val _rangeOfQR = mutableStateOf(0.0)
+    val rangeOfQR : String
+        get() = _rangeOfQR.value.toString()
 
     private val db = Firebase.firestore
 
@@ -119,6 +127,7 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
             .get()
             .await()
         _activateQrcode.value = result.getBoolean("valid") ?: false
+        _rangeOfQR.value=result.getDouble("range")?:0.0
     }
 
     fun createQRCode(qrcodeId : String) : Bitmap{
@@ -140,10 +149,42 @@ class ClubEventDetailViewModel(eventId : String) : ViewModel() {
         return bmp
     }
 
-    fun activateDeactivateQr(activate : Boolean,qrCodeId : String){
-        Firebase.firestore.collection("qr_codes")
-            .document(qrCodeId)
-            .update("valid", activate)
+    @RequiresPermission(allOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
+    fun activateDeactivateQr(activate : Boolean,range : Double, qrCodeId : String, context: Context,onactivate : (String)-> Unit){
+        val fusedLocation = LocationServices.getFusedLocationProviderClient(context)
+        fusedLocation.lastLocation.addOnSuccessListener { location: Location? ->
+            location?.let {
+                val latitude = location.latitude
+                val longitude = location.longitude
+
+                        Firebase.firestore.collection("qr_codes")
+                            .document(qrCodeId)
+                            .update(
+                                mapOf(
+                                    "valid" to activate,
+                                    "latitude" to latitude,
+                                    "longitude" to longitude,
+                                    "range" to range
+                                )
+                            )
+                            .addOnSuccessListener {
+                                if(activate){
+                                    onactivate("QR Code Activated : For ${range} metres")
+                                }else{
+                                    onactivate("QR Code Deactivated")
+                                }
+                            }
+                            .addOnFailureListener {
+                                onactivate("Error Updating QR Code")
+                            }
+
+            }
+        }
+            .addOnFailureListener {
+                onactivate("Error Getting Location")
+                Log.d("ClubEventDetailViewModel", "Error getting location", it)
+            }
+
 
     }
 

@@ -1,6 +1,9 @@
 package com.example.clubsconnect.FrontEnd.clubside.eventDetailScreen
 
+import android.Manifest
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -30,6 +33,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.navigation.NavController
@@ -398,7 +403,14 @@ fun QRCodeSection(event: clubEvent,
                   viewModel: ClubEventDetailViewModel,
                   qrcodebitmap : Bitmap?) {
     val context = LocalContext.current
-    var activate = rememberSaveable { mutableStateOf(viewModel.activateQrcode) }
+    var activate = remember{ mutableStateOf(viewModel.activateQrcode) }
+    val range = remember { mutableStateOf(viewModel.rangeOfQR) }
+    LaunchedEffect(viewModel.rangeOfQR) {
+        range.value = viewModel.rangeOfQR
+    }
+    LaunchedEffect(viewModel.activateQrcode) {
+        activate.value=viewModel.activateQrcode
+    }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -496,8 +508,34 @@ fun QRCodeSection(event: clubEvent,
                     Text("Share this QR")
                 }
 //            }else{
-                Button(onClick = { activate.value = !activate.value
-                    viewModel.activateDeactivateQr(activate.value,event.qrcodeid)
+                Spacer(modifier = Modifier.height(12.dp))
+            Text("Enter the Range How much distance is allowed for attendance",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center)
+            Spacer(modifier = Modifier.height(12.dp))
+               OutlinedTextField(
+                   value = range.value,
+                   onValueChange ={
+                       it->
+                       range.value=it
+                   },
+                   label = {
+                       Text("Enter the Range (metres) ")
+                   }, modifier = Modifier
+               )
+            Spacer(modifier = Modifier.height(12.dp))
+                Button(onClick = {
+                    val permission = Manifest.permission.ACCESS_FINE_LOCATION
+                    if(ContextCompat.checkSelfPermission(context,permission)== PackageManager.PERMISSION_GRANTED){
+                        activate.value = !activate.value
+                        if(range.value.isEmpty()) range.value="0.0"
+                        viewModel.activateDeactivateQr(activate.value,range.value.toDouble(),event.qrcodeid,context){
+                            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                        }
+                    }else{
+                        ActivityCompat.requestPermissions(context as Activity, arrayOf(permission),1001)
+                    }
                 }) {
                     Icon(imageVector = Icons.Default.Start,
                         contentDescription = "start")

@@ -100,6 +100,8 @@ dependencies {
     implementation(libs.firebase.bom)
 
     //firebase
+    //location
+    implementation ("com.google.android.gms:play-services-location:21.0.1")
     // Import the BoM for the Firebase platform
 //    implementation(libs.firebase.bom.v3280)
 //    implementation (libs.firebase.firestore.ktx)
