@@ -95,33 +95,39 @@ Each user type has a tailored experience and UI in the app.
 
 ## 🖼️ Screenshots & Demo
 
-| Common Screens               | Preview                         |
-|----------------------|----------------------------------|
-| Splash Screen        | ![splash](assets/splashscreen.jpeg)|
-| Login                | ![Login](assets/signin.jpeg)     |
-| SignUp               | ![Login](assets/signup.jpeg)    |
+### 🧑‍💻 Common Screens
 
-| Club Screens         | Preview                         |
-|----------------------|----------------------------------|
-| Club Home            | ![Club Home](assets/clubmainpage.jpeg)     |
-| Event Creation Screen| ![Add Event](assets/addevent.jpeg) |
-| Memberscreen     | ![Create Event](assets/membersscreen.jpeg)  |
-| Manage Members        | ![Member Screen](assets/managemembers.jpeg)     |
-| Add Members           | ![Add Members](assets/addmembers.jpeg)     |
-| modal Drawer          | ![Modal Drawer](assets/modaldrawer.jpeg)     |
-| Edit Profile          | ![edit Profile](assets/clubprofile.jpeg)     |
-| event detail screen   | ![event details](assets/eventdetailclub.jpeg)     |
+| Screen          | Preview |
+|-----------------|---------|
+| Splash Screen   | <img src="assets/splashscreen.jpeg" width="250"/> |
+| Login           | <img src="assets/signin.jpeg" width="250"/> |
+| SignUp          | <img src="assets/signup.jpeg" width="250"/> |
 
-| Student Screens         | Preview                         |
-|----------------------|----------------------------------|
-| Feed Page(events)   | ![Feed Page](assets/studentfeed(events).jpeg)|
-| Feed Page(clubs)   | ![Feed Page](assets/studentfeed(clubs).jpeg)|
-| Event DetailScreen   | ![Event Detail Page](assets/eventdetailstudent.jpeg)|
-| QR Attendance        | ![QR Attendance](assets/qrcodescan.jpeg)  |
-| student profile   | ![student profile](assets/studentprofile.jpeg)|
-| Edit student profile   | ![Edit student profile](assets/studenteditprofile.jpeg)|
+### 🏛️ Club Screens
 
+| Screen              | Preview |
+|---------------------|---------|
+| Club Home           | <img src="assets/clubmainpage.jpeg" width="250"/> |
+| Event Creation      | <img src="assets/addevent.jpeg" width="250"/> |
+| Member Screen       | <img src="assets/membersscreen.jpeg" width="250"/> |
+| Manage Members      | <img src="assets/managemembers.jpeg" width="250"/> |
+| Add Members         | <img src="assets/addmembers.jpeg" width="250"/> |
+| Modal Drawer        | <img src="assets/modaldrawer.jpeg" width="250"/> |
+| Edit Profile        | <img src="assets/clubprofile.jpeg" width="250"/> |
+| Event Details       | <img src="assets/eventdetailclub.jpeg" width="250"/> |
 
+### 👨‍🎓 Student Screens
+
+| Screen              | Preview |
+|---------------------|---------|
+| Feed Page (Events)  | <img src="assets/studentfeed(events).jpeg" width="250"/> |
+| Feed Page (Clubs)   | <img src="assets/studentfeed(clubs).jpeg" width="250"/> |
+| Event Details       | <img src="assets/eventdetailstudent.jpeg" width="250"/> |
+| QR Attendance       | <img src="assets/qrcodescan.jpeg" width="250"/> |
+| Student Profile     | <img src="assets/studentprofile.jpeg" width="250"/> |
+| Edit Student Profile| <img src="assets/studenteditprofile.jpeg" width="250"/> |
+
+---
 
 > 📽️ **[Watch Demo Video](https://drive.google.com/file/d/16D0SvbvClgmlsLFgfrjOTJKPtoqfKyxA/view?usp=drive_link)**
 
