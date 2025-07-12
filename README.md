@@ -95,14 +95,42 @@ Each user type has a tailored experience and UI in the app.
 
 ## 🖼️ Screenshots & Demo
 
-| Screen               | Preview                         |
-|----------------------|----------------------------------|
-| Login                | ![Login](assets/11.jpeg)         |
-| Club Home            | ![Club Home](assets/20.jpeg)     |
-| Student Feed         | ![Student Feed](assets/feed.jpg) |
-| Event Creation       | ![Create Event](assets/10.jpeg)  |
-| QR Attendance (Student) | ![QR Attendance](assets/4.jpeg) |
-| QR Attendance (Club) | ![QR Club](assets/18.jpeg)       |
+### 🧑‍💻 Common Screens
+
+| Splash Screen | Login | Sign Up |
+|---------------|-------|---------|
+| <img src="assets/splashscreen.jpeg" width="200"/> | <img src="assets/signin.jpeg" width="200"/> | <img src="assets/signup.jpeg" width="200"/> |
+
+---
+
+### 🏛️ Club Screens
+
+| Club Home | Event Creation | Member Screen |
+|-----------|----------------|----------------|
+| <img src="assets/clubmainpage.jpeg" width="200"/> | <img src="assets/addevent.jpeg" width="200"/> | <img src="assets/membersscreen.jpeg" width="200"/> |
+
+| Manage Members | Add Members | Modal Drawer |
+|----------------|-------------|---------------|
+| <img src="assets/managemembers.jpeg" width="200"/> | <img src="assets/addmembers.jpeg" width="200"/> | <img src="assets/modaldrawer.jpeg" width="200"/> |
+
+| Edit Profile | Event Details | |
+|--------------|----------------|--|
+| <img src="assets/clubprofile.jpeg" width="200"/> | <img src="assets/eventdetailclub1.jpeg" width="200"/> | |
+
+---
+
+### 👨‍🎓 Student Screens
+
+| Feed (Events) | Feed (Clubs) | Event Details |
+|----------------|---------------|----------------|
+| <img src="assets/studentfeed(events).jpeg" width="200"/> | <img src="assets/studentfeed(clubs).jpeg" width="200"/> | <img src="assets/eventdetailstudent.jpeg" width="200"/> |
+
+| QR Attendance | Student Profile | Edit Profile |
+|----------------|------------------|---------------|
+| <img src="assets/qrcodescan.jpeg" width="200"/> | <img src="assets/studentprofile.jpeg" width="200"/> | <img src="assets/studenteditprofile.jpeg" width="200"/> |
+
+---
+## 📽️ Demo Video
 
 > 📽️ **[Watch Demo Video](https://drive.google.com/file/d/16D0SvbvClgmlsLFgfrjOTJKPtoqfKyxA/view?usp=drive_link)**
 
