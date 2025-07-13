@@ -134,7 +134,7 @@ Each user type has a tailored experience and UI in the app.
 ---
 ## 📽️ Demo Video
 
-> 📽️ **[Watch Demo Video](https://drive.google.com/file/d/16D0SvbvClgmlsLFgfrjOTJKPtoqfKyxA/view?usp=drive_link)**
+> 📽️ **[Watch Demo Video](https://www.linkedin.com/posts/yash-karande-849b55290_androiddev-jetpackcompose-firebase-activity-7350168581961142272-6ZpC?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAAEamP3kBRbSkttB_zXFHOSGX-nGR3wK8Sgc)**
 
 ---
 
